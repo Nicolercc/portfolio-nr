@@ -61,7 +61,12 @@
 .bento__role {
 	line-height: 1.15;
 	margin: 0 0 26px;
-	background: linear-gradient(135deg, var(--bento-rose), #c4a8ff, var(--bento-green));
+	background: linear-gradient(
+		135deg,
+		var(--bento-rose),
+		#c4a8ff,
+		var(--bento-green)
+	);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }
@@ -120,4 +125,3 @@
 	text-transform: uppercase;
 	margin: 0;
 }
-

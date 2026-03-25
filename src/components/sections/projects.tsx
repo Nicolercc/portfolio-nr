@@ -106,7 +106,7 @@ function CaseStudyCard({ study }: { study: (typeof caseStudies)[0] }) {
 		<motion.article
 			ref={cardRef}
 			style={{ opacity }}
-			className="relative py-24 border-t border-white/10 group"
+			className="relative py-20  border-white/10 group"
 		>
 			<div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 				{/* Left Side: Info */}
@@ -120,7 +120,7 @@ function CaseStudyCard({ study }: { study: (typeof caseStudies)[0] }) {
 						</span>
 					</div>
 
-					<h3 className="text-5xl md:text-7xl font-serif leading-none mb-6 group-hover:italic transition-all duration-500">
+					<h3 className="text-5xl md:text-7xl font-serif leading-none mb-6">
 						{study.title}
 					</h3>
 
@@ -187,11 +187,11 @@ export function Projects() {
 	return (
 		<section
 			id="work"
-			className="relative py-40 px-6 md:px-12 bg-transparent overflow-hidden"
+			className="relative  px-6 md:px-12 bg-transparent overflow-hidden"
 		>
-			<div className="max-w-7xl mx-auto relative z-10 border-t border-white/[0.05] pt-20">
+			<div className="max-w-7xl mx-auto relative z-10 border-t border-white/[0.05] pt-25">
 				{/* Editorial Header */}
-				<header className="mb-40">
+				<header className="mb-25">
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						whileInView={{ opacity: 1, y: 0 }}

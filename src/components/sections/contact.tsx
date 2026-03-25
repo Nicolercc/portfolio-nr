@@ -22,7 +22,7 @@ export function Contact() {
 					href="mailto:hello@nicolerodriguez.me"
 					className="inline-flex items-center gap-4 text-xl md:text-2xl font-light hover:text-rose transition-colors duration-300 group"
 				>
-					hello@nicolerodriguez.me
+					nicolerodriguez@pursuit.org
 					<ArrowRight className="group-hover:translate-x-2 transition-transform" />
 				</a>
 			</motion.div>

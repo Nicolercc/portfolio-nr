@@ -1,5 +1,7 @@
 import { Switch, Route } from "wouter";
 import Home from "./pages/home";
+import ProjectCaseStudy from "./pages/ProjectDetail"; // Your template
+import { projectsData } from "./data/projects";
 
 function NotFound() {
 	return (
@@ -22,6 +24,13 @@ export default function App() {
 	return (
 		<Switch>
 			<Route path="/" component={Home} />
+			<Route path="/work/:id">
+				{(params) => {
+					const project = projectsData[params.id as keyof typeof projectsData];
+					if (!project) return <NotFound />;
+					return <ProjectCaseStudy project={project} />;
+				}}
+			</Route>
 			<Route component={NotFound} />
 		</Switch>
 	);

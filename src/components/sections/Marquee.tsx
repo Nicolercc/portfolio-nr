@@ -1,13 +1,12 @@
 const technologies = [
 	"React",
 	"TypeScript",
-	"Python",
-	"Next.js",
-	"PostgreSQL",
-	"Astro",
-	"Tailwind",
+	"Tailwind CSS",
 	"Framer Motion",
+	"Astro",
 	"Stripe",
+	"Firebase",
+	"PostgreSQL",
 	"Figma",
 ];
 

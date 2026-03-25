@@ -1,37 +1,55 @@
+import { motion, useScroll, useTransform } from "framer-motion";
+
 export function GlobalCanvas() {
-  return (
-    <div className="fixed inset-0 -z-10 pointer-events-none">
-      {/* Base dark canvas */}
-      <div className="absolute inset-0 bg-[#0D0D0D]" />
+	const { scrollY } = useScroll();
 
-      {/* Atmospheric glows */}
-      <div
-        className="absolute -top-1/3 -left-1/3 h-[820px] w-[820px] rounded-full blur-[140px] opacity-[0.12]"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(212,132,154,1) 0%, transparent 70%)",
-        }}
-      />
-      <div
-        className="absolute -bottom-1/3 -right-1/3 h-[860px] w-[860px] rounded-full blur-[150px] opacity-[0.12]"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(74,222,128,1) 0%, transparent 70%)",
-        }}
-      />
+	// High-end interaction: The grid is 100% visible at the top
+	// and fades to 30% as the user scrolls 500px down.
+	const gridOpacity = useTransform(scrollY, [0, 500], [1, 0.3]);
 
-      {/* Dot grid overlay (faded to edges) */}
-      <div
-        className="absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(245,240,232,0.9) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-          maskImage:
-            "radial-gradient(ellipse 75% 70% at 50% 45%, black 35%, transparent 100%)",
-        }}
-      />
-    </div>
-  );
+	// Subtle parallax: The background moves slower than the scroll
+	const backgroundY = useTransform(scrollY, [0, 1000], [0, 100]);
+
+	return (
+		<div className="fixed inset-0 pointer-events-none -z-50 bg-[#0D0D0D] overflow-hidden">
+			{/* 1. THE GRID (Your favorite element) */}
+			<motion.div
+				style={{
+					opacity: gridOpacity,
+					backgroundImage: `
+            linear-gradient(rgba(245, 240, 232, 0.022) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(245, 240, 232, 0.022) 1px, transparent 1px)
+          `,
+					backgroundSize: "48px 48px",
+					WebkitMaskImage:
+						"radial-gradient(ellipse 80% 60% at 50% 50%, black 25%, transparent 100%)",
+					maskImage:
+						"radial-gradient(ellipse 80% 60% at 50% 50%, black 25%, transparent 100%)",
+				}}
+				className="absolute inset-0"
+			/>
+
+			{/* 2. AMBIENT GLOWS (Rose & Green) */}
+			<motion.div style={{ y: backgroundY }} className="absolute inset-0">
+				{/* Top Left Rose Glow */}
+				<div
+					className="absolute top-[-10%] left-[-10%] w-[70vw] h-[70vw] rounded-full opacity-[0.10] blur-[120px]"
+					style={{
+						background: "radial-gradient(circle, #D4849A 0%, transparent 80%)",
+					}}
+				/>
+
+				{/* Bottom Right Green Glow */}
+				<div
+					className="absolute bottom-[-5%] right-[-10%] w-[60vw] h-[60vw] rounded-full opacity-[0.07] blur-[100px]"
+					style={{
+						background: "radial-gradient(circle, #4ADE80 0%, transparent 70%)",
+					}}
+				/>
+			</motion.div>
+
+			{/* 3. NOISE TEXTURE (The "Film Grain" look) */}
+			<div className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+		</div>
+	);
 }
-

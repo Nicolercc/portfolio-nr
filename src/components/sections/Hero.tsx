@@ -7,15 +7,33 @@ import "./landing.css";
 const techRows = [
 	[
 		"React",
-		"Next.js",
 		"TypeScript",
 		"Tailwind CSS",
 		"Framer Motion",
+		"Vite",
+		"Wouter",
+		"Astro",
+	],
+	[
 		"Node.js",
 		"Express.js",
+		"Firebase",
+		"PostgreSQL",
+		"Stripe",
+		"Socket.io",
+		"Axios",
 	],
-	["PostgreSQL", "MongoDB", "Prisma", "Python", "Firebase", "Astro", "Zustand"],
-	["Vercel", "Docker", "AWS", "GitHub Actions", "Figma", "PostHog", "Bun"],
+	[
+		"Google Maps API",
+		"React Hook Form",
+		"Nodemailer",
+		"COBE",
+		"React Spring",
+		"Material UI",
+		"Bootstrap",
+	],
+	["Git", "GitHub", "GitHub Actions", "Vercel", "Netlify", "Render", "Figma"],
+	["PostHog", "Notion", "Trello", "Slack", "Python"],
 ];
 
 const stackLanes = [

@@ -1,59 +1,67 @@
 # portfolio-nr
 
-Nicole Rodriguez’s portfolio website.
+Nicole Rodriguez’s portfolio website — a **Midnight Rose** canvas with **rose** nuance and **green** energy, built for crisp motion and seamless visual continuity.
 
-- **Live**: `https://nicolerodriguez.dev/`
+> **Live**: `https://nicolerodriguez.dev/`
+
+## What’s inside
+
+- **Design system**: dark “continuous canvas” background + elevated card surfaces
+- **Motion**: Framer Motion micro-interactions and section reveals
+- **Interactive globe**: NYC marker + drag-to-rotate
+- **Responsive**: optimized layouts from mobile → desktop
 
 ## Tech stack
 
-- **Framework**: React + TypeScript
-- **Build tool**: Vite
-- **Styling**: Tailwind CSS v4 (CSS-first, no `tailwind.config.js`)
-- **Motion**: Framer Motion
-- **Routing**: Wouter
-- **Icons**: Lucide
-- **Interactive globe**: COBE
+### Core
+
+- **React** + **TypeScript**
+- **Vite**
+
+### UI
+
+- **Tailwind CSS v4** (CSS-first, no `tailwind.config.js`)
+- **Framer Motion**
+- **Lucide** (icons)
+- **COBE** (interactive globe)
+
+### Routing
+
+- **Wouter**
 
 ## Local development
 
-Install dependencies:
-
 ```bash
+# install
 npm install
-```
 
-Start the dev server:
-
-```bash
+# run locally
 npm run dev
-```
 
-Build for production:
-
-```bash
+# production build
 npm run build
-```
 
-Preview the production build:
-
-```bash
+# preview build
 npm run preview
 ```
 
 ## Project structure
 
-- **Pages**: `src/pages/`
-- **Sections / UI**: `src/components/sections/`, `src/components/ui/`, `src/components/layouts/`
-- **Global styles + theme tokens**: `src/index.css`
-
-## Design notes
-
-- **Theme**: “Midnight Rose” canvas with rose + green accents.
-- **Continuity**: a fixed global background layer keeps sections visually seamless while cards provide depth.
+```text
+src/
+  components/
+    layouts/      # nav, global canvas, layout primitives
+    sections/     # page sections (Hero, Projects, Bento/About, Experience, Contact)
+    ui/           # reusable UI bits (cursor, etc.)
+  pages/          # route-level pages
+  index.css       # global theme tokens + utilities
+```
 
 ## Scripts
 
-- **dev**: run Vite in development mode
-- **build**: typecheck + production bundle
-- **preview**: serve the production build locally
-- **lint**: run ESLint
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | start dev server |
+| `npm run build` | typecheck + production bundle |
+| `npm run preview` | preview production build |
+| `npm run lint` | run ESLint |

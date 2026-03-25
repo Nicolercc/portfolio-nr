@@ -7,7 +7,7 @@ export function Contact() {
 			id="contact"
 			className="py-40 px-6 text-center relative overflow-hidden"
 		>
-			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-burgundy/5 rounded-full blur-[140px] pointer-events-none" />
+			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-rose/5 rounded-full blur-[140px] pointer-events-none" />
 
 			<motion.div
 				initial={{ opacity: 0, scale: 0.9 }}
@@ -20,7 +20,7 @@ export function Contact() {
 				</h2>
 				<a
 					href="mailto:hello@nicolerodriguez.me"
-					className="inline-flex items-center gap-4 text-xl md:text-2xl font-light hover:text-burgundy transition-all group"
+					className="inline-flex items-center gap-4 text-xl md:text-2xl font-light hover:text-rose transition-colors duration-300 group"
 				>
 					hello@nicolerodriguez.me
 					<ArrowRight className="group-hover:translate-x-2 transition-transform" />

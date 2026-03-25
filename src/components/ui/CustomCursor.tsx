@@ -17,13 +17,13 @@ export function CustomCursor() {
 
 	return (
 		<motion.div
-			className="fixed top-0 left-0 w-8 h-8 rounded-full border border-burgundy/50 pointer-events-none z-[9999] mix-blend-difference"
+			className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9999] border border-rose/70 shadow-[0_0_16px_rgba(74,222,128,0.4),0_0_4px_rgba(212,132,154,0.35)]"
 			style={{
 				x: mouseX,
 				y: mouseY,
 			}}
 		>
-			<div className="absolute inset-0 rounded-full bg-burgundy/10 blur-sm" />
+			<div className="absolute inset-0 rounded-full bg-green/15 blur-sm" />
 		</motion.div>
 	);
 }

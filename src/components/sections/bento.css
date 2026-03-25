@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400;1,600&family=DM+Sans:wght@400;500;700;800&family=DM+Mono:wght@400;500&display=swap");
+
+/* Keep the original intent from the inline <style> */
+#about button {
+	font-family: inherit;
+}
+
+/* ------------------------------------------------------------
+   Bento (About) section layout helpers
+   (keeps visuals identical; replaces long inline styles)
+------------------------------------------------------------ */
+
+#about.bento {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	padding: 100px 0;
+}
+
+/* Section-specific ambient layers removed:
+   global canvas owns the background + atmosphere. */
+
+.bento__container {
+	max-width: 1140px;
+	margin: 0 auto;
+	padding: 0 28px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 72px;
+	align-items: center;
+	position: relative;
+}
+
+.bento__col {
+	display: flex;
+	flex-direction: column;
+}
+
+.bento__eyebrow {
+	font-family: "DM Mono", ui-monospace, monospace;
+	font-size: 0.68rem;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--bento-rose);
+	margin: 0 0 10px;
+}
+
+.bento__h2 {
+	font-family: "Cormorant Garamond", Georgia, serif;
+	font-weight: 600;
+	font-size: clamp(2rem, 3.2vw, 2.9rem);
+	letter-spacing: -0.02em;
+	color: var(--bento-fg);
+}
+
+.bento__name {
+	line-height: 1.08;
+	margin: 0 0 2px;
+}
+
+.bento__role {
+	line-height: 1.15;
+	margin: 0 0 26px;
+	background: linear-gradient(135deg, var(--bento-rose), #c4a8ff, var(--bento-green));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.bento__p {
+	font-family: "DM Sans", system-ui, sans-serif;
+	font-size: 0.9rem;
+	line-height: 1.78;
+	color: var(--bento-muted);
+	margin: 0 0 14px;
+}
+
+.bento__taglineBox {
+	margin: 22px 0 28px;
+	padding: 13px 16px;
+	border-left: 2px solid var(--bento-rose);
+	background: rgba(212, 132, 154, 0.032);
+	border-radius: 0 8px 8px 0;
+	min-height: 46px;
+}
+
+.bento__taglineText {
+	font-family: "Cormorant Garamond", Georgia, serif;
+	font-style: italic;
+	font-size: 1.05rem;
+	color: rgba(212, 132, 154, 0.8);
+	margin: 0;
+	line-height: 1.55;
+}
+
+.bento__socialRow {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.bento__rightLabel {
+	font-family: "DM Mono", ui-monospace, monospace;
+	font-size: 0.68rem;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: rgba(74, 222, 128, 0.53);
+	margin: 0 0 32px;
+}
+
+.bento__strategyWrap {
+	margin-top: 28px;
+	height: 240px;
+}
+
+.bento__hint {
+	font-family: "DM Mono", ui-monospace, monospace;
+	font-size: 0.62rem;
+	color: var(--bento-mutedLo);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	margin: 0;
+}
+

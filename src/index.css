@@ -1,40 +1,80 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap");
+/* ── Google Fonts ─────────────────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;1,14..32,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Syne:wght@400;500;600;700&display=swap");
+
+/* ── Tailwind ─────────────────────────────────────────────────────────────── */
 @import "tailwindcss";
 
+/* ── Tailwind v4 Theme — Midnight Rose ───────────────────────────────────── */
 @theme inline {
-	--font-sans: "Inter", sans-serif;
-	--font-serif: "Playfair Display", serif;
+	--font-sans: "Inter", "Syne", system-ui, sans-serif;
+	--font-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+	--font-mono: "DM Mono", ui-monospace, monospace;
 
-	--color-background: hsl(var(--background));
-	--color-foreground: hsl(var(--foreground));
-	--color-muted: hsl(var(--muted));
-	--color-muted-foreground: hsl(var(--muted-foreground));
-	--color-border: hsl(var(--border));
-	--color-card: hsl(var(--card));
+	--color-background: #0d0d0d;
+	--color-foreground: #f5f0e8;
+	--color-muted: #181818;
+	--color-muted-foreground: #9c9690;
+	--color-border: rgba(255, 255, 255, 0.08);
+	--color-card: #141414;
+	--color-rose: #d4849a;
+	--color-green: #4ade80;
 
-	--color-burgundy: hsl(var(--burgundy));
-	--color-forest: hsl(var(--forest));
-
+	/* Animations */
 	--animate-marquee: marquee 40s linear infinite;
 	--animate-marquee-reverse: marquee-reverse 35s linear infinite;
 	--animate-float: float 6s ease-in-out infinite;
+
+	/* Easing */
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ── Design tokens ────────────────────────────────────────────────────────── */
 :root {
-	--background: 0 0% 5%;
-	--foreground: 38 33% 94%;
-	--muted: 0 0% 12%;
-	--muted-foreground: 0 0% 53%;
-	--card: 0 0% 7%;
-	--border: 0 0% 14%;
-	--burgundy: 0 45% 20%;
-	--forest: 130 26% 14%;
+	--background: #0d0d0d;
+	--foreground: #f5f0e8;
+	--muted: #181818;
+	--muted-foreground: #9c9690;
+	--card: #141414;
+	--border: rgba(255, 255, 255, 0.08);
+	--rose: #d4849a;
+	--green: #4ade80;
+
+	--color-bg: #0d0d0d;
+	--color-rose: #d4849a;
+	--color-green: #4ade80;
+	--color-rose-light: #e8a8b8;
+	--color-rose-dim: #9e5f71;
+	--color-rose-mist: rgba(212, 132, 154, 0.08);
+	--color-rose-border: rgba(212, 132, 154, 0.2);
+
+	--color-text-primary: #f5f0e8;
+	--color-text-secondary: #b8b0a8;
+	--color-text-muted: #7a736f;
+
+	--color-success: #4ade80;
+
+	--radius-sm: 6px;
+	--radius-md: 12px;
+	--radius-lg: 20px;
+	--radius-pill: 100px;
 }
 
+/* ── Base ─────────────────────────────────────────────────────────────────── */
 @layer base {
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
 	body {
 		@apply bg-background text-foreground antialiased font-sans overflow-x-hidden;
 	}
+
 	h1,
 	h2,
 	h3,
@@ -43,43 +83,111 @@
 	h6 {
 		@apply font-serif font-medium tracking-tight;
 	}
+
+	::-webkit-scrollbar {
+		width: 4px;
+	}
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	::-webkit-scrollbar-thumb {
+		background: var(--color-rose-dim);
+		border-radius: var(--radius-pill);
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: var(--color-rose);
+	}
+
+	::selection {
+		background: rgba(212, 132, 154, 0.3);
+		color: var(--color-text-primary);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-rose);
+		outline-offset: 3px;
+	}
 }
 
+/* ── Utilities ────────────────────────────────────────────────────────────── */
 @layer utilities {
 	.bg-noise {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		pointer-events: none;
-		z-index: 50;
-		opacity: 0.035;
-		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-		mix-blend-mode: screen;
+		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+		background-repeat: repeat;
+		background-size: 128px;
 	}
 
 	.glass-panel {
-		@apply bg-background/40 backdrop-blur-xl border border-white/[0.05] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)];
+		background: var(--color-card);
+		border: 1px solid var(--border);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+	}
+	.glass-panel:hover {
+		border-color: rgba(255, 255, 255, 0.12);
+		background: #1a1a1a;
+		transition:
+			background 0.3s ease,
+			border-color 0.3s ease;
 	}
 
-	.glow-burgundy {
+	.glow-rose {
 		background: radial-gradient(
 			circle at center,
-			hsla(var(--burgundy) / 0.15) 0%,
+			rgba(212, 132, 154, 0.15) 0%,
+			transparent 70%
+		);
+	}
+	.glow-green {
+		background: radial-gradient(
+			circle at center,
+			rgba(74, 222, 128, 0.12) 0%,
 			transparent 70%
 		);
 	}
 
-	.glow-forest {
-		background: radial-gradient(
-			circle at center,
-			hsla(var(--forest) / 0.15) 0%,
-			transparent 70%
+	.text-gradient {
+		background: linear-gradient(135deg, #c084fc 0%, #f472b6 45%, #60a5fa 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+	.text-gradient-subtle {
+		background: linear-gradient(
+			135deg,
+			#f5f0e8 0%,
+			rgba(245, 240, 232, 0.5) 100%
 		);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	.mask-fade-edges {
+		mask-image: linear-gradient(
+			to right,
+			transparent,
+			black 15%,
+			black 85%,
+			transparent
+		);
+	}
+
+	.section-label {
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--color-rose);
+		opacity: 0.8;
+	}
+
+	.animate-pulse-slow {
+		animation: pulse-slow 3s ease-in-out infinite;
 	}
 }
 
+/* ── Keyframes ──────────────────────────────────────────────────────────────── */
 @keyframes marquee {
 	0% {
 		transform: translateX(0);
@@ -88,7 +196,6 @@
 		transform: translateX(-50%);
 	}
 }
-
 @keyframes marquee-reverse {
 	0% {
 		transform: translateX(-50%);
@@ -97,7 +204,6 @@
 		transform: translateX(0);
 	}
 }
-
 @keyframes float {
 	0%,
 	100% {
@@ -107,127 +213,6 @@
 		transform: translateY(-10px);
 	}
 }
-
-::-webkit-scrollbar {
-	width: 8px;
-}
-::-webkit-scrollbar-track {
-	background: hsl(var(--background));
-}
-::-webkit-scrollbar-thumb {
-	background: hsl(var(--border));
-	border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-	background: hsl(var(--muted-foreground));
-}
-
-.mask-fade-edges {
-	mask-image: linear-gradient(
-		to right,
-		transparent,
-		black 15%,
-		black 85%,
-		transparent
-	);
-}
-
-/*
- * index.css — the foundation your Hero.tsx needs
- *
- * Three things live here:
- * 1. The @keyframes marquee animation that replaced the broken Framer Motion version
- * 2. The CSS custom properties (design tokens) for your color system
- * 3. Utility classes that Tailwind doesn't have out of the box
- *
- * LEARN: In Tailwind v4, you configure your theme inside CSS with @theme {}
- * instead of a tailwind.config.js file. This is the v4 way.
- */
-
-@import "tailwindcss";
-
-/* ── Google Fonts ──────────────────────────────────────────────────────────── */
-/*
- * Add this to your index.html <head> instead of here for better performance:
- * <link rel="preconnect" href="https://fonts.googleapis.com">
- * <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- * <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet">
- */
-
-/* ── Tailwind v4 Theme Configuration ──────────────────────────────────────── */
-/*
- * LEARN: @theme replaces tailwind.config.js in v4.
- * Every --color-* variable becomes a Tailwind color (bg-burgundy, text-forest, etc.)
- * Every --font-* variable becomes a font-family utility (font-display, font-sans, etc.)
- */
-@theme {
-	/* Colors */
-	--color-background: #080808;
-	--color-foreground: #f2f0eb;
-	--color-muted-foreground: #9a9a8e;
-
-	/* Brand colors */
-	--color-burgundy: #8b2252;
-	--color-forest: #2d6a4f;
-
-	/* RGB values for use in rgba() — needed for the pointer glow */
-	--color-burgundy-rgb: 139, 34, 82;
-	--color-forest-rgb: 45, 106, 79;
-
-	/* Fonts */
-	--font-display: "Syne", sans-serif; /* → font-display class */
-	--font-sans:
-		"DM Sans", sans-serif; /* → font-sans class (overrides default) */
-	--font-mono: "JetBrains Mono", monospace;
-
-	/* Transitions */
-	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ── Base Styles ───────────────────────────────────────────────────────────── */
-@layer base {
-	html {
-		background-color: #080808;
-		color: #f2f0eb;
-		font-family: "DM Sans", sans-serif;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-	}
-
-	/* Smooth scrollbar styling */
-	::-webkit-scrollbar {
-		width: 4px;
-	}
-	::-webkit-scrollbar-track {
-		background: transparent;
-	}
-	::-webkit-scrollbar-thumb {
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 2px;
-	}
-}
-
-/* ── Keyframe Animations ───────────────────────────────────────────────────── */
-/*
- * This is the marquee fix.
- *
- * Why -50%? Because we duplicated the items, the track is exactly 2× the
- * visible row width. Sliding -50% moves it exactly one row width to the left,
- * landing on pixel-perfect identical content. The loop snaps back invisibly.
- *
- * Why not Framer Motion? Framer Motion is great for gesture/entrance/exit animations.
- * For CSS loops like this, a @keyframes is simpler, cheaper, and more reliable
- * because it runs on the compositor thread (no JS involved at all).
- */
-@keyframes marquee {
-	from {
-		transform: translateX(0%);
-	}
-	to {
-		transform: translateX(-50%);
-	}
-}
-
 @keyframes pulse-slow {
 	0%,
 	100% {
@@ -235,68 +220,5 @@
 	}
 	50% {
 		opacity: 0.4;
-	}
-}
-
-/* ── Custom Utilities ──────────────────────────────────────────────────────── */
-@layer utilities {
-	/*
-   * Glass panel — your signature card style.
-   * backdrop-blur creates the frosted glass on the dark bg.
-   * The border and bg together create depth without needing a shadow.
-   */
-	.glass-panel {
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.06);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-	}
-
-	.glass-panel:hover {
-		border-color: rgba(255, 255, 255, 0.1);
-		background: rgba(255, 255, 255, 0.05);
-		transition: all 0.3s ease;
-	}
-
-	/*
-   * Gradient text — the colored name treatment.
-   * text-gradient for the hero name, text-gradient-subtle for cards.
-   *
-   * How it works:
-   * 1. Apply the gradient as a background
-   * 2. Clip the background to the text shape
-   * 3. Make the text color transparent so the gradient shows through
-   */
-	.text-gradient {
-		background: linear-gradient(135deg, #c084fc 0%, #f472b6 45%, #60a5fa 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-	}
-
-	.text-gradient-subtle {
-		background: linear-gradient(
-			135deg,
-			#f2f0eb 0%,
-			rgba(242, 240, 235, 0.5) 100%
-		);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-	}
-
-	/*
-   * Noise overlay — add to a fixed div in your layout for the grain texture.
-   * The SVG feTurbulence generates procedural noise without any image files.
-   */
-	.bg-noise {
-		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-		background-repeat: repeat;
-		background-size: 128px;
-	}
-
-	/* animate-pulse-slow for the available dot */
-	.animate-pulse-slow {
-		animation: pulse-slow 3s ease-in-out infinite;
 	}
 }

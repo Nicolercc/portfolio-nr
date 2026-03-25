@@ -1,6 +1,6 @@
 # portfolio-nr
 
-Nicole Rodriguez’s portfolio website — a **Midnight Rose** canvas with **rose** nuance and **green** energy, built for crisp motion and seamless visual continuity.
+a **Midnight Rose** canvas with **rose** nuance and **green** energy, built for seamless visual continuity.
 
 > **Live**: `https://nicolerodriguez.dev/`
 
@@ -59,9 +59,9 @@ src/
 
 ## Scripts
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | start dev server |
-| `npm run build` | typecheck + production bundle |
-| `npm run preview` | preview production build |
-| `npm run lint` | run ESLint |
+| Command           | What it does                  |
+| ----------------- | ----------------------------- |
+| `npm run dev`     | start dev server              |
+| `npm run build`   | typecheck + production bundle |
+| `npm run preview` | preview production build      |
+| `npm run lint`    | run ESLint                    |

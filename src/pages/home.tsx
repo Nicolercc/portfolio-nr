@@ -1,9 +1,13 @@
-import { useEffect } from "react";
 import { Navbar } from "../components/layouts/Navbar";
+import { useEffect } from "react";
 import { Hero } from "../components/sections/Hero";
+import { Projects } from "../components/sections/projects";
+import { Bento } from "../components/sections/bento";
+import { Contact } from "../components/sections/contact";
+import { Marquee } from "../components/sections/Marquee";
+import { CustomCursor } from "../components/ui/CustomCursor";
 
 export default function Home() {
-	// Senior Move: Smooth scroll behavior globally
 	useEffect(() => {
 		document.documentElement.style.scrollBehavior = "smooth";
 		return () => {
@@ -13,14 +17,21 @@ export default function Home() {
 
 	return (
 		<div className="relative bg-background min-h-screen text-foreground selection:bg-burgundy/30">
-			{/* The "Grainy" Overlay - adds that high-end editorial texture */}
-			<div className="bg-noise" />
+			{/* The Grainy Overlay */}
+			<div className="fixed inset-0 z-50 pointer-events-none opacity-[0.03] bg-noise" />
+
+			<div className="hidden md:block">
+				<CustomCursor />
+			</div>
 
 			<Navbar />
 
 			<main>
 				<Hero />
-				{/* We will add Projects, Bento, and Contact next */}
+				<Projects />
+				<Bento />
+				<Marquee />
+				<Contact />
 			</main>
 		</div>
 	);

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef, useCallback, useEffect } from "react";
 import {
 	motion,
@@ -10,7 +12,7 @@ import {
 import "./bento.css";
 
 /* ─────────────────────────────────────────────
-   DESIGN TOKENS — matches your global theme
+   DESIGN TOKENS
 ───────────────────────────────────────────── */
 const T = {
 	bg: "#0D0D0D",
@@ -24,7 +26,7 @@ const T = {
 };
 
 /* ─────────────────────────────────────────────
-   YOUR CONTENT — edit name, bio, links, hobbies
+   CONTENT
 ───────────────────────────────────────────── */
 const BIO = {
 	eyebrow: "More About Me",
@@ -221,7 +223,7 @@ function BlobOrb() {
 }
 
 /* ─────────────────────────────────────────────
-   STRATEGY CARD (Tailwind, cohesive accent)
+   STRATEGY CARD
 ───────────────────────────────────────────── */
 export function StrategyCard() {
 	return (
@@ -251,7 +253,7 @@ export function StrategyCard() {
 				</h3>
 				<p className="text-sm text-muted-foreground leading-relaxed font-light max-w-sm">
 					My degree is my lens. I view interfaces as modern public squares,
-					specializing in <strong> information integrity</strong> and{" "}
+					specializing in <strong>information integrity</strong> and{" "}
 					<strong>accessible narrative</strong>.
 				</p>
 			</div>
@@ -273,7 +275,7 @@ export function StrategyCard() {
 }
 
 /* ─────────────────────────────────────────────
-   SINGLE DRAGGABLE CARD (Framer Motion)
+   DRAGGABLE CARD
 ───────────────────────────────────────────── */
 type Hobby = (typeof HOBBIES)[number];
 
@@ -285,7 +287,7 @@ function DraggableCard({
 	onDismiss,
 }: {
 	hobby: Hobby;
-	depth: number; // 0 = top card
+	depth: number;
 	total: number;
 	currentIndex: number;
 	onDismiss: () => void;
@@ -354,7 +356,6 @@ function DraggableCard({
 					minHeight: 230,
 				}}
 			>
-				{/* Drag-direction colour wash */}
 				{isTop && (
 					<>
 						<motion.div
@@ -380,7 +381,7 @@ function DraggableCard({
 					</>
 				)}
 
-				{/* Shimmer line at top */}
+				{/* Shimmer line */}
 				<div
 					style={{
 						position: "absolute",
@@ -460,7 +461,7 @@ function DraggableCard({
 					{hobby.desc}
 				</p>
 
-				{/* Card counter */}
+				{/* Counter */}
 				<div
 					style={{
 						position: "absolute",
@@ -481,10 +482,9 @@ function DraggableCard({
 }
 
 /* ─────────────────────────────────────────────
-   CARD DECK CONTAINER
+   CARD DECK
 ───────────────────────────────────────────── */
 function CardDeck() {
-	// `order` is the index of which hobby is currently on top
 	const [topIndex, setTopIndex] = useState(0);
 	const total = HOBBIES.length;
 
@@ -496,8 +496,7 @@ function CardDeck() {
 		setTopIndex((prev) => (prev - 1 + total) % total);
 	}, [total]);
 
-	// Render 4 cards in stack (bottom → top)
-	const visibleDepths = [3, 2, 1, 0]; // depth 0 = top
+	const visibleDepths = [3, 2, 1, 0];
 	const stackCards = visibleDepths.map((depth) => {
 		const idx = (topIndex + depth) % total;
 		return { hobby: HOBBIES[idx], depth, hobbyIndex: idx };
@@ -512,15 +511,12 @@ function CardDeck() {
 				gap: 24,
 			}}
 		>
-			{/* Stack */}
-			<div
-				style={{
-					position: "relative",
-					width: "150%",
-					maxWidth: 340,
-					height: 268,
-				}}
-			>
+			{/*
+        FIXED: Previously width:"150%" inline — caused content to bleed
+        off iPhone screens. Now uses .bento__deckWrap (width:100%, max-width:340px)
+        defined in bento.css.
+      */}
+			<div className="bento__deckWrap">
 				<AnimatePresence mode="sync">
 					{stackCards.map(({ hobby, depth, hobbyIndex }) => (
 						<DraggableCard
@@ -535,9 +531,8 @@ function CardDeck() {
 				</AnimatePresence>
 			</div>
 
-			{/* Arrow controls + progress dots */}
+			{/* Controls */}
 			<div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-				{/* Left */}
 				<motion.button
 					onClick={retreat}
 					whileHover={{ scale: 1.08, borderColor: T.rose }}
@@ -560,7 +555,6 @@ function CardDeck() {
 					←
 				</motion.button>
 
-				{/* Dots */}
 				<div style={{ display: "flex", gap: 6, alignItems: "center" }}>
 					{HOBBIES.map((_, i) => {
 						const active = i === topIndex;
@@ -573,18 +567,13 @@ function CardDeck() {
 									boxShadow: active ? `0 0 8px ${T.green}` : "none",
 								}}
 								transition={{ type: "spring", stiffness: 300, damping: 28 }}
-								style={{
-									height: 5,
-									borderRadius: 99,
-									cursor: "pointer",
-								}}
+								style={{ height: 5, borderRadius: 99, cursor: "pointer" }}
 								onClick={() => setTopIndex(i)}
 							/>
 						);
 					})}
 				</div>
 
-				{/* Right */}
 				<motion.button
 					onClick={advance}
 					whileHover={{ scale: 1.08, borderColor: T.green }}
@@ -608,26 +597,14 @@ function CardDeck() {
 				</motion.button>
 			</div>
 
-			{/* Hint */}
-			<p
-				style={{
-					fontFamily: "'DM Mono', monospace",
-					fontSize: "0.62rem",
-					color: T.mutedLo,
-					letterSpacing: "0.08em",
-					textTransform: "uppercase",
-					margin: 0,
-				}}
-			>
-				drag or tap arrows to shuffle
-			</p>
+			<p className="bento__hint">drag or tap arrows to shuffle</p>
 		</div>
 	);
 }
 
 /* ─────────────────────────────────────────────
-   MAIN EXPORT — replaces the old Bento grid
-   Drop this file into: src/components/sections/bento.tsx
+   MAIN EXPORT
+   File: src/components/sections/bento.tsx
 ───────────────────────────────────────────── */
 export default function BentoSection() {
 	const sectionRef = useRef(null);
@@ -650,20 +627,12 @@ export default function BentoSection() {
 				} as React.CSSProperties
 			}
 		>
-			{/* Subtle dot-grid background */}
 			<div className="bento__gridBg" />
-
-			{/* Rose ambient glow — top left */}
 			<div className="bento__glowRose" />
-
-			{/* Green ambient glow — bottom right */}
 			<div className="bento__glowGreen" />
 
-			{/* ── Two-column layout ── */}
 			<div className="bento__container">
-				{/* ────────────────────────────────
-            LEFT COLUMN: Bio
-        ──────────────────────────────── */}
+				{/* ── LEFT: Bio ── */}
 				<motion.div
 					initial={{ opacity: 0, x: -28 }}
 					animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -672,23 +641,16 @@ export default function BentoSection() {
 				>
 					<BlobOrb />
 
-					{/* Eyebrow */}
 					<p className="bento__eyebrow">{BIO.eyebrow}</p>
-
-					{/* Name */}
 					<h2 className="bento__h2 bento__name">{BIO.name}</h2>
-
-					{/* Role — gradient */}
 					<h2 className="bento__h2 bento__role">{BIO.role}</h2>
 
-					{/* Bio paragraphs */}
 					{BIO.paragraphs.map((p, i) => (
 						<p key={i} className="bento__p">
 							{p}
 						</p>
 					))}
 
-					{/* Typing tagline with blinking cursor */}
 					<div className="bento__taglineBox">
 						<p className="bento__taglineText">
 							{tagline}
@@ -707,7 +669,6 @@ export default function BentoSection() {
 						</p>
 					</div>
 
-					{/* Social links */}
 					<div className="bento__socialRow">
 						{BIO.links.map((l) => (
 							<SocialPill key={l.label} {...l} />
@@ -715,9 +676,7 @@ export default function BentoSection() {
 					</div>
 				</motion.div>
 
-				{/* ────────────────────────────────
-            RIGHT COLUMN: Card Deck
-        ──────────────────────────────── */}
+				{/* ── RIGHT: Deck + Strategy Card ── */}
 				<motion.div
 					initial={{ opacity: 0, y: 32 }}
 					animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -725,10 +684,8 @@ export default function BentoSection() {
 					className="bento__col"
 				>
 					<p className="bento__rightLabel">// what I love</p>
-
 					<CardDeck />
 
-					{/* Strategic background — second row under \"what I love\" */}
 					<div className="bento__strategyWrap">
 						<StrategyCard />
 					</div>

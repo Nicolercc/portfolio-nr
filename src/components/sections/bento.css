@@ -1,56 +1,112 @@
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400;1,600&family=DM+Sans:wght@400;500;700;800&family=DM+Mono:wght@400;500&display=swap");
 
-/* Keep the original intent from the inline <style> */
 #about button {
 	font-family: inherit;
 }
 
-/* ------------------------------------------------------------
-   Bento (About) section layout helpers
-   (keeps visuals identical; replaces long inline styles)
------------------------------------------------------------- */
-
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   SECTION SHELL
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #about.bento {
 	position: relative;
 	overflow: hidden;
 	width: 100%;
-	padding: 100px 0;
+	padding: 64px 0;
 }
 
-/* Section-specific ambient layers removed:
-   global canvas owns the background + atmosphere. */
+@media (min-width: 768px) {
+	#about.bento {
+		padding: 80px 0;
+	}
+}
 
+@media (min-width: 1024px) {
+	#about.bento {
+		padding: 100px 0;
+	}
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   GRID CONTAINER
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__container {
 	max-width: 1140px;
 	margin: 0 auto;
-	padding: 0 28px;
+	padding: 0 20px;
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 72px;
+	grid-template-columns: 1fr;
+	gap: 48px;
 	align-items: center;
 	position: relative;
 }
 
+@media (min-width: 768px) {
+	.bento__container {
+		padding: 0 32px;
+		gap: 56px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.bento__container {
+		padding: 0 28px;
+		grid-template-columns: 1fr 1fr;
+		gap: 72px;
+	}
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   COLUMNS
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__col {
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 }
 
+@media (min-width: 1024px) {
+	.bento__col {
+		align-items: flex-start;
+	}
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   EYEBROW
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__eyebrow {
 	font-family: "DM Mono", ui-monospace, monospace;
-	font-size: 0.68rem;
+	font-size: 0.65rem;
 	letter-spacing: 0.16em;
 	text-transform: uppercase;
 	color: var(--bento-rose);
 	margin: 0 0 10px;
+	text-align: center;
 }
 
+@media (min-width: 1024px) {
+	.bento__eyebrow {
+		font-size: 0.68rem;
+		text-align: left;
+	}
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   HEADINGS
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__h2 {
 	font-family: "Cormorant Garamond", Georgia, serif;
 	font-weight: 600;
-	font-size: clamp(2rem, 3.2vw, 2.9rem);
+	font-size: clamp(1.8rem, 7vw, 2.9rem);
 	letter-spacing: -0.02em;
 	color: var(--bento-fg);
+	text-align: center;
+}
+
+@media (min-width: 1024px) {
+	.bento__h2 {
+		font-size: clamp(2rem, 3.2vw, 2.9rem);
+		text-align: left;
+	}
 }
 
 .bento__name {
@@ -60,7 +116,7 @@
 
 .bento__role {
 	line-height: 1.15;
-	margin: 0 0 26px;
+	margin: 0 0 24px;
 	background: linear-gradient(
 		135deg,
 		var(--bento-rose),
@@ -71,16 +127,34 @@
 	-webkit-text-fill-color: transparent;
 }
 
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   BODY PARAGRAPHS
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__p {
 	font-family: "DM Sans", system-ui, sans-serif;
-	font-size: 0.9rem;
+	font-size: 0.88rem;
 	line-height: 1.78;
 	color: var(--bento-muted);
 	margin: 0 0 14px;
+	text-align: center;
+	max-width: 480px;
 }
 
+@media (min-width: 1024px) {
+	.bento__p {
+		font-size: 0.9rem;
+		text-align: left;
+		max-width: unset;
+	}
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   TAGLINE BOX
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__taglineBox {
-	margin: 22px 0 28px;
+	width: 100%;
+	max-width: 420px;
+	margin: 20px 0 24px;
 	padding: 13px 16px;
 	border-left: 2px solid var(--bento-rose);
 	background: rgba(212, 132, 154, 0.032);
@@ -88,35 +162,97 @@
 	min-height: 46px;
 }
 
+@media (min-width: 1024px) {
+	.bento__taglineBox {
+		max-width: unset;
+		margin: 22px 0 28px;
+	}
+}
+
 .bento__taglineText {
 	font-family: "Cormorant Garamond", Georgia, serif;
 	font-style: italic;
-	font-size: 1.05rem;
+	font-size: 1rem;
 	color: rgba(212, 132, 154, 0.8);
 	margin: 0;
 	line-height: 1.55;
 }
 
+@media (min-width: 1024px) {
+	.bento__taglineText {
+		font-size: 1.05rem;
+	}
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   SOCIAL ROW
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__socialRow {
 	display: flex;
 	gap: 8px;
 	flex-wrap: wrap;
+	justify-content: center;
 }
 
+@media (min-width: 1024px) {
+	.bento__socialRow {
+		justify-content: flex-start;
+	}
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   RIGHT COLUMN LABEL
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__rightLabel {
 	font-family: "DM Mono", ui-monospace, monospace;
 	font-size: 0.68rem;
 	letter-spacing: 0.16em;
 	text-transform: uppercase;
 	color: rgba(74, 222, 128, 0.53);
-	margin: 0 0 32px;
+	margin: 0 0 28px;
+	text-align: center;
 }
 
+@media (min-width: 1024px) {
+	.bento__rightLabel {
+		margin: 0 0 32px;
+		text-align: left;
+	}
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   CARD DECK WRAPPER
+   Fixed: width was 150% inline â€” caused iPhone
+   overflow. Now 100% with max-width cap.
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bento__deckWrap {
+	position: relative;
+	width: 100%;
+	max-width: 340px;
+	height: 268px;
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   STRATEGY CARD SLOT
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__strategyWrap {
 	margin-top: 28px;
-	height: 240px;
+	height: auto;
+	min-height: 220px;
+	width: 100%;
+	max-width: 420px;
 }
 
+@media (min-width: 1024px) {
+	.bento__strategyWrap {
+		height: 240px;
+		max-width: unset;
+	}
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   HINT TEXT
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__hint {
 	font-family: "DM Mono", ui-monospace, monospace;
 	font-size: 0.62rem;
@@ -124,4 +260,67 @@
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	margin: 0;
+	text-align: center;
+}
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   AMBIENT GLOWS + GRID â€” off on mobile
+   (saves render cost on small devices)
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bento__gridBg,
+.bento__glowRose,
+.bento__glowGreen {
+	display: none;
+}
+
+@media (min-width: 768px) {
+	.bento__gridBg {
+		display: block;
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(rgba(245, 240, 232, 0.022) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(245, 240, 232, 0.022) 1px, transparent 1px);
+		background-size: 48px 48px;
+		mask-image: radial-gradient(
+			ellipse 80% 60% at 50% 50%,
+			black 25%,
+			transparent 100%
+		);
+		pointer-events: none;
+	}
+
+	.bento__glowRose {
+		display: block;
+		position: absolute;
+		top: 8%;
+		left: 0;
+		width: 440px;
+		height: 440px;
+		border-radius: 50%;
+		background: radial-gradient(
+			circle,
+			rgba(212, 132, 154, 0.1) 0%,
+			transparent 70%
+		);
+		filter: blur(50px);
+		pointer-events: none;
+	}
+
+	.bento__glowGreen {
+		display: block;
+		position: absolute;
+		bottom: 5%;
+		right: 0;
+		width: 380px;
+		height: 380px;
+		border-radius: 50%;
+		background: radial-gradient(
+			circle,
+			rgba(74, 222, 128, 0.08) 0%,
+			transparent 70%
+		);
+		filter: blur(50px);
+		pointer-events: none;
+	}
 }

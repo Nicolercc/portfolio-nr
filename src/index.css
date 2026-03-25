@@ -131,3 +131,172 @@
 		transparent
 	);
 }
+
+/*
+ * index.css — the foundation your Hero.tsx needs
+ *
+ * Three things live here:
+ * 1. The @keyframes marquee animation that replaced the broken Framer Motion version
+ * 2. The CSS custom properties (design tokens) for your color system
+ * 3. Utility classes that Tailwind doesn't have out of the box
+ *
+ * LEARN: In Tailwind v4, you configure your theme inside CSS with @theme {}
+ * instead of a tailwind.config.js file. This is the v4 way.
+ */
+
+@import "tailwindcss";
+
+/* ── Google Fonts ──────────────────────────────────────────────────────────── */
+/*
+ * Add this to your index.html <head> instead of here for better performance:
+ * <link rel="preconnect" href="https://fonts.googleapis.com">
+ * <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ * <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet">
+ */
+
+/* ── Tailwind v4 Theme Configuration ──────────────────────────────────────── */
+/*
+ * LEARN: @theme replaces tailwind.config.js in v4.
+ * Every --color-* variable becomes a Tailwind color (bg-burgundy, text-forest, etc.)
+ * Every --font-* variable becomes a font-family utility (font-display, font-sans, etc.)
+ */
+@theme {
+	/* Colors */
+	--color-background: #080808;
+	--color-foreground: #f2f0eb;
+	--color-muted-foreground: #9a9a8e;
+
+	/* Brand colors */
+	--color-burgundy: #8b2252;
+	--color-forest: #2d6a4f;
+
+	/* RGB values for use in rgba() — needed for the pointer glow */
+	--color-burgundy-rgb: 139, 34, 82;
+	--color-forest-rgb: 45, 106, 79;
+
+	/* Fonts */
+	--font-display: "Syne", sans-serif; /* → font-display class */
+	--font-sans:
+		"DM Sans", sans-serif; /* → font-sans class (overrides default) */
+	--font-mono: "JetBrains Mono", monospace;
+
+	/* Transitions */
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Base Styles ───────────────────────────────────────────────────────────── */
+@layer base {
+	html {
+		background-color: #080808;
+		color: #f2f0eb;
+		font-family: "DM Sans", sans-serif;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	/* Smooth scrollbar styling */
+	::-webkit-scrollbar {
+		width: 4px;
+	}
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	::-webkit-scrollbar-thumb {
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 2px;
+	}
+}
+
+/* ── Keyframe Animations ───────────────────────────────────────────────────── */
+/*
+ * This is the marquee fix.
+ *
+ * Why -50%? Because we duplicated the items, the track is exactly 2× the
+ * visible row width. Sliding -50% moves it exactly one row width to the left,
+ * landing on pixel-perfect identical content. The loop snaps back invisibly.
+ *
+ * Why not Framer Motion? Framer Motion is great for gesture/entrance/exit animations.
+ * For CSS loops like this, a @keyframes is simpler, cheaper, and more reliable
+ * because it runs on the compositor thread (no JS involved at all).
+ */
+@keyframes marquee {
+	from {
+		transform: translateX(0%);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@keyframes pulse-slow {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.4;
+	}
+}
+
+/* ── Custom Utilities ──────────────────────────────────────────────────────── */
+@layer utilities {
+	/*
+   * Glass panel — your signature card style.
+   * backdrop-blur creates the frosted glass on the dark bg.
+   * The border and bg together create depth without needing a shadow.
+   */
+	.glass-panel {
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+	}
+
+	.glass-panel:hover {
+		border-color: rgba(255, 255, 255, 0.1);
+		background: rgba(255, 255, 255, 0.05);
+		transition: all 0.3s ease;
+	}
+
+	/*
+   * Gradient text — the colored name treatment.
+   * text-gradient for the hero name, text-gradient-subtle for cards.
+   *
+   * How it works:
+   * 1. Apply the gradient as a background
+   * 2. Clip the background to the text shape
+   * 3. Make the text color transparent so the gradient shows through
+   */
+	.text-gradient {
+		background: linear-gradient(135deg, #c084fc 0%, #f472b6 45%, #60a5fa 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	.text-gradient-subtle {
+		background: linear-gradient(
+			135deg,
+			#f2f0eb 0%,
+			rgba(242, 240, 235, 0.5) 100%
+		);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	/*
+   * Noise overlay — add to a fixed div in your layout for the grain texture.
+   * The SVG feTurbulence generates procedural noise without any image files.
+   */
+	.bg-noise {
+		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+		background-repeat: repeat;
+		background-size: 128px;
+	}
+
+	/* animate-pulse-slow for the available dot */
+	.animate-pulse-slow {
+		animation: pulse-slow 3s ease-in-out infinite;
+	}
+}

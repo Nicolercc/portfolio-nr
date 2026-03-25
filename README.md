@@ -1,73 +1,59 @@
-# React + TypeScript + Vite
+# portfolio-nr
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Nicole Rodriguez’s portfolio website.
 
-Currently, two official plugins are available:
+- **Live**: `https://nicolerodriguez.dev/`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech stack
 
-## React Compiler
+- **Framework**: React + TypeScript
+- **Build tool**: Vite
+- **Styling**: Tailwind CSS v4 (CSS-first, no `tailwind.config.js`)
+- **Motion**: Framer Motion
+- **Routing**: Wouter
+- **Icons**: Lucide
+- **Interactive globe**: COBE
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Local development
 
-## Expanding the ESLint configuration
+Install dependencies:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Start the dev server:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Preview the production build:
+
+```bash
+npm run preview
+```
+
+## Project structure
+
+- **Pages**: `src/pages/`
+- **Sections / UI**: `src/components/sections/`, `src/components/ui/`, `src/components/layouts/`
+- **Global styles + theme tokens**: `src/index.css`
+
+## Design notes
+
+- **Theme**: “Midnight Rose” canvas with rose + green accents.
+- **Continuity**: a fixed global background layer keeps sections visually seamless while cards provide depth.
+
+## Scripts
+
+- **dev**: run Vite in development mode
+- **build**: typecheck + production bundle
+- **preview**: serve the production build locally
+- **lint**: run ESLint

@@ -51,7 +51,7 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 			theta,
 			dark: 1,
 			diffuse: 1.32,
-			mapSamples: 12000,
+			mapSamples: 8000, // reduced from 12000 — visually identical, lighter on Safari WebGL
 			mapBrightness: 5.4,
 			mapBaseBrightness: 0.07,
 			baseColor: THEME.baseColor,
@@ -81,6 +81,17 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 			rafId = requestAnimationFrame(loop);
 		};
 		rafId = requestAnimationFrame(loop);
+
+		// Pause the RAF loop when the tab is hidden — prevents Safari from
+		// accumulating WebGL work in the background and crashing the tab.
+		const onVisibilityChange = () => {
+			if (document.hidden) {
+				cancelAnimationFrame(rafId);
+			} else {
+				rafId = requestAnimationFrame(loop);
+			}
+		};
+		document.addEventListener("visibilitychange", onVisibilityChange);
 
 		const onPointerDown = (e: PointerEvent) => {
 			dragging = true;
@@ -129,6 +140,7 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 
 		return () => {
 			cancelAnimationFrame(rafId);
+			document.removeEventListener("visibilitychange", onVisibilityChange);
 			canvas.removeEventListener("pointerdown", onPointerDown);
 			canvas.removeEventListener("pointermove", onPointerMove);
 			canvas.removeEventListener("pointerup", onPointerUp);

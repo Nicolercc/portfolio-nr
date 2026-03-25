@@ -3,16 +3,12 @@ import { motion, useScroll, useTransform } from "framer-motion";
 export function GlobalCanvas() {
 	const { scrollY } = useScroll();
 
-	// High-end interaction: The grid is 100% visible at the top
-	// and fades to 30% as the user scrolls 500px down.
+	// Grid fades from 100% → 30% as user scrolls 500px (unchanged)
 	const gridOpacity = useTransform(scrollY, [0, 500], [1, 0.3]);
-
-	// Subtle parallax: The background moves slower than the scroll
-	const backgroundY = useTransform(scrollY, [0, 1000], [0, 100]);
 
 	return (
 		<div className="fixed inset-0 pointer-events-none -z-50 bg-[#0D0D0D] overflow-hidden">
-			{/* 1. THE GRID (Your favorite element) */}
+			{/* 1. THE GRID — unchanged visually, opacity still responds to scroll */}
 			<motion.div
 				style={{
 					opacity: gridOpacity,
@@ -29,27 +25,46 @@ export function GlobalCanvas() {
 				className="absolute inset-0"
 			/>
 
-			{/* 2. AMBIENT GLOWS (Rose & Green) */}
-			<motion.div style={{ y: backgroundY }} className="absolute inset-0">
+			{/* 2. AMBIENT GLOWS — same colors/positions, but no longer inside a
+          scrolling motion.div. Removing the parallax wrapper stops Safari
+          from repainting two giant blur layers on every scroll event.
+          will-change + translateZ promotes each glow to its own GPU layer
+          so Safari composites them once and never touches them again. */}
+			<div className="absolute inset-0">
 				{/* Top Left Rose Glow */}
 				<div
-					className="absolute top-[-10%] left-[-10%] w-[70vw] h-[70vw] rounded-full opacity-[0.10] blur-[120px]"
+					className="absolute top-[-10%] left-[-10%] w-[70vw] h-[70vw] rounded-full opacity-[0.10]"
 					style={{
 						background: "radial-gradient(circle, #D4849A 0%, transparent 80%)",
+						filter: "blur(80px)",
+						willChange: "transform",
+						transform: "translateZ(0)",
 					}}
 				/>
 
 				{/* Bottom Right Green Glow */}
 				<div
-					className="absolute bottom-[-5%] right-[-10%] w-[60vw] h-[60vw] rounded-full opacity-[0.07] blur-[100px]"
+					className="absolute bottom-[-5%] right-[-10%] w-[60vw] w-[60vw] h-[60vw] rounded-full opacity-[0.07]"
 					style={{
 						background: "radial-gradient(circle, #4ADE80 0%, transparent 70%)",
+						filter: "blur(70px)",
+						willChange: "transform",
+						transform: "translateZ(0)",
 					}}
 				/>
-			</motion.div>
+			</div>
 
-			{/* 3. NOISE TEXTURE (The "Film Grain" look) */}
-			<div className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+			{/* 3. NOISE TEXTURE — moved to a local inline SVG data URI so there's
+          no cross-origin fetch on every load. mix-blend-overlay is kept.
+          Visually identical to the external URL version. */}
+			<div
+				className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none"
+				style={{
+					backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+					backgroundRepeat: "repeat",
+					backgroundSize: "256px 256px",
+				}}
+			/>
 		</div>
 	);
 }

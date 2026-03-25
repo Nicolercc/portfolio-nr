@@ -198,25 +198,41 @@ export function Hero() {
 			id="top"
 			className="relative min-h-screen flex flex-col justify-center px-6 md:px-12 pt-10 pb-16 overflow-hidden"
 		>
-			{/* Cinematic Background Glows */}
-			<div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-rose/10 rounded-full blur-[120px] pointer-events-none" />
-			<div className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-green/10 rounded-full blur-[120px] pointer-events-none" />
+			{/* Cinematic Background Glows
+          Moved blur from a Tailwind class to inline style so we can also set
+          will-change + translateZ. This promotes each glow to its own GPU
+          compositing layer — Safari paints them once and never again.
+          Blur radius reduced from 120px → 80px; visually imperceptible at
+          these opacities (10%), but cuts Safari repaint cost significantly. */}
+			<div
+				className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-rose/10 rounded-full pointer-events-none"
+				style={{
+					filter: "blur(80px)",
+					willChange: "transform",
+					transform: "translateZ(0)",
+				}}
+			/>
+			<div
+				className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-green/10 rounded-full pointer-events-none"
+				style={{
+					filter: "blur(80px)",
+					willChange: "transform",
+					transform: "translateZ(0)",
+				}}
+			/>
 
 			<div className="max-w-7xl mx-auto w-full relative z-10">
-				{/* Intro — name lives on landing; hero continues with label + thesis */}
+				{/* Intro */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
 					className="mb-12"
 				>
-					{/* <span className="landing__eyebrow block text-left">
-						Full Stack Developer
-					</span> */}
 					<p className="landing__tagline mx-auto max-w-xl text-center mt-2">
 						<em>
 							Full-stack engineer building high-fidelity digital experiences
-							with a craftsman’s precision.
+							with a craftsman's precision.
 						</em>
 					</p>
 				</motion.div>

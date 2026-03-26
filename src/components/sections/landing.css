@@ -8,11 +8,40 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: var(--color-bg);
+	/* Deep cosmos base — very dark, slightly warm-tinted near bottom */
+	background:
+		radial-gradient(
+			ellipse 130% 70% at 50% 120%,
+			rgba(45, 18, 30, 0.95) 0%,
+			transparent 55%
+		),
+		var(--color-bg);
 	overflow: hidden;
 }
 
-/* particle canvas */
+/*
+ * ── Vignette overlay ────────────────────────────────────────
+ * Sits above canvas layers, below content.
+ * Pulls focus to center and softens edge stars.
+ */
+.landing::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	background: radial-gradient(
+		ellipse 75% 65% at 50% 50%,
+		transparent 35%,
+		rgba(0, 0, 0, 0.38) 100%
+	);
+}
+
+/* ── Particle canvas ─────────────────────────────────────────
+ * Keep this BELOW nebula (z-index: 0) so nebula CSS sits on top
+ * of it for depth layering. Stars will still show through
+ * because nebula gradients fade to transparent.
+ */
 .landing__canvas {
 	position: absolute;
 	inset: 0;
@@ -20,10 +49,75 @@
 	z-index: 0;
 }
 
-/* central text block */
+/*
+ * ── CSS Nebula layer ─────────────────────────────────────────
+ * Pure CSS: 4 soft radial blobs placed at different corners.
+ * Zero JS cost — renders instantly, looks great even before
+ * canvas loads. Add <div class="landing__nebula"> as the first
+ * child of .landing (before the canvas).
+ *
+ * Color logic:
+ *   - Rose blobs (left + top): signature palette, warmer
+ *   - Green blob (top-right):  accent, kept low opacity
+ *   - Purple blob (bottom-right): bridges rose ↔ green
+ */
+.landing__nebula {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	background:
+		/* Rose — left mid */
+		radial-gradient(
+			ellipse 58% 48% at 12% 52%,
+			rgba(212, 132, 154, 0.14) 0%,
+			transparent 68%
+		),
+		/* Green — top-right accent */
+		radial-gradient(
+				ellipse 44% 36% at 85% 22%,
+				rgba(74, 222, 128, 0.08) 0%,
+				transparent 62%
+			),
+		/* Purple — bottom-right */
+		radial-gradient(
+				ellipse 40% 55% at 76% 88%,
+				rgba(175, 112, 210, 0.09) 0%,
+				transparent 60%
+			),
+		/* Rose — top-center, faint */
+		radial-gradient(
+				ellipse 52% 38% at 48% 0%,
+				rgba(212, 132, 154, 0.07) 0%,
+				transparent 65%
+			);
+	/* Slow breathing animation — purely cosmetic, cheap on GPU */
+	animation: nebula-breathe 18s ease-in-out infinite alternate;
+}
+
+@keyframes nebula-breathe {
+	0% {
+		opacity: 0.85;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+/* Respect reduced motion — freeze nebula, disable canvas animation
+ * (the canvas JS also checks this; CSS gate is a fast fallback) */
+@media (prefers-reduced-motion: reduce) {
+	.landing__nebula {
+		animation: none;
+	}
+}
+
+/* ── Central content ─────────────────────────────────────────
+ * z-index: 2 puts it above canvas (0), nebula (0), vignette (1)
+ */
 .landing__content {
 	position: relative;
-	z-index: 1;
+	z-index: 2;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -43,7 +137,7 @@
 	}
 }
 
-/* eyebrow — Inter, rose */
+/* ── Eyebrow ─────────────────────────────────────────────────*/
 .landing__eyebrow {
 	font-family: "Inter", system-ui, sans-serif;
 	font-size: 0.7rem;
@@ -55,7 +149,7 @@
 	opacity: 0.85;
 }
 
-/* main name — Playfair Display */
+/* ── Name ────────────────────────────────────────────────────*/
 .landing__name {
 	font-family: "Playfair Display", Georgia, serif;
 	font-size: clamp(4.5rem, 12vw, 9rem);
@@ -64,9 +158,17 @@
 	letter-spacing: -0.01em;
 	color: var(--color-text-primary);
 	margin: 0;
+	/*
+	 * Subtle text glow: makes the name feel like it's lit
+	 * by the nebula behind it. Use a rose tint that's faint
+	 * enough to read as "atmosphere" not "effect".
+	 */
+	text-shadow:
+		0 0 80px rgba(212, 132, 154, 0.25),
+		0 0 160px rgba(212, 132, 154, 0.1);
 }
 
-/* italic tagline */
+/* ── Tagline ─────────────────────────────────────────────────*/
 .landing__tagline {
 	font-family: "Playfair Display", Georgia, serif;
 	font-size: clamp(1.1rem, 2.5vw, 1.5rem);
@@ -76,7 +178,7 @@
 	margin-bottom: 0;
 }
 
-/* location */
+/* ── Location ────────────────────────────────────────────────*/
 .landing__meta {
 	margin-top: 10px;
 }
@@ -89,7 +191,7 @@
 	text-transform: uppercase;
 }
 
-/* actions row */
+/* ── Actions row ─────────────────────────────────────────────*/
 .landing__actions {
 	display: flex;
 	align-items: center;
@@ -99,7 +201,7 @@
 	justify-content: center;
 }
 
-/* status pill */
+/* ── Status pill ─────────────────────────────────────────────*/
 .landing__status {
 	display: flex;
 	align-items: center;
@@ -112,6 +214,9 @@
 	border: 1px solid rgba(212, 132, 154, 0.25);
 	border-radius: 100px;
 	padding: 7px 16px;
+	/* Frosted glass effect — gives the UI element depth against the cosmos */
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
 }
 
 .landing__status-dot {
@@ -134,7 +239,7 @@
 	}
 }
 
-/* CV button */
+/* ── CV button ───────────────────────────────────────────────*/
 .landing__cv-btn {
 	font-family: var(--font-mono);
 	font-size: 0.72rem;
@@ -148,21 +253,27 @@
 	text-decoration: none;
 	transition:
 		background 0.2s ease,
-		color 0.2s ease;
+		color 0.2s ease,
+		box-shadow 0.2s ease;
+	/* Matching glass treatment */
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
 }
 
 .landing__cv-btn:hover {
 	background: var(--color-rose);
 	color: #0d0d0d;
+	/* Bloom on hover — echoes the star glow */
+	box-shadow: 0 0 24px rgba(212, 132, 154, 0.35);
 }
 
-/* scroll cue */
+/* ── Scroll cue ──────────────────────────────────────────────*/
 .landing__scroll-cue {
 	position: absolute;
 	bottom: 32px;
 	left: 50%;
 	transform: translateX(-50%);
-	z-index: 1;
+	z-index: 2;
 	display: flex;
 	flex-direction: column;
 	align-items: center;

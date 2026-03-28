@@ -1,11 +1,31 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, useSpring } from "framer-motion";
 
 export function CustomCursor() {
 	const mouseX = useSpring(0, { damping: 20, stiffness: 100 });
 	const mouseY = useSpring(0, { damping: 20, stiffness: 100 });
 
+	// Landing = shooting star + parallax; keep system cursor here so motion isn’t doubled.
+	const [landingInView, setLandingInView] = useState(true);
+
 	useEffect(() => {
+		const landing = document.getElementById("landing");
+		if (!landing) {
+			setLandingInView(false);
+			return;
+		}
+		const io = new IntersectionObserver(
+			([entry]) => {
+				setLandingInView(entry.isIntersecting);
+			},
+			{ threshold: 0, rootMargin: "0px" },
+		);
+		io.observe(landing);
+		return () => io.disconnect();
+	}, []);
+
+	useEffect(() => {
+		if (landingInView) return;
 		const handleMouseMove = (e: MouseEvent) => {
 			mouseX.set(e.clientX - 16);
 			mouseY.set(e.clientY - 16);
@@ -13,7 +33,9 @@ export function CustomCursor() {
 
 		window.addEventListener("mousemove", handleMouseMove);
 		return () => window.removeEventListener("mousemove", handleMouseMove);
-	}, [mouseX, mouseY]);
+	}, [landingInView, mouseX, mouseY]);
+
+	if (landingInView) return null;
 
 	return (
 		<motion.div

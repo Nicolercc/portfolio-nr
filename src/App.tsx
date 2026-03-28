@@ -1,20 +1,25 @@
-import { Switch, Route } from "wouter";
+import { lazy, Suspense } from "react";
+import { Link, Route, Routes } from "react-router-dom";
 import Home from "./pages/home";
-import ProjectCaseStudy from "./pages/ProjectDetail"; // Your template
-import { projectsData } from "./data/projects";
+
+// We only need the CaseStudy (the design you like)
+const ProjectsIndex = lazy(() => import("./pages/ProjectsIndex"));
+const CaseStudy = lazy(() => import("./pages/CaseStudy"));
 
 function NotFound() {
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+		<div className="min-h-screen flex items-center justify-center bg-[#0d0d0d] text-white">
 			<div className="text-center space-y-4">
-				<h1 className="text-8xl font-serif text-muted-foreground">404</h1>
-				<p className="text-xl text-muted-foreground">Page not found.</p>
-				<a
-					href="/"
-					className="inline-block mt-4 text-foreground hover:text-white transition-colors"
+				<h1 className="text-8xl font-serif opacity-20">404</h1>
+				<p className="text-xl font-light tracking-widest uppercase">
+					Page not found
+				</p>
+				<Link
+					to="/"
+					className="inline-block mt-4 border-b border-white/20 pb-1 hover:border-white transition-all"
 				>
 					Return Home
-				</a>
+				</Link>
 			</div>
 		</div>
 	);
@@ -22,16 +27,17 @@ function NotFound() {
 
 export default function App() {
 	return (
-		<Switch>
-			<Route path="/" component={Home} />
-			<Route path="/work/:id">
-				{(params) => {
-					const project = projectsData[params.id as keyof typeof projectsData];
-					if (!project) return <NotFound />;
-					return <ProjectCaseStudy project={project} />;
-				}}
-			</Route>
-			<Route component={NotFound} />
-		</Switch>
+		<Suspense fallback={<div className="bg-[#0d0d0d] min-h-screen" />}>
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/projects" element={<ProjectsIndex />} />
+
+				<Route path="/projects/:slug" element={<CaseStudy />} />
+				{/* Legacy URL; same case study as /projects/:slug */}
+				<Route path="/work/:slug" element={<CaseStudy />} />
+
+				<Route path="*" element={<NotFound />} />
+			</Routes>
+		</Suspense>
 	);
 }

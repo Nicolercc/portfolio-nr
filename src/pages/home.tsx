@@ -9,15 +9,30 @@ import { Contact } from "../components/sections/contact";
 import { Marquee } from "../components/sections/Marquee";
 import { CustomCursor } from "../components/ui/CustomCursor";
 import { GlobalCanvas } from "../components/layouts/GlobalCanvas";
+import { useLocation } from "react-router-dom";
 
 export default function Home() {
+	const location = useLocation();
+
 	useEffect(() => {
+		document.title = "Nicole Rodriguez — Developer Portfolio";
 		// High-end smooth scroll management
 		document.documentElement.style.scrollBehavior = "smooth";
 		return () => {
 			document.documentElement.style.scrollBehavior = "auto";
 		};
 	}, []);
+
+	useEffect(() => {
+		if (!location.hash) return;
+		const id = location.hash.replace("#", "");
+		// Defer until after paint so the target section exists.
+		const t = globalThis.setTimeout(() => {
+			const el = document.getElementById(id);
+			el?.scrollIntoView({ block: "start" });
+		}, 0);
+		return () => globalThis.clearTimeout(t);
+	}, [location.hash]);
 
 	return (
 		/* Removing 'text-foreground' here because we want 

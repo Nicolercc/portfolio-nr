@@ -1,7 +1,24 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { GitBranch, Globe, ArrowLeft, Cpu, Layout } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import { projectsData } from "../data/projects";
+
+const CASE_STUDY_ORDER = [
+	"nuclear-router",
+	"elite-global",
+	"impactify",
+] as const satisfies readonly (keyof typeof projectsData)[];
 
 export default function ProjectCaseStudy({ project }: any) {
+	// FIX: Use React Router's useParams instead of wouter's useRoute
+	const { slug, id } = useParams();
+	const currentId = slug || id || "";
+
+	const currentIndex = CASE_STUDY_ORDER.indexOf(currentId as any);
+	const nextIdx = (currentIndex + 1) % CASE_STUDY_ORDER.length;
+	const nextId = CASE_STUDY_ORDER[nextIdx];
+	const nextProject = projectsData[nextId];
+
 	const { scrollYProgress } = useScroll();
 	const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
@@ -28,7 +45,6 @@ export default function ProjectCaseStudy({ project }: any) {
 					</p>
 				</motion.div>
 
-				{/* Project Meta Bar */}
 				<div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 border-t border-white/10 pt-10 font-mono text-[10px] uppercase tracking-widest text-white/40">
 					<div>
 						<p className="mb-2 text-rose/60">Role</p>
@@ -59,9 +75,8 @@ export default function ProjectCaseStudy({ project }: any) {
 				</div>
 			</section>
 
-			{/* 2. THE CONTENT (The Narrative) */}
+			{/* 2. CONTENT SECTION */}
 			<section className="py-32 px-6 md:px-12 max-w-4xl mx-auto space-y-32">
-				{/* Why I Built This */}
 				<div className="space-y-8">
 					<div className="flex items-center gap-4">
 						<span className="text-3xl font-serif italic text-rose">01</span>
@@ -72,7 +87,6 @@ export default function ProjectCaseStudy({ project }: any) {
 					</p>
 				</div>
 
-				{/* Technical Deep Dive (Bento Style) */}
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 					<div className="p-8 bg-white/[0.02] border border-white/5 rounded-3xl">
 						<Cpu className="text-green mb-6" size={24} />
@@ -90,7 +104,6 @@ export default function ProjectCaseStudy({ project }: any) {
 					</div>
 				</div>
 
-				{/* Lessons Learned */}
 				<div className="space-y-8 border-t border-white/10 pt-20">
 					<div className="flex items-center gap-4">
 						<span className="text-3xl font-serif italic text-green">02</span>
@@ -115,9 +128,12 @@ export default function ProjectCaseStudy({ project }: any) {
 			{/* 3. FINAL CTA */}
 			<section className="py-40 text-center bg-gradient-to-t from-rose/5 to-transparent">
 				<h2 className="text-4xl md:text-7xl font-serif mb-10">Next Project</h2>
-				<button className="px-10 py-4 rounded-full border border-white/20 hover:border-rose/50 transition-all font-serif italic text-2xl">
-					Elite Global Cleaning →
-				</button>
+				<Link
+					to={`/projects/${nextId}`} // FIX: Use 'to' instead of 'href'
+					className="inline-block px-10 py-4 rounded-full border border-white/20 hover:border-rose/50 transition-all font-serif italic text-2xl"
+				>
+					{nextProject.title} →
+				</Link>
 			</section>
 		</div>
 	);

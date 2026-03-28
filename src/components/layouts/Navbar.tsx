@@ -1,17 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	motion,
 	useScroll,
 	useMotionValueEvent,
 	AnimatePresence,
 } from "framer-motion";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export function Navbar() {
+	const location = useLocation();
+	const navigate = useNavigate();
+	const isHome = location.pathname === "/";
 	const { scrollY } = useScroll();
 	const [visible, setVisible] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
 
+	useEffect(() => {
+		if (!isHome) {
+			setVisible(true);
+			setScrolled(true);
+			return;
+		}
+
+		const threshold = window.innerHeight;
+		const latest = scrollY.get();
+		setVisible(latest > threshold);
+		setScrolled(latest > threshold + 50);
+	}, [isHome, scrollY]);
+
 	useMotionValueEvent(scrollY, "change", (latest) => {
+		if (!isHome) return;
 		const threshold = window.innerHeight; // exactly one full landing height
 		setVisible(latest > threshold);
 		setScrolled(latest > threshold + 50); // slight extra scroll = condensed state
@@ -38,27 +56,56 @@ export function Navbar() {
 						{/* Logo */}
 						<div
 							className="w-9 h-9 rounded-lg bg-foreground text-background flex items-center justify-center font-sans font-bold text-xs cursor-pointer select-none tracking-tight"
-							onClick={() => scrollTo("hero")}
+							onClick={() => (isHome ? scrollTo("hero") : navigate("/"))}
 						>
 							NR
 						</div>
 
 						{/* Links */}
 						<div className="flex items-center gap-1 rounded-full px-2 py-1.5 glass-panel">
-							{[
-								{ label: "Home", id: "hero" },
-								{ label: "About", id: "about" },
-								{ label: "Work", id: "work" },
-								{ label: "Blog", id: "blog" },
-							].map((link) => (
-								<button
-									key={link.id}
-									onClick={() => scrollTo(link.id)}
-									className="px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200"
-								>
-									{link.label}
-								</button>
-							))}
+							{isHome ? (
+								[
+									{ label: "Home", id: "hero" },
+									{ label: "About", id: "about" },
+									{ label: "Work", id: "work" },
+									{ label: "Blog", id: "blog" },
+								].map((link) => (
+									<button
+										key={link.id}
+										onClick={() => scrollTo(link.id)}
+										className="px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200"
+									>
+										{link.label}
+									</button>
+								))
+							) : (
+								<>
+									<Link
+										to="/"
+										className="px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200"
+									>
+										Home
+									</Link>
+									<Link
+										to="/projects"
+										className="px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200"
+									>
+										Work
+									</Link>
+									<Link
+										to="/"
+										className="px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200"
+									>
+										About
+									</Link>
+									<Link
+										to="/"
+										className="px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200"
+									>
+										Blog
+									</Link>
+								</>
+							)}
 						</div>
 
 						{/* CTA — primary action */}

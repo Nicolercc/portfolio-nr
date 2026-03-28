@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local only — exceeds GitHub 100MB file limit
+public/media/nuclear-router-demo.mov

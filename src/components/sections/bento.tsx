@@ -137,7 +137,7 @@ function StrategyCard() {
 			initial={{ opacity: 0, y: 20 }}
 			whileInView={{ opacity: 1, y: 0 }}
 			viewport={{ once: true }}
-			className="relative group overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 p-8 h-full flex flex-col justify-between transition-colors hover:border-[rgba(212,132,154,0.2)]"
+			className="relative group overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 p-7 h-full flex flex-col justify-between transition-colors hover:border-[rgba(212,132,154,0.2)]"
 		>
 			{/* Decorative background monogram */}
 			<div

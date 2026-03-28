@@ -242,6 +242,27 @@
 	height: 268px;
 }
 
+.bento__card {
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 250px;
+	padding: 26px 24px 22px;
+	background-clip: padding-box;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0.75rem;
+	overflow-wrap: break-word;
+	word-break: break-word;
+}
+
+.bento__card * {
+	overflow-wrap: break-word;
+	word-break: break-word;
+	hyphens: auto;
+}
+
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    STRATEGY CARD SLOT
 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */

@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
@@ -195,13 +196,13 @@ function CaseStudyCard({ study }: { study: (typeof caseStudies)[0] }) {
 						))}
 					</div>
 
-					<motion.a
-						href={`/projects/${study.slug}`}
+					<Link
+						to={`/projects/${study.slug}`}
 						className={`inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold ${accentClass} group/link`}
 					>
 						Explore Case Study
 						<ArrowUpRight className="w-4 h-4 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform" />
-					</motion.a>
+					</Link>
 				</div>
 
 				{/* Right Side: Visuals */}

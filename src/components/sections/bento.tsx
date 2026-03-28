@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef, useCallback, useEffect } from "react";
 import {
 	motion,
@@ -8,7 +6,13 @@ import {
 	useTransform,
 	animate,
 	AnimatePresence,
+	type PanInfo,
 } from "framer-motion";
+import {
+	BENTO_BIO as BIO,
+	BENTO_HOBBIES as HOBBIES,
+	type BentoHobby,
+} from "../../data/about";
 import "./bento.css";
 
 /* ─────────────────────────────────────────────
@@ -23,105 +27,53 @@ const T = {
 	border: "rgba(255,255,255,0.08)",
 	muted: "rgba(245,240,232,0.45)",
 	mutedLo: "rgba(245,240,232,0.2)",
-};
+} as const;
 
-/* ─────────────────────────────────────────────
-   CONTENT
-───────────────────────────────────────────── */
-const BIO = {
-	eyebrow: "More About Me",
-	name: "I'm Nicole,",
-	role: "a creative soul",
-	paragraphs: [
-		"I'm Nicole Rodriguez — drawn to the beauty in craft, the stillness of nature, and the thrill of discovering a new island shoreline. I believe the best ideas live at the intersection of art and adventure.",
-		"Whether I'm throwing clay, mixing pigments, or reading under a palm tree, I'm always chasing that feeling of being fully present.",
-	],
-	tagline: "Life is better when you make things with your hands.",
-	links: [
-		{ label: "LinkedIn", href: "#" },
-		{ label: "GitHub", href: "#" },
-		{ label: "X", href: "#" },
-	],
-};
+/** Card deck drag / layout tuning */
+const CARD = {
+	dismissThresholdPx: 85,
+	dismissDistancePx: 500,
+	dismissLiftPx: -50,
+	dismissDurationSec: 0.38,
+	dismissEase: [0.36, 0, 0.66, -0.56] as const,
+	minHeightPx: 230,
+	depthScaleStep: 0.045,
+	depthYOffsetPx: 10,
+	bgBase: 20,
+	bgPerDepth: 8,
+	rotateInputRange: [-220, 0, 220] as const,
+	rotateOutputDeg: [-22, 0, 22] as const,
+	opacityInputRange: [-160, -60, 0, 60, 160] as const,
+	roseOverlayRange: [0, -100] as const,
+	greenOverlayRange: [0, 100] as const,
+} as const;
 
-const HOBBIES = [
-	{
-		icon: "🏝️",
-		title: "Island Hopping",
-		desc: "Salt air and new shores. Every island has its own rhythm — I collect them.",
-		tag: "wanderlust",
-		rot: -4,
-		accent: T.rose,
-		border: "rgba(212,132,154,0.4)",
-		glow: "rgba(212,132,154,0.15)",
-	},
-	{
-		icon: "✈️",
-		title: "Traveling",
-		desc: "Passport stamps are my love language. The world is too big to stay in one place.",
-		tag: "explorer",
-		rot: 2,
-		accent: "#9BA8F5",
-		border: "rgba(155,168,245,0.4)",
-		glow: "rgba(155,168,245,0.15)",
-	},
-	{
-		icon: "🌿",
-		title: "Being in Nature",
-		desc: "Forests, coasts, and everything wild. Nature resets whatever the city breaks.",
-		tag: "grounded",
-		rot: -2,
-		accent: T.green,
-		border: "rgba(74,222,128,0.4)",
-		glow: "rgba(74,222,128,0.15)",
-	},
-	{
-		icon: "📖",
-		title: "Reading",
-		desc: "Slow afternoons and a good book. Fiction, philosophy, anything beautifully written.",
-		tag: "curious",
-		rot: 3,
-		accent: "#F5C97A",
-		border: "rgba(245,201,122,0.4)",
-		glow: "rgba(245,201,122,0.15)",
-	},
-	{
-		icon: "🏺",
-		title: "Pottery",
-		desc: "Centering clay is the closest thing I've found to meditation. Every piece is a conversation.",
-		tag: "maker",
-		rot: -3,
-		accent: T.rose,
-		border: "rgba(212,132,154,0.4)",
-		glow: "rgba(212,132,154,0.15)",
-	},
-	{
-		icon: "🎨",
-		title: "Painting",
-		desc: "Acrylics, watercolour, whatever is nearby. The canvas doesn't judge.",
-		tag: "artist",
-		rot: 1,
-		accent: "#C4A8FF",
-		border: "rgba(196,168,255,0.4)",
-		glow: "rgba(196,168,255,0.15)",
-	},
-	{
-		icon: "✂️",
-		title: "Crafts & Making",
-		desc: "If it can be built, sewn, pressed, or glued — I've probably tried it. Joy lives in the process.",
-		tag: "creative",
-		rot: -1,
-		accent: T.green,
-		border: "rgba(74,222,128,0.4)",
-		glow: "rgba(74,222,128,0.15)",
-	},
-];
+/* ─────────────────────────────────────────────────────────────────────────────
+   DATA — paste this into src/data/about.ts and update BENTO_BIO
+
+   export const BENTO_BIO = {
+     eyebrow: "About me",
+     name: "I'm Nicole,",
+     role: "full stack developer",
+     paragraphs: [
+       "NYC-based, Dominican Republic-raised. I build web products that are as thoughtful as they look — clean architecture, intentional UI, real performance.",
+       "I care about technology that actually does something. When I'm not writing code I'm filming, hiking somewhere with no signal, or island hopping back to my roots.",
+     ],
+     tagline: "I make things. Usually with code. Sometimes with clay & paint.",
+     links: [
+       { label: "LinkedIn", href: "https://www.linkedin.com/in/nicolerodriguezz/" },
+       { label: "GitHub",   href: "https://github.com/Nicolercc" },
+       { label: "X",        href: "#" },
+     ],
+   };
+─────────────────────────────────────────────────────────────────────────────── */
 
 /* ─────────────────────────────────────────────
    TYPING EFFECT HOOK
 ───────────────────────────────────────────── */
-function useTypingEffect(text: string, speed = 40, start = true) {
+function useTypingEffect(text: string, speed = 40, start = true): string {
 	const [displayed, setDisplayed] = useState("");
+
 	useEffect(() => {
 		if (!start) return;
 		setDisplayed("");
@@ -133,6 +85,7 @@ function useTypingEffect(text: string, speed = 40, start = true) {
 		}, speed);
 		return () => clearInterval(id);
 	}, [text, speed, start]);
+
 	return displayed;
 }
 
@@ -140,40 +93,18 @@ function useTypingEffect(text: string, speed = 40, start = true) {
    SOCIAL PILL
 ───────────────────────────────────────────── */
 function SocialPill({ label, href }: { label: string; href: string }) {
-	const [hov, setHov] = useState(false);
 	return (
 		<a
 			href={href}
 			target="_blank"
 			rel="noopener noreferrer"
-			onMouseEnter={() => setHov(true)}
-			onMouseLeave={() => setHov(false)}
+			className="group inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-transparent px-[15px] py-1.5 text-[0.78rem] font-medium tracking-wide no-underline transition-all duration-[220ms] hover:border-[#D4849A] hover:bg-[rgba(212,132,154,0.08)] hover:text-[#D4849A]"
 			style={{
-				display: "inline-flex",
-				alignItems: "center",
-				gap: 6,
-				padding: "6px 15px",
-				borderRadius: 99,
-				border: `1px solid ${hov ? T.rose : T.border}`,
-				background: hov ? "rgba(212,132,154,0.08)" : "transparent",
-				color: hov ? T.rose : T.muted,
-				fontSize: "0.78rem",
 				fontFamily: "'DM Sans', sans-serif",
-				fontWeight: 500,
-				textDecoration: "none",
-				transition: "all 0.22s",
-				letterSpacing: "0.01em",
+				color: "rgba(245,240,232,0.45)",
 			}}
 		>
-			<span
-				style={{
-					width: 4,
-					height: 4,
-					borderRadius: "50%",
-					background: hov ? T.rose : T.mutedLo,
-					transition: "background 0.2s",
-				}}
-			/>
+			<span className="h-1 w-1 shrink-0 rounded-full bg-[rgba(245,240,232,0.2)] transition-colors group-hover:bg-[#D4849A]" />
 			{label}
 		</a>
 	);
@@ -184,88 +115,88 @@ function SocialPill({ label, href }: { label: string; href: string }) {
 ───────────────────────────────────────────── */
 function BlobOrb() {
 	return (
-		<div
-			style={{
-				position: "relative",
-				width: 110,
-				height: 110,
-				marginBottom: 28,
-			}}
-		>
+		<div className="bento__blobOrb">
 			<motion.div
+				className="bento__blobOrb-spin"
 				animate={{ rotate: 360 }}
 				transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-				style={{
-					position: "absolute",
-					inset: 0,
-					borderRadius: "60% 40% 55% 45% / 45% 55% 45% 55%",
-					background: `conic-gradient(from 0deg, ${T.rose}, #C4A8FF, ${T.green}, ${T.rose})`,
-					filter: "blur(2px)",
-					opacity: 0.55,
-				}}
+				style={{ willChange: "transform" }}
 			/>
-			<div
-				style={{
-					position: "absolute",
-					inset: 6,
-					borderRadius: "inherit",
-					background: T.bg,
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-					fontSize: 38,
-				}}
-			>
-				🌺
-			</div>
+			<div className="bento__blobOrb-inner">🌺</div>
 		</div>
 	);
 }
 
 /* ─────────────────────────────────────────────
    STRATEGY CARD
+   Updated: concrete copy replacing vague buzzwords.
 ───────────────────────────────────────────── */
-export function StrategyCard() {
+function StrategyCard() {
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
 			whileInView={{ opacity: 1, y: 0 }}
 			viewport={{ once: true }}
-			className="relative group overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 p-8 h-full flex flex-col justify-between hover:border-rose/20 transition-colors"
+			className="relative group overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 p-8 h-full flex flex-col justify-between transition-colors hover:border-[rgba(212,132,154,0.2)]"
 		>
-			<div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-				<span className="text-6xl font-serif italic pointer-events-none">
-					BA
+			{/* Decorative background monogram */}
+			<div
+				className="pointer-events-none absolute right-0 top-0 p-4 opacity-10 transition-opacity group-hover:opacity-20"
+				aria-hidden="true"
+			>
+				<span
+					className="text-6xl italic"
+					style={{ fontFamily: "'Cormorant Garamond', serif" }}
+				>
+					NR
 				</span>
 			</div>
+
 			<div>
-				<div className="flex items-center gap-2 mb-6">
-					<span className="w-1.5 h-1.5 rounded-full bg-rose shadow-[0_0_8px_#D4849A]" />
-					<span className="text-[10px] font-mono uppercase tracking-[0.2em] text-rose">
-						Strategic Background
+				<div className="mb-6 flex items-center gap-2">
+					<span
+						className="h-1.5 w-1.5 rounded-full bg-[#D4849A]"
+						style={{ boxShadow: "0 0 8px #D4849A" }}
+					/>
+					<span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#D4849A]">
+						Background
 					</span>
 				</div>
-				<h3 className="text-2xl font-serif mb-4 leading-tight">
-					The Intersection of <br />
-					<span className="text-transparent bg-clip-text bg-gradient-to-r from-rose to-purple-400">
-						Media & Politics
-					</span>
+
+				<h3
+					className="mb-4 text-2xl leading-tight"
+					style={{ fontFamily: "'Cormorant Garamond', serif" }}
+				>
+					BA in Media &amp; Politics —{" "}
+					<span className="italic" style={{ color: "#D4849A" }}>
+						the other half
+					</span>{" "}
+					of the stack
 				</h3>
-				<p className="text-sm text-muted-foreground leading-relaxed font-light max-w-sm">
-					My degree is my lens. I view interfaces as modern public squares,
-					specializing in <strong>information integrity</strong> and{" "}
-					<strong>accessible narrative</strong>.
+
+				<p className="max-w-sm text-sm font-light leading-relaxed text-[rgba(245,240,232,0.45)]">
+					I build interfaces with the same principles as good journalism:{" "}
+					<strong className="font-medium text-[rgba(245,240,232,0.85)]">
+						clarity
+					</strong>
+					,{" "}
+					<strong className="font-medium text-[rgba(245,240,232,0.85)]">
+						accessibility
+					</strong>
+					, and zero tolerance for dark patterns. My degree isn't a detour —
+					it's why I understand the people using what I build.
 				</p>
 			</div>
-			<div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
-				<span className="text-[9px] font-mono uppercase text-white/20 tracking-widest">
-					Media Specialist × Engineer
+
+			<div className="mt-8 flex items-center justify-between border-t border-white/5 pt-6">
+				<span className="font-mono text-[9px] uppercase tracking-widest text-white/20">
+					Engineer × Media Specialist
 				</span>
 				<div className="flex -space-x-2">
-					<div className="w-6 h-6 rounded-full bg-rose/20 border border-rose/40 flex items-center justify-center text-[10px]">
-						⚖️
+					<div className="flex h-6 w-6 items-center justify-center rounded-full border border-[rgba(212,132,154,0.4)] bg-[rgba(212,132,154,0.2)] text-[10px]">
+						📰
 					</div>
-					<div className="w-6 h-6 rounded-full bg-green/20 border border-green/40 flex items-center justify-center text-[10px]">
+					<div className="flex h-6 w-6 items-center justify-center rounded-full border border-[rgba(74,222,128,0.4)] bg-[rgba(74,222,128,0.2)] text-[10px]">
 						💻
 					</div>
 				</div>
@@ -277,8 +208,6 @@ export function StrategyCard() {
 /* ─────────────────────────────────────────────
    DRAGGABLE CARD
 ───────────────────────────────────────────── */
-type Hobby = (typeof HOBBIES)[number];
-
 function DraggableCard({
 	hobby,
 	depth,
@@ -286,7 +215,7 @@ function DraggableCard({
 	currentIndex,
 	onDismiss,
 }: {
-	hobby: Hobby;
+	hobby: BentoHobby;
 	depth: number;
 	total: number;
 	currentIndex: number;
@@ -294,26 +223,51 @@ function DraggableCard({
 }) {
 	const x = useMotionValue(0);
 	const y = useMotionValue(0);
-	const cardRotate = useTransform(x, [-220, 0, 220], [-22, hobby.rot, 22]);
-	const cardOpacity = useTransform(x, [-160, -60, 0, 60, 160], [0, 1, 1, 1, 0]);
-	const roseOverlay = useTransform(x, [0, -100], [0, 0.2]);
-	const greenOverlay = useTransform(x, [0, 100], [0, 0.2]);
+	const mountedRef = useRef(true);
+
+	useEffect(() => {
+		mountedRef.current = true;
+		return () => {
+			mountedRef.current = false;
+		};
+	}, []);
+
+	const cardRotate = useTransform(
+		x,
+		[...CARD.rotateInputRange],
+		[CARD.rotateOutputDeg[0], hobby.rot, CARD.rotateOutputDeg[2]],
+	);
+	const cardOpacity = useTransform(
+		x,
+		[...CARD.opacityInputRange],
+		[0, 1, 1, 1, 0],
+	);
+	const roseOverlay = useTransform(x, [...CARD.roseOverlayRange], [0, 0.2]);
+	const greenOverlay = useTransform(x, [...CARD.greenOverlayRange], [0, 0.2]);
 
 	const isTop = depth === 0;
-	const scale = 1 - depth * 0.045;
-	const yOffset = depth * 10;
-	const bgVal = 20 + depth * 8;
+	const scale = 1 - depth * CARD.depthScaleStep;
+	const yOffset = depth * CARD.depthYOffsetPx;
+	const bgVal = CARD.bgBase + depth * CARD.bgPerDepth;
 
 	const handleDragEnd = useCallback(
-		(_: unknown, info: { offset: { x: number } }) => {
-			if (Math.abs(info.offset.x) > 85) {
+		(_e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+			if (Math.abs(info.offset.x) > CARD.dismissThresholdPx) {
 				const dir = info.offset.x > 0 ? 1 : -1;
-				animate(x, dir * 500, { duration: 0.38, ease: [0.36, 0, 0.66, -0.56] });
-				animate(y, -50, { duration: 0.38 });
-				setTimeout(onDismiss, 340);
+				void animate(x, dir * CARD.dismissDistancePx, {
+					duration: CARD.dismissDurationSec,
+					ease: CARD.dismissEase,
+					onComplete: () => {
+						if (mountedRef.current) onDismiss();
+					},
+				});
+				void animate(y, CARD.dismissLiftPx, {
+					duration: CARD.dismissDurationSec,
+					ease: CARD.dismissEase,
+				});
 			} else {
-				animate(x, 0, { type: "spring", stiffness: 320, damping: 30 });
-				animate(y, 0, { type: "spring", stiffness: 320, damping: 30 });
+				void animate(x, 0, { type: "spring", stiffness: 320, damping: 30 });
+				void animate(y, 0, { type: "spring", stiffness: 320, damping: 30 });
 			}
 		},
 		[x, y, onDismiss],
@@ -340,109 +294,82 @@ function DraggableCard({
 			dragElastic={0.9}
 			onDragEnd={isTop ? handleDragEnd : undefined}
 			whileTap={isTop ? { cursor: "grabbing" } : undefined}
+			role={isTop ? "group" : undefined}
+			aria-hidden={!isTop}
+			aria-label={
+				isTop
+					? `${hobby.title}. Drag sideways or use arrow buttons to change card.`
+					: undefined
+			}
 		>
 			<div
+				className={`relative select-none overflow-hidden rounded-[20px] border px-6 pb-[22px] pt-[26px] ${
+					isTop
+						? "shadow-[0_28px_70px_rgba(0,0,0,0.6),inset_0_2px_0_rgba(255,255,255,0.04)]"
+						: "shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
+				}`}
 				style={{
 					background: `rgb(${bgVal},${bgVal},${bgVal})`,
-					border: `1px solid ${T.border}`,
-					borderRadius: 20,
-					padding: "26px 24px 22px",
-					userSelect: "none",
-					position: "relative",
-					overflow: "hidden",
-					boxShadow: isTop
-						? "0 28px 70px rgba(0,0,0,0.6), 0 2px 0 rgba(255,255,255,0.04) inset"
-						: "0 8px 24px rgba(0,0,0,0.4)",
-					minHeight: 230,
+					borderColor: T.border,
+					minHeight: CARD.minHeightPx,
 				}}
 			>
+				{/* Drag tint overlays — top card only */}
 				{isTop && (
 					<>
 						<motion.div
-							style={{
-								position: "absolute",
-								inset: 0,
-								borderRadius: 20,
-								background: T.rose,
-								opacity: roseOverlay,
-								pointerEvents: "none",
-							}}
+							className="pointer-events-none absolute inset-0 rounded-[20px]"
+							style={{ background: T.rose, opacity: roseOverlay }}
 						/>
 						<motion.div
-							style={{
-								position: "absolute",
-								inset: 0,
-								borderRadius: 20,
-								background: T.green,
-								opacity: greenOverlay,
-								pointerEvents: "none",
-							}}
+							className="pointer-events-none absolute inset-0 rounded-[20px]"
+							style={{ background: T.green, opacity: greenOverlay }}
 						/>
 					</>
 				)}
 
-				{/* Shimmer line */}
+				{/* Shimmer top line */}
 				<div
+					className="absolute left-[15%] right-[15%] top-0 h-px"
 					style={{
-						position: "absolute",
-						top: 0,
-						left: "15%",
-						right: "15%",
-						height: 1,
 						background: `linear-gradient(90deg, transparent, ${hobby.accent}55, transparent)`,
 					}}
 				/>
 
 				{/* Tag chip */}
 				<div
+					className="mb-4 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5"
 					style={{
-						display: "inline-flex",
-						alignItems: "center",
-						gap: 5,
-						padding: "3px 10px",
-						borderRadius: 99,
-						border: `1px solid ${hobby.accent}33`,
+						borderColor: `${hobby.accent}33`,
 						background: `${hobby.accent}0F`,
-						marginBottom: 16,
 					}}
 				>
 					<span
+						className="h-[5px] w-[5px] rounded-full"
 						style={{
-							width: 5,
-							height: 5,
-							borderRadius: "50%",
 							background: hobby.accent,
 							boxShadow: `0 0 6px ${hobby.accent}`,
 						}}
 					/>
 					<span
-						style={{
-							fontFamily: "'DM Mono', monospace",
-							fontSize: "0.63rem",
-							letterSpacing: "0.1em",
-							textTransform: "uppercase" as const,
-							color: hobby.accent,
-						}}
+						className="font-mono text-[0.63rem] uppercase tracking-[0.1em]"
+						style={{ color: hobby.accent }}
 					>
 						{hobby.tag}
 					</span>
 				</div>
 
 				{/* Icon */}
-				<div style={{ fontSize: 34, marginBottom: 14, lineHeight: 1 }}>
+				<div className="mb-3.5 text-[34px] leading-none" aria-hidden="true">
 					{hobby.icon}
 				</div>
 
 				{/* Title */}
 				<p
+					className="mb-2 text-[1.3rem] font-semibold leading-tight tracking-tight"
 					style={{
 						fontFamily: "'Cormorant Garamond', serif",
-						fontWeight: 600,
-						fontSize: "1.3rem",
 						color: T.fg,
-						letterSpacing: "-0.01em",
-						marginBottom: 8,
-						lineHeight: 1.2,
 					}}
 				>
 					{hobby.title}
@@ -450,12 +377,10 @@ function DraggableCard({
 
 				{/* Description */}
 				<p
+					className="m-0 text-[0.81rem] leading-[1.65]"
 					style={{
 						fontFamily: "'DM Sans', sans-serif",
-						fontSize: "0.81rem",
-						lineHeight: 1.65,
 						color: T.muted,
-						margin: 0,
 					}}
 				>
 					{hobby.desc}
@@ -463,15 +388,9 @@ function DraggableCard({
 
 				{/* Counter */}
 				<div
-					style={{
-						position: "absolute",
-						bottom: 16,
-						right: 18,
-						fontFamily: "'DM Mono', monospace",
-						fontSize: "0.6rem",
-						color: T.mutedLo,
-						letterSpacing: "0.07em",
-					}}
+					className="absolute bottom-4 right-[18px] font-mono text-[0.6rem] tracking-[0.07em]"
+					style={{ color: T.mutedLo }}
+					aria-label={`Card ${currentIndex + 1} of ${total}`}
 				>
 					{String(currentIndex + 1).padStart(2, "0")} /{" "}
 					{String(total).padStart(2, "0")}
@@ -503,20 +422,12 @@ function CardDeck() {
 	});
 
 	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				gap: 24,
-			}}
-		>
-			{/*
-        FIXED: Previously width:"150%" inline — caused content to bleed
-        off iPhone screens. Now uses .bento__deckWrap (width:100%, max-width:340px)
-        defined in bento.css.
-      */}
-			<div className="bento__deckWrap">
+		<div className="flex flex-col items-center gap-6">
+			<div
+				className="bento__deckWrap"
+				role="region"
+				aria-label="Hobbies. Swipe the top card or use the controls to browse."
+			>
 				<AnimatePresence mode="sync">
 					{stackCards.map(({ hobby, depth, hobbyIndex }) => (
 						<DraggableCard
@@ -532,66 +443,56 @@ function CardDeck() {
 			</div>
 
 			{/* Controls */}
-			<div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+			<div
+				className="flex items-center gap-[18px]"
+				role="toolbar"
+				aria-label="Hobby card controls"
+			>
 				<motion.button
+					type="button"
+					aria-label="Previous hobby card"
 					onClick={retreat}
 					whileHover={{ scale: 1.08, borderColor: T.rose }}
 					whileTap={{ scale: 0.94 }}
-					style={{
-						width: 40,
-						height: 40,
-						borderRadius: "50%",
-						border: `1px solid ${T.border}`,
-						background: "transparent",
-						color: T.rose,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						cursor: "pointer",
-						fontSize: "1rem",
-						outline: "none",
-					}}
+					className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#D4849A] outline-none"
 				>
 					←
 				</motion.button>
 
-				<div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-					{HOBBIES.map((_, i) => {
+				<div
+					className="flex items-center gap-1.5"
+					role="tablist"
+					aria-label="Select hobby"
+				>
+					{HOBBIES.map((h, i) => {
 						const active = i === topIndex;
 						return (
-							<motion.div
-								key={i}
+							<motion.button
+								key={h.title}
+								type="button"
+								role="tab"
+								aria-selected={active}
+								aria-label={`Show ${h.title}`}
+								onClick={() => setTopIndex(i)}
 								animate={{
 									width: active ? 18 : 5,
 									background: active ? T.green : T.mutedLo,
 									boxShadow: active ? `0 0 8px ${T.green}` : "none",
 								}}
 								transition={{ type: "spring", stiffness: 300, damping: 28 }}
-								style={{ height: 5, borderRadius: 99, cursor: "pointer" }}
-								onClick={() => setTopIndex(i)}
+								className="h-[5px] cursor-pointer rounded-full border-0 p-0 outline-none"
 							/>
 						);
 					})}
 				</div>
 
 				<motion.button
+					type="button"
+					aria-label="Next hobby card"
 					onClick={advance}
 					whileHover={{ scale: 1.08, borderColor: T.green }}
 					whileTap={{ scale: 0.94 }}
-					style={{
-						width: 40,
-						height: 40,
-						borderRadius: "50%",
-						border: `1px solid ${T.border}`,
-						background: "transparent",
-						color: T.green,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						cursor: "pointer",
-						fontSize: "1rem",
-						outline: "none",
-					}}
+					className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#4ADE80] outline-none"
 				>
 					→
 				</motion.button>
@@ -604,10 +505,9 @@ function CardDeck() {
 
 /* ─────────────────────────────────────────────
    MAIN EXPORT
-   File: src/components/sections/bento.tsx
 ───────────────────────────────────────────── */
 export default function BentoSection() {
-	const sectionRef = useRef(null);
+	const sectionRef = useRef<HTMLElement>(null);
 	const inView = useInView(sectionRef, { once: true, margin: "-80px" });
 	const tagline = useTypingEffect(BIO.tagline, 40, inView);
 
@@ -627,9 +527,9 @@ export default function BentoSection() {
 				} as React.CSSProperties
 			}
 		>
-			<div className="bento__gridBg" />
-			<div className="bento__glowRose" />
-			<div className="bento__glowGreen" />
+			<div className="bento__gridBg" aria-hidden="true" />
+			<div className="bento__glowRose" aria-hidden="true" />
+			<div className="bento__glowGreen" aria-hidden="true" />
 
 			<div className="bento__container">
 				{/* ── LEFT: Bio ── */}
@@ -657,14 +557,9 @@ export default function BentoSection() {
 							<motion.span
 								animate={{ opacity: [1, 0, 1] }}
 								transition={{ duration: 0.85, repeat: Infinity }}
-								style={{
-									display: "inline-block",
-									width: 2,
-									height: "0.85em",
-									background: T.rose,
-									marginLeft: 2,
-									verticalAlign: "middle",
-								}}
+								className="ml-0.5 inline-block w-0.5 align-middle"
+								style={{ height: "0.85em", background: T.rose }}
+								aria-hidden="true"
 							/>
 						</p>
 					</div>
@@ -684,10 +579,11 @@ export default function BentoSection() {
 					className="bento__col"
 				>
 					<p className="bento__rightLabel">// what I love</p>
-					<CardDeck />
-
-					<div className="bento__strategyWrap">
-						<StrategyCard />
+					<div className="bento__rightStack">
+						<CardDeck />
+						<div className="bento__strategyWrap">
+							<StrategyCard />
+						</div>
 					</div>
 				</motion.div>
 			</div>

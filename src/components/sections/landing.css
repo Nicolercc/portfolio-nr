@@ -38,15 +38,14 @@
 }
 
 /* ── Particle canvas ─────────────────────────────────────────
- * Keep this BELOW nebula (z-index: 0) so nebula CSS sits on top
- * of it for depth layering. Stars will still show through
- * because nebula gradients fade to transparent.
+ * Above CSS nebula (0) + vignette (::after, 1) so stars / meteors
+ * stay visible; typography stays above via .landing__content (2).
  */
 .landing__canvas {
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
-	z-index: 0;
+	z-index: 2;
 }
 
 /*

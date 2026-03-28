@@ -5,21 +5,97 @@ import { ArrowUpRight } from "lucide-react";
 /* ─────────────────────────────────────────────
    DATA: The Portfolio Content
 ───────────────────────────────────────────── */
+// upgraded caseStudies data (hire-level)
+
 const caseStudies = [
 	{
+		slug: "nuclear-router",
 		index: "01",
+		category: "Hackathon · Community & Safety Response",
+		title: "Nuclear Router",
+		tagline: "Emergency navigation that guides users to safety in seconds.",
+		description:
+			"A rapid-response navigation system built in under 2 hours during a hackathon to deliver immediate routing decisions in a nuclear emergency scenario.",
+		highlights: [
+			"Built and shipped in under 2 hours under hackathon constraints",
+			"Winner: Community Favorite + Best Alignment with Theme (Community)",
+			"Integrated geolocation, Google Maps routing, and OpenWeather wind data",
+		],
+		stack: [
+			"React",
+			"TypeScript",
+			"Vite",
+			"Google Maps API",
+			"OpenWeather API",
+			"Browser Geolocation API",
+			"Vercel",
+		],
+		accent: "rose",
+		year: "2026",
+		images: [
+			{
+				label: "Evacuation Routing",
+				bg: "from-green/20 to-transparent",
+				icon: "🧭",
+			},
+			{
+				label: "Community Awards",
+				bg: "from-rose/20 to-transparent",
+				icon: "🏆",
+			},
+		],
+	},
+	{
+		slug: "elite-global",
+		index: "02",
+		category: "Corporate · Performance",
+		title: "Elite Global Cleaning Services",
+		tagline: "High-performance digital presence for industrial B2B.",
+		description:
+			"A performance-first corporate platform engineered with static architecture to ensure fast load times, strong SEO, and reliability.",
+		highlights: [
+			"100/100 Lighthouse performance and SEO scores",
+			"Zero-JavaScript architecture using Astro",
+			"Implemented schema markup and structured SEO strategy",
+		],
+		stack: [
+			"Astro",
+			"TypeScript",
+			"Tailwind CSS",
+			"React (Astro Islands)",
+			"Vercel",
+		],
+		accent: "green",
+		year: "2023",
+		images: [
+			{ label: "Homepage", bg: "from-green/20 to-transparent", icon: "🏢" },
+			{ label: "Services", bg: "from-zinc-800 to-transparent", icon: "🛡️" },
+		],
+	},
+	{
+		slug: "impactify",
+		index: "03",
 		category: "Civic Tech · Full-Stack",
 		title: "Impactify",
-		tagline: "An activism hub that turns awareness into action.",
+		tagline: "A real-time platform that turns awareness into action.",
 		description:
-			"Fragmented activism tools meant people gave up before they acted. Impactify centralizes event discovery and cause-driven donations into one cohesive platform.",
+			"A full-stack platform centralizing activism tools using real-time data and seamless donation flows.",
 		highlights: [
-			"Real-time event maps via Google Maps API",
-			"Stripe-integrated donation flows",
-			"Live news feed via NewsAPI",
+			"Real-time updates via Firebase Firestore",
+			"Stripe-powered donation flow integration",
+			"Coordinated multiple async APIs into a unified interface",
 		],
-		stack: ["React", "Firebase", "Stripe", "Netlify"],
-		accent: "rose",
+		stack: [
+			"React",
+			"Firebase",
+			"Stripe",
+			"NewsAPI",
+			"Google Maps API",
+			"Material UI",
+			"React Spring",
+			"Netlify",
+		],
+		accent: "violet & green",
 		year: "2024",
 		images: [
 			{
@@ -32,26 +108,6 @@ const caseStudies = [
 				bg: "from-green/20 to-transparent",
 				icon: "💳",
 			},
-		],
-	},
-	{
-		index: "02",
-		category: "Corporate · Static Site",
-		title: "Elite Global",
-		tagline: "High-performance digital presence for industrial B2B.",
-		description:
-			"Industrial clients judge fast. This 100/100 Lighthouse score site projects trust and authority the moment the page opens.",
-		highlights: [
-			"100/100 Lighthouse performance",
-			"WCAG AA compliant markup",
-			"Zero JavaScript overhead architecture",
-		],
-		stack: ["Astro", "TypeScript", "Tailwind CSS"],
-		accent: "green",
-		year: "2023",
-		images: [
-			{ label: "Homepage", bg: "from-green/20 to-transparent", icon: "🏢" },
-			{ label: "Services", bg: "from-zinc-800 to-transparent", icon: "🛡️" },
 		],
 	},
 ];
@@ -140,7 +196,7 @@ function CaseStudyCard({ study }: { study: (typeof caseStudies)[0] }) {
 					</div>
 
 					<motion.a
-						href="#"
+						href={`/projects/${study.slug}`}
 						className={`inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold ${accentClass} group/link`}
 					>
 						Explore Case Study

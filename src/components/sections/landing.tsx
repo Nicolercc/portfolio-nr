@@ -15,10 +15,8 @@ interface Star {
 	twinkleSpeed: number;
 	twinkles: boolean;
 	color: StarColor;
-	// drift
 	vx: number;
 	vy: number;
-	// parallax depth — 0 (far/slow) → 1 (close/fast)
 	parallaxFactor: number;
 }
 
@@ -35,12 +33,11 @@ const COLOR_MAP: Record<StarColor, [number, number, number]> = {
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const BASE_COUNTS = {
-	deep: 180, // layer 0 — tiny, distant
-	mid: 60, // layer 1 — medium, some color
-	bright: 18, // layer 2 — big, halos, most visual interest
+	deep: 180,
+	mid: 60,
+	bright: 18,
 };
 
-// Mobile gets half the stars and no parallax
 const isMobile = () => window.innerWidth <= 768;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -71,7 +68,7 @@ function makeDeepStar(W: number, H: number): Star {
 		alpha: rand(0.2, 0.55),
 		alphaDir: Math.random() > 0.5 ? 0.0008 : -0.0008,
 		twinkleSpeed: rand(0.0005, 0.0012),
-		twinkles: Math.random() < 0.25, // only 25% twinkle at this depth
+		twinkles: Math.random() < 0.25,
 		color: pickColor({ white: 80, iceblue: 15, rose: 5 }),
 		vx: rand(-0.04, 0.04),
 		vy: rand(-0.02, 0.02),
@@ -105,7 +102,7 @@ function makeBrightStar(W: number, H: number): Star {
 		alpha: rand(0.6, 1.0),
 		alphaDir: Math.random() > 0.5 ? 0.004 : -0.004,
 		twinkleSpeed: rand(0.002, 0.006),
-		twinkles: true, // always twinkle
+		twinkles: true,
 		color: pickColor({ white: 50, rose: 20, lilac: 12, iceblue: 10, green: 8 }),
 		vx: rand(-0.14, 0.14),
 		vy: rand(-0.1, 0.1),
@@ -114,8 +111,6 @@ function makeBrightStar(W: number, H: number): Star {
 }
 
 // ─── Offscreen nebula compositor ─────────────────────────────────────────────
-// Pre-renders 3 soft radial blobs onto an offscreen canvas once per resize.
-// Each frame just drawImage() — no fill calls in the hot path.
 
 function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 	const off = document.createElement("canvas");
@@ -131,7 +126,6 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 		r: [number, number, number];
 		opacity: number;
 	}[] = [
-		// Rose — left-center
 		{
 			cx: W * 0.1,
 			cy: H * 0.5,
@@ -140,7 +134,6 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 			r: [212, 132, 154],
 			opacity: 0.06,
 		},
-		// Lilac — top-right
 		{
 			cx: W * 0.82,
 			cy: H * 0.2,
@@ -149,7 +142,6 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 			r: [175, 112, 210],
 			opacity: 0.05,
 		},
-		// Soft green — bottom-right
 		{
 			cx: W * 0.75,
 			cy: H * 0.85,
@@ -158,7 +150,6 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 			r: [74, 222, 128],
 			opacity: 0.04,
 		},
-		// Faint rose — top-center bleed
 		{
 			cx: W * 0.48,
 			cy: H * -0.04,
@@ -186,11 +177,9 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 		grd.addColorStop(1, `rgba(${b.r[0]}, ${b.r[1]}, ${b.r[2]}, 0)`);
 
 		octx.save();
-		// Scale horizontally to get the ellipse shape
 		octx.translate(b.cx, b.cy);
 		octx.scale(b.rx / Math.max(b.rx, b.ry), b.ry / Math.max(b.rx, b.ry));
 		octx.translate(-b.cx, -b.cy);
-
 		octx.fillStyle = grd;
 		octx.beginPath();
 		octx.arc(b.cx, b.cy, Math.max(b.rx, b.ry), 0, Math.PI * 2);
@@ -201,7 +190,118 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 	return off;
 }
 
-// ─── Draw a single star (with optional glow halo) ────────────────────────────
+// ─── Shooting star ────────────────────────────────────────────────────────────
+//
+// Single fixed direction: top-right → bottom-left (≈ 215°).
+// Only the ENTRY POINT along the top-right region varies — the angle is locked.
+// This makes every meteor feel like the same sky event, not two different objects.
+//
+// To tune:
+//   METEOR_ANGLE_DEG   — the travel direction in degrees. 215 = down-left diagonal.
+//                        Increase toward 225 for steeper, decrease toward 200 for shallower.
+//   entrySpread        — how wide the top-right entry band is (fraction of W).
+//   METEOR_SPEED       — px per frame. Higher = faster crossing.
+//   METEOR_TAIL        — streak length in px.
+
+const METEOR_ANGLE_DEG = 120;
+const METEOR_ANGLE_RAD = (METEOR_ANGLE_DEG * Math.PI) / 150;
+const METEOR_UX = Math.cos(METEOR_ANGLE_RAD); // unit vector x
+const METEOR_UY = Math.sin(METEOR_ANGLE_RAD); // unit vector y
+
+interface ShootingStar {
+	x: number;
+	y: number;
+	vx: number;
+	vy: number;
+	life: number;
+	maxLife: number;
+	tail: number;
+}
+
+function spawnShootingStar(width: number, height: number): ShootingStar {
+	// Entry point: somewhere along the top-right quadrant edge.
+	// We randomise position along that edge only — direction is fixed.
+	const entrySpread = 0.55; // fraction of width used as entry band
+	const entryX =
+		width * (1 - entrySpread) + Math.random() * width * entrySpread;
+	const entryY = rand(-height * 0.08, height * 0.18); // just above or near top
+
+	const speed = rand(16, 22);
+	const tail = rand(180, 260);
+
+	// maxLife: enough frames to cross the full diagonal + a little fade room
+	const travel = Math.hypot(width * 1.2, height * 1.1);
+	const maxLife = Math.ceil(travel / speed);
+
+	return {
+		x: entryX,
+		y: entryY,
+		vx: METEOR_UX * speed,
+		vy: METEOR_UY * speed,
+		life: 0,
+		maxLife,
+		tail,
+	};
+}
+
+function drawShootingStar(ctx: CanvasRenderingContext2D, s: ShootingStar) {
+	const hx = s.x;
+	const hy = s.y;
+	// Tail trails behind in the opposite direction of travel
+	const tx = s.x - METEOR_UX * s.tail;
+	const ty = s.y - METEOR_UY * s.tail;
+
+	// Edge fade: ramp in for first 8 frames, ramp out for last 14
+	let edgeFade = 1;
+	if (s.life < 8) edgeFade = s.life / 8;
+	if (s.life > s.maxLife - 14) {
+		edgeFade = Math.min(edgeFade, (s.maxLife - s.life) / 14);
+	}
+	const f = edgeFade;
+
+	const grd = ctx.createLinearGradient(hx, hy, tx, ty);
+	grd.addColorStop(0, `rgba(255,252,250,${0.98 * f})`);
+	grd.addColorStop(0.05, `rgba(255,245,248,${0.65 * f})`);
+	grd.addColorStop(0.32, `rgba(232,160,180,${0.38 * f})`);
+	grd.addColorStop(0.58, `rgba(212,132,154,${0.22 * f})`);
+	grd.addColorStop(0.82, `rgba(120,220,160,${0.1 * f})`);
+	grd.addColorStop(1, "rgba(74,222,128,0)");
+
+	// Soft outer glow
+	ctx.beginPath();
+	ctx.moveTo(hx, hy);
+	ctx.lineTo(tx, ty);
+	ctx.strokeStyle = `rgba(255,250,248,${0.14 * f})`;
+	ctx.lineWidth = 4.5;
+	ctx.lineCap = "round";
+	ctx.stroke();
+
+	// Core streak
+	ctx.beginPath();
+	ctx.moveTo(hx, hy);
+	ctx.lineTo(tx, ty);
+	ctx.strokeStyle = grd;
+	ctx.lineWidth = 2;
+	ctx.lineCap = "round";
+	ctx.stroke();
+
+	// Bright head dot
+	ctx.beginPath();
+	ctx.arc(hx, hy, 2.1, 0, Math.PI * 2);
+	ctx.fillStyle = `rgba(255,252,250,${0.95 * f})`;
+	ctx.fill();
+
+	// Head glow bloom
+	ctx.beginPath();
+	ctx.arc(hx, hy, 4, 0, Math.PI * 2);
+	const headGlow = ctx.createRadialGradient(hx, hy, 0, hx, hy, 4);
+	headGlow.addColorStop(0, `rgba(212,132,154,${0.35 * f})`);
+	headGlow.addColorStop(1, "rgba(74,222,128,0)");
+	ctx.fillStyle = headGlow;
+	ctx.fill();
+}
+
+// ─── Draw a single star ───────────────────────────────────────────────────────
 
 function drawStar(
 	ctx: CanvasRenderingContext2D,
@@ -213,7 +313,6 @@ function drawStar(
 	const x = s.x + offsetX;
 	const y = s.y + offsetY;
 
-	// Glow for bright layer only (r >= 1.8)
 	if (s.r >= 1.8) {
 		const glowR = s.r * 5;
 		const grd = ctx.createRadialGradient(x, y, 0, x, y, glowR);
@@ -226,7 +325,6 @@ function drawStar(
 		ctx.fill();
 	}
 
-	// Core dot
 	ctx.beginPath();
 	ctx.arc(x, y, s.r, 0, Math.PI * 2);
 	ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${s.alpha})`;
@@ -260,18 +358,18 @@ export default function Landing() {
 		let nebula: HTMLCanvasElement | null = null;
 		let animId: number;
 
-		// Mouse offset for parallax (CSS pixels)
 		let mouseX = 0,
 			mouseY = 0;
 		let targetMouseX = 0,
 			targetMouseY = 0;
 
-		// ── Init / resize ───────────────────────────────────────────────────────
+		let shootingStar: ShootingStar | null = null;
+		let framesUntilShootingStar = Math.floor(rand(55, 110));
+
 		function init() {
 			W = window.innerWidth;
 			H = window.innerHeight;
 
-			// DPR-correct canvas sizing
 			c.width = W * DPR;
 			c.height = H * DPR;
 			c.style.width = `${W}px`;
@@ -281,47 +379,45 @@ export default function Landing() {
 			const mobile = isMobile();
 			const scale = mobile ? 0.5 : 1;
 
-			const dcnt = Math.floor(BASE_COUNTS.deep * scale);
-			const mcnt = Math.floor(BASE_COUNTS.mid * scale);
-			const bcnt = Math.floor(BASE_COUNTS.bright * scale);
-
-			deepStars = Array.from({ length: dcnt }, () => makeDeepStar(W, H));
-			midStars = Array.from({ length: mcnt }, () => makeMidStar(W, H));
-			brightStars = Array.from({ length: bcnt }, () => makeBrightStar(W, H));
+			deepStars = Array.from(
+				{ length: Math.floor(BASE_COUNTS.deep * scale) },
+				() => makeDeepStar(W, H),
+			);
+			midStars = Array.from(
+				{ length: Math.floor(BASE_COUNTS.mid * scale) },
+				() => makeMidStar(W, H),
+			);
+			brightStars = Array.from(
+				{ length: Math.floor(BASE_COUNTS.bright * scale) },
+				() => makeBrightStar(W, H),
+			);
 
 			nebula = buildNebulaCanvas(W, H);
+			shootingStar = null;
+			framesUntilShootingStar = Math.floor(rand(55, 110));
 		}
 
-		// ── Tick ────────────────────────────────────────────────────────────────
 		function tick() {
 			context.clearRect(0, 0, W, H);
 
-			// 1. Draw pre-rendered nebula clouds
 			if (nebula) context.drawImage(nebula, 0, 0, W, H);
 
-			// 2. Smooth mouse tracking (lerp)
 			if (!reducedMotion && !isMobile()) {
 				mouseX += (targetMouseX - mouseX) * 0.04;
 				mouseY += (targetMouseY - mouseY) * 0.04;
 			}
 
-			// 3. Draw all three layers
-			const allLayers: Star[][] = [deepStars, midStars, brightStars];
-
-			for (const layer of allLayers) {
+			for (const layer of [deepStars, midStars, brightStars]) {
 				for (const s of layer) {
-					// Drift
 					if (!reducedMotion) {
 						s.x += s.vx;
 						s.y += s.vy;
-						// Wrap
 						if (s.x < -4) s.x = W + 4;
 						if (s.x > W + 4) s.x = -4;
 						if (s.y < -4) s.y = H + 4;
 						if (s.y > H + 4) s.y = -4;
 					}
 
-					// Twinkle
 					if (s.twinkles && !reducedMotion) {
 						s.alpha += s.alphaDir * (s.twinkleSpeed / 0.002);
 						const lo = s.baseAlpha * 0.25;
@@ -336,7 +432,6 @@ export default function Landing() {
 						}
 					}
 
-					// Parallax offset
 					const ox = reducedMotion
 						? 0
 						: (mouseX - W / 2) * s.parallaxFactor * 0.045;
@@ -348,21 +443,44 @@ export default function Landing() {
 				}
 			}
 
+			// Shooting star — single direction, desktop + motion only
+			if (!reducedMotion && !isMobile() && W > 0) {
+				if (shootingStar) {
+					shootingStar.x += shootingStar.vx;
+					shootingStar.y += shootingStar.vy;
+					shootingStar.life += 1;
+					drawShootingStar(context, shootingStar);
+
+					const margin = shootingStar.tail * 2;
+					const done =
+						shootingStar.life >= shootingStar.maxLife ||
+						shootingStar.x < -margin ||
+						shootingStar.y > H + margin;
+
+					if (done) {
+						shootingStar = null;
+						framesUntilShootingStar = Math.floor(rand(320, 720));
+					}
+				} else {
+					framesUntilShootingStar -= 1;
+					if (framesUntilShootingStar <= 0) {
+						shootingStar = spawnShootingStar(W, H);
+					}
+				}
+			}
+
 			animId = requestAnimationFrame(tick);
 		}
 
-		// ── Mouse tracking ──────────────────────────────────────────────────────
 		function onMouseMove(e: MouseEvent) {
 			targetMouseX = e.clientX;
 			targetMouseY = e.clientY;
 		}
 
-		// ── Resize ──────────────────────────────────────────────────────────────
 		function onResize() {
 			init();
 		}
 
-		// ── Boot ────────────────────────────────────────────────────────────────
 		init();
 		tick();
 
@@ -378,7 +496,6 @@ export default function Landing() {
 		};
 	}, []);
 
-	// ── Scroll handler ─────────────────────────────────────────────────────────
 	const handleScroll = () => {
 		const hero = document.getElementById("hero");
 		if (hero) hero.scrollIntoView({ behavior: "smooth" });
@@ -386,10 +503,7 @@ export default function Landing() {
 
 	return (
 		<section className="landing" id="landing">
-			{/* CSS nebula layer — renders instantly, zero JS */}
 			<div className="landing__nebula" aria-hidden />
-
-			{/* Canvas: stars + canvas nebula blobs */}
 			<canvas ref={canvasRef} className="landing__canvas" aria-hidden />
 
 			<div className="landing__content">

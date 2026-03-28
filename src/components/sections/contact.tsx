@@ -1,7 +1,8 @@
-import { motion } from "framer-motion";
+import { useInView } from "../../hooks/useInView";
 import { ArrowRight } from "lucide-react";
 
 export function Contact() {
+	const { ref, inView } = useInView();
 	return (
 		<section
 			id="contact"
@@ -9,10 +10,14 @@ export function Contact() {
 		>
 			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-rose/5 rounded-full blur-[140px] pointer-events-none" />
 
-			<motion.div
-				initial={{ opacity: 0, scale: 0.9 }}
-				whileInView={{ opacity: 1, scale: 1 }}
-				viewport={{ once: true }}
+			<div
+				ref={ref}
+				style={{
+					opacity: inView ? 1 : 0,
+					transform: inView ? "none" : "scale(0.96)",
+					transition:
+						"opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)",
+				}}
 				className="max-w-3xl mx-auto"
 			>
 				<h2 className="text-5xl md:text-8xl font-serif italic mb-12">
@@ -25,7 +30,7 @@ export function Contact() {
 					nicolerodriguez@pursuit.org
 					<ArrowRight className="group-hover:translate-x-2 transition-transform" />
 				</a>
-			</motion.div>
+			</div>
 		</section>
 	);
 }

@@ -220,6 +220,16 @@
 	}
 }
 
+.bento__rightStack {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	max-width: 420px;
+	align-self: center;
+	box-sizing: border-box;
+}
+
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    CARD DECK WRAPPER
    Fixed: width was 150% inline â€” caused iPhone
@@ -240,13 +250,11 @@
 	height: auto;
 	min-height: 220px;
 	width: 100%;
-	max-width: 420px;
 }
 
 @media (min-width: 1024px) {
 	.bento__strategyWrap {
 		height: 240px;
-		max-width: unset;
 	}
 }
 
@@ -323,4 +331,39 @@
 		filter: blur(50px);
 		pointer-events: none;
 	}
+}
+
+/* ── Blob orb (Bio) — conic gradient + blur on CSS layer; motion only rotates ─ */
+.bento__blobOrb {
+	position: relative;
+	width: 110px;
+	height: 110px;
+	margin-bottom: 28px;
+}
+
+.bento__blobOrb-spin {
+	position: absolute;
+	inset: 0;
+	border-radius: 60% 40% 55% 45% / 45% 55% 45% 55%;
+	background: conic-gradient(
+		from 0deg,
+		var(--bento-rose),
+		#c4a8ff,
+		var(--bento-green),
+		var(--bento-rose)
+	);
+	filter: blur(2px);
+	opacity: 0.55;
+	will-change: transform;
+}
+
+.bento__blobOrb-inner {
+	position: absolute;
+	inset: 6px;
+	border-radius: inherit;
+	background: var(--bento-bg);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 38px;
 }

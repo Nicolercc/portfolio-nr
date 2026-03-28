@@ -1,0 +1,115 @@
+/** About / bento section copy + hobby deck data (edit here; UI lives in bento.tsx). */
+
+export const BENTO_BIO = {
+	eyebrow: "About me",
+	name: "I'm Nicole,",
+	role: "full stack developer",
+	paragraphs: [
+		"NYC-based, Dominican Republic-raised. I build web products that are as thoughtful as they look — clean architecture, intentional UI, real performance.",
+		"I care about technology that actually does something. When I'm not writing code I'm filming, hiking somewhere with no signal, or island hopping back to my roots.",
+	],
+	tagline: "I make things. Usually with code. Sometimes with clay & paint.",
+	links: [
+		{
+			label: "LinkedIn",
+			href: "https://www.linkedin.com/in/nicolerodriguezz/",
+		},
+		{ label: "GitHub", href: "https://github.com/Nicolercc" },
+	],
+};
+
+export const BENTO_HOBBIES = [
+	{
+		icon: "🌿",
+		title: "Being in Nature",
+		desc: "Trails, shorelines, anywhere with no signal. I grew up where the mountains meet the sea — I've been chasing that feeling ever since.",
+		tag: "grounded",
+		rot: 3,
+		accent: "#4ADE80",
+		border: "rgba(74,222,128,0.4)",
+		glow: "rgba(74,222,128,0.15)",
+	},
+	{
+		icon: "🏝️",
+		title: "Island Hopping",
+		desc: "Salt air and new shores. Every island has its own rhythm — I collect them.",
+		tag: "wanderlust",
+		rot: 2,
+		accent: "#9BA8F5",
+		border: "rgba(155,168,245,0.4)",
+		glow: "rgba(155,168,245,0.15)",
+	},
+	{
+		icon: "📷",
+		title: "Film Photography",
+		desc: "Shooting on a Kodak WPZ2. No retakes, no filters — just whatever the light was actually doing that day.",
+		tag: "film",
+		rot: -4,
+		accent: "#D4849A",
+		border: "rgba(212,132,154,0.4)",
+		glow: "rgba(212,132,154,0.15)",
+	},
+
+	{
+		icon: "🐾",
+		title: "Animals",
+		desc: "I will stop mid-sentence to pet your dog. I have never once regretted this.",
+		tag: "animal lover",
+		rot: -3,
+		accent: "#F5C97A",
+		border: "rgba(245,201,122,0.4)",
+		glow: "rgba(245,201,122,0.15)",
+	},
+	{
+		icon: "🏺",
+		title: "Pottery",
+		desc: "Centering clay is the closest thing I've found to meditation. Every piece is a conversation.",
+		tag: "maker",
+		rot: 1,
+		accent: "#D4849A",
+		border: "rgba(212,132,154,0.4)",
+		glow: "rgba(212,132,154,0.15)",
+	},
+	{
+		icon: "🎨",
+		title: "Painting",
+		desc: "Acrylics, watercolour, whatever is nearby. The canvas doesn't judge.",
+		tag: "artist",
+		rot: -1,
+		accent: "#C4A8FF",
+		border: "rgba(196,168,255,0.4)",
+		glow: "rgba(196,168,255,0.15)",
+	},
+	{
+		icon: "📖",
+		title: "Reading",
+		desc: "Fiction that wrecks me, essays that change how I think, the occasional manifesto. Reading is how I stay curious about everything outside of code.",
+		tag: "curious",
+		rot: 2,
+		accent: "#F5C97A",
+		border: "rgba(245,201,122,0.4)",
+		glow: "rgba(245,201,122,0.15)",
+	},
+	{
+		icon: "✂️",
+		title: "Crafts & Making",
+		desc: "If it can be built, sewn, pressed, or glued — I've tried it. I just genuinely like making things exist that didn't before.",
+		tag: "creative",
+		rot: -2,
+		accent: "#4ADE80",
+		border: "rgba(74,222,128,0.4)",
+		glow: "rgba(74,222,128,0.15)",
+	},
+	{
+		icon: "✈️",
+		title: "Traveling",
+		desc: "New city, new SIM card, new everything. I travel to get uncomfortable — it's the best reset I know.",
+		tag: "explorer",
+		rot: -2,
+		accent: "#9BA8F5",
+		border: "rgba(155,168,245,0.4)",
+		glow: "rgba(155,168,245,0.15)",
+	},
+] as const;
+
+export type BentoHobby = (typeof BENTO_HOBBIES)[number];

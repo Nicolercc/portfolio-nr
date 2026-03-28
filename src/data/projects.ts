@@ -6,7 +6,7 @@ export const projectsData = {
 		role: "Product Lead · Developer",
 		live: "#",
 		github: "https://github.com/Nicolercc/nuclear-shelter-app",
-		heroVideo: "/media/nuclear-router-demo.mov",
+		heroImage: "/media/nuclear-router-hero.png",
 		detailImage: "/media/nuclear-router-detail.png",
 		tagline:
 			"A rapid-response navigation app designed to guide people to safety in seconds during a nuclear emergency.",

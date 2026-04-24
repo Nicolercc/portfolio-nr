@@ -65,3 +65,7 @@ src/
 | `npm run build`   | typecheck + production bundle |
 | `npm run preview` | preview production build      |
 | `npm run lint`    | run ESLint                    |
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE`.

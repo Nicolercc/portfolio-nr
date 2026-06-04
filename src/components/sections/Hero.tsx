@@ -227,12 +227,12 @@ export function Hero() {
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
-					className="mb-12"
+					className="mb-8"
 				>
 					<p className="landing__tagline mx-auto max-w-xl text-center mt-2">
 						<em>
-							Full-stack engineer building high-fidelity digital experiences
-							with a craftsman's precision.
+							Full-stack engineer who rebuilds stacks under deadline and writes code that 
+							reads like it was meant to last.
 						</em>
 					</p>
 				</motion.div>

@@ -508,11 +508,11 @@ export default function Landing() {
 
 			<div className="landing__content">
 				<span className="landing__eyebrow">
-					Full Stack Developer &amp; Media Strategist
+					Full-Stack Engineer · Pursuit Fellow &amp; Media Strategist
 				</span>
 				<h1 className="landing__name">Nicole R.</h1>
 				<p className="landing__tagline">
-					<em>Code that feels crafted.</em>
+					<em>I can tell the story and ship the product.</em>
 				</p>
 
 				<div className="landing__meta">

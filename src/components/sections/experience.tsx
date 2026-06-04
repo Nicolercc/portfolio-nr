@@ -19,22 +19,40 @@ export function Experience() {
 
 	const experiences = [
 		{
-			type: "Engineering",
-			company: "Elite Global Cleaning Services",
-			role: "Full-Stack Developer",
-			period: "2023 — 2024",
+			type: "Fellowship",
+			company: "Pursuit × AI Native Fellowship",
+			role: "Full-Stack Engineer Fellow",
+			period: "2024 — Present",
 			description:
-				"Architected a high-performance digital presence focusing on B2B conversion. Optimized site performance to 100/100 Lighthouse scores and ensured WCAG AA accessibility compliance.",
-			skills: ["Astro", "TypeScript", "Tailwind", "Performance"],
+				"Selected for Pursuit's software engineering fellowship with a 9% acceptance rate — trained as a full-stack engineer and AI-native developer. Built and shipped production applications with LLM integrations, agentic workflows, and cloud deployment infrastructure. Selected for BlackRock real estate capstone demo at Hudson Yards. Rebuilt Impactify from Firebase/Vite to Next.js App Router under deadline for the presentation.",
+			skills: ["React", "Next.js", "TypeScript", "Node.js", "PostgreSQL", "Claude AI", "Cloud Run", "Docker", "Vercel"],
+		},
+		{
+			type: "Freelance",
+			company: "Independent Developer",
+			role: "Full-Stack Developer · Consultant",
+			period: "2023 — Present",
+			description:
+				"Building and shipping production web applications for clients across Queens and NYC. Resolved infrastructure incidents end-to-end: SSL certificate expiry, DNS propagation failures, Netlify webhook misconfiguration — all post-launch, all live production. Specializing in performance-first architecture and bilingual (EN/ES) implementations for immigrant-owned businesses.",
+			skills: ["Astro", "React", "TypeScript", "Tailwind", "Netlify", "i18n", "Client Delivery"],
 		},
 		{
 			type: "Collaboration",
 			company: "Open Source Contributor",
 			role: "GitHub Community",
-			period: "2024",
+			period: "2024 — Present",
 			description:
-				"Contributing to the global ecosystem by solving issues, refining documentation, and maintaining code quality in public repositories.",
-			skills: ["Git Workflow", "Code Review", "Public Docs"],
+				"Contributing to the global ecosystem by solving issues, refining documentation, and maintaining code quality in public repositories. Building in public across civic tech, emergency response, and developer tooling.",
+			skills: ["Git Workflow", "Code Review", "Public Docs", "TypeScript"],
+		},
+		{
+			type: "Engineering",
+			company: "Elite Global Cleaning Services",
+			role: "Full-Stack Developer",
+			period: "2023 — 2024",
+			description:
+				"Built and shipped a production site for a Queens-based environmental remediation company. Zero-JavaScript Astro architecture for sub-second mobile load times. Resolved a production SSL certificate expiry post-launch — diagnosed Netlify webhook and Porkbun DNS propagation failure, restored HTTPS. Added English/Spanish i18n via Astro routing layer after initial delivery.",
+			skills: ["Astro", "TypeScript", "Tailwind", "Netlify", "Porkbun DNS", "i18n"],
 		},
 		{
 			type: "Editorial",
@@ -42,8 +60,8 @@ export function Experience() {
 			role: "Contributing Writer",
 			period: "Pre-Tech",
 			description:
-				"Crafting narratives for a global audience of millions. Developed a deep understanding of digital engagement, SEO, and the speed of modern media.",
-			skills: ["Content Strategy", "Narrative Design", "SEO"],
+				"Published narratives for a global audience of millions. Built fluency in digital engagement, SEO, and the speed of modern media — the same principles I now apply to product copy, onboarding flows, and technical documentation. The writing background is not a detour; it is why I understand the people using what I build.",
+			skills: ["Content Strategy", "SEO", "Narrative Design", "Audience Research"],
 		},
 	];
 

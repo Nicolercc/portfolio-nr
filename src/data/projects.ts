@@ -50,35 +50,39 @@ export const projectsData = {
 	"elite-global": {
 		title: "Elite Global Cleaning Services",
 		year: "2023",
-		category: "Corporate · Performance",
+		category: "Corporate · Client Work",
 		role: "Full-Stack Developer",
 		live: "https://eliteglobalcleaningservices.netlify.app/",
-		github: "https://github.com/Nicolercc/egcs",
+		github: "",
 		heroImage: "/media/elite-global-hero.png",
+		detailImage: "/media/elite-global-detail.png",
 		tagline:
-			"A high-performance, SEO-optimized platform for industrial B2B cleaning services.",
+			"Production client site for a Queens-based environmental remediation company — built for speed, maintained through real infrastructure failures.",
 		stack: [
 			"Astro",
 			"TypeScript",
-			"Tailwind",
+			"Tailwind CSS",
 			"React (Astro Islands)",
-			"Vercel",
+			"Netlify",
+			"Porkbun DNS",
 		],
-		why: "In industrial B2B environments, trust is established through performance and reliability. I built this platform to deliver fast load times and strong SEO visibility.",
+		why: "Elite Global Cleaning Services is a Queens-based environmental remediation company serving industrial B2B clients. Their existing web presence wasn't converting — slow load times, no bilingual support for their Spanish-speaking staff and clients, and zero SEO structure. I built them a production site they could rely on, then kept it running when things broke.",
 		decisions:
-			"I used Astro’s zero-JavaScript architecture to minimize client-side overhead. Static Site Generation ensured fast delivery and reliability, while structured metadata and schema improved search visibility.",
-		ux: "Designed for real-world usage: high-contrast typography and structured layout for readability on mobile devices in high-glare environments.",
-		performance:
-			"Achieved consistent 100/100 Lighthouse scores through static rendering and optimized asset delivery.",
-		seo: "Implemented semantic HTML, meta tags, Open Graph data, schema markup, and keyword optimization.",
+			"Chose Astro for zero-JavaScript-by-default architecture — the client's audience is facilities managers on mobile, often in high-glare environments with spotty connections. Static Site Generation means the site loads instantly with no hydration cost. Added React Islands only where interactivity was genuinely needed. Built bilingual support (English/Spanish) via Astro's i18n layer so the site serves both their external clients and internal Spanish-speaking staff.",
+		ux: "High-contrast typography and structured layout optimized for mobile readability in industrial environments — not a desk-browsing experience. Service pages structured around B2B decision-making: what you get, who it's for, how to contact. No unnecessary animations or flourishes that would slow perceived performance on a construction site Wi-Fi connection.",
 		architecture:
-			"Astro-based static architecture with selective React hydration. Deployed via Vercel for fast global delivery.",
+			"Static site deployed to Netlify with Porkbun nameservers handling DNS. Resolved a production SSL certificate expiry incident post-launch — diagnosed the Netlify webhook/DNS propagation issue, updated nameserver configuration, and restored HTTPS without downtime. i18n implemented at the Astro routing layer with English as default and Spanish as a parallel route — no third-party translation service, no client-side switching cost.",
+		performance:
+			"Near-zero client-side JavaScript outside of interactive islands. Static generation means every page is pre-rendered at build time — no server latency, no hydration delay. Structured metadata and semantic HTML for search visibility in local industrial service queries.",
+		impact:
+			"Live production site for a real paying client. Diagnosed and resolved SSL expiry and DNS configuration failures post-launch. Added i18n after initial delivery based on client feedback — first time doing production bilingual routing.",
 		future:
-			"Add analytics for conversion tracking, A/B testing, and edge caching improvements.",
+			"Add a service request form with Netlify Forms. Build a client portal for job scheduling and status updates.",
 		lessons: [
-			"Performance directly impacts trust in B2B applications.",
-			"SEO is a core engineering responsibility.",
-			"Reducing JavaScript improves real-world usability.",
+			"Production maintenance is a different skill than initial development — SSL expiry and DNS failures happen after you ship, not before.",
+			"Astro Islands is the right call for content sites where interactivity is the exception, not the rule.",
+			"Client work requires scope discipline — i18n was added post-launch because it wasn't scoped initially, which cost more time than building it in from the start.",
+			"B2B audiences don't need delightful UX — they need fast, legible, and trustworthy.",
 		],
 	},
 

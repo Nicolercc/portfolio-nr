@@ -104,21 +104,19 @@ export const projectsData = {
 			"Supabase",
 			"Anthropic API",
 			"Guardian News API",
-			"ProPublica Congress API",
-			"GovTrack API",
 			"VolunteerMatch API",
 			"Vercel",
 		],
 		why: "Civic platforms fail the people who already care. They assume users are either uninformed or have unlimited time — neither is true for Sofia, a 27-year-old NYC resident who follows the news, cares deeply about housing and immigration, and has exactly 10 minutes on a Tuesday night. I built Impactify around her: not more awareness, but a single clear action with everything she needs to take it.",
 		decisions:
-			"Rebuilt the entire stack from Firebase/Stripe/Socket.io/React-Vite to Next.js App Router for a Goldman Sachs capstone demo. Guardian News API powers the news cards with server-side fetching so articles load instantly. Anthropic API generates plain-English summaries of complex civic issues — cached to Supabase to prevent repeated API calls and ensure consistent output. The editorial thesis: confident prose with one citation beats source carousels. Every content decision runs through that lens.",
+			"Rebuilt the entire stack from Firebase/Stripe/Socket.io/React-Vite to Next.js App Router for a BlackRock real estate capstone demo in Hudson Yards. Guardian News API powers the news cards with server-side fetching so articles load instantly. Anthropic API generates plain-English summaries of complex civic issues — cached to Supabase to prevent repeated API calls and ensure consistent output. The editorial thesis: confident prose with one citation beats source carousels. Every content decision runs through that lens.",
 		ux: "Three-screen flow designed around decision fatigue. Onboarding: pick 2–3 issues via chips, enter zip code. Weekly Briefing: AI summary banner, one action widget, Guardian news cards, rep sidebar always sticky. My Reps: voting records with contact forms. Sofia should never have to decide what to read next — the product decides for her and shows its work with a single citation.",
 		architecture:
 			"Next.js App Router with server components for data fetching — Guardian and Anthropic API calls happen server-side so keys never reach the client. Supabase caches all API responses with 24-hour TTLs so the briefing loads instantly on repeat visits. Claude generates issue summaries and action copy server-side, cached to Supabase on first generation. Promise.all parallelizes all briefing page fetches — eliminated a 3-second sequential waterfall from the v1 implementation. Skeleton loading with exact grid dimensions matching the final layout eliminates layout shift.",
 		performance:
 			"Server-side rendering with Supabase cache means the Weekly Briefing renders in under 800ms on repeat visits. Guardian API articles fetched in parallel with Claude summaries — neither blocks the other. Sticky sidebar pattern established with no competing scrollbars and a Suspense boundary around the AI briefing slot.",
 		impact:
-			"Selected for Goldman Sachs capstone demo. Rebuilt from scratch under deadline pressure from a completely different stack. Presented to finance industry stakeholders as a production-grade civic technology product.",
+			"Selected for BlackRock real estate capstone demo at Hudson Yards. Rebuilt from scratch under deadline pressure from a completely different stack. Presented to finance industry stakeholders as a production-grade civic technology product.",
 		future:
 			"Add push notification support for time-sensitive civic moments. Build a shareable civic record showing actions taken over time. Expand issue areas beyond NYC.",
 		lessons: [

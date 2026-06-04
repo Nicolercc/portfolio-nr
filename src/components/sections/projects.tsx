@@ -8,106 +8,135 @@ import { ArrowUpRight } from "lucide-react";
 ───────────────────────────────────────────── */
 // upgraded caseStudies data (hire-level)
 
+type CaseStudyImage = {
+	label: string;
+	bg: string;
+	icon: string;
+	stat?: string;
+};
+
 const caseStudies = [
 	{
 		slug: "nuclear-router",
 		index: "01",
 		category: "Hackathon · Community & Safety Response",
-		title: "Nuclear Router",
-		tagline: "Emergency navigation that guides users to safety in seconds.",
+		title: "Nuclear Escape Router",
+		tagline: "Real routing, live weather, AI triage — survival guidance in under 3 seconds.",
 		description:
-			"A rapid-response navigation system built in under 2 hours during a hackathon to deliver immediate routing decisions in a nuclear emergency scenario.",
+			"Full-stack nuclear emergency simulator deployed on Google Cloud Run + Vercel. Architected a pnpm monorepo, decoded Google's encoded polyline format for real road geometry, and built a geospatial scoring algorithm that routes escape destinations away from — not through — the blast zone.",
 		highlights: [
-			"Built and shipped in under 2 hours under hackathon constraints",
-			"Winner: Community Favorite + Best Alignment with Theme (Community)",
-			"Integrated geolocation, Google Maps routing, and OpenWeather wind data",
+			"Claude AI generates a personalized 3-sentence survival brief server-side on every analysis",
+			"Geospatial scoring algorithm selects safe city destinations by flee-from-blast bearing weighted against wind direction",
+			"Real Google Directions polyline decoded client-side — escape route follows actual roads",
+			"Shareable URLs encode full scenario; shared links auto-run analysis on load",
+			"Won Community Favorite + Best Alignment with Theme",
 		],
 		stack: [
-			"React",
+			"React 19",
 			"TypeScript",
-			"Vite",
-			"Google Maps API",
-			"OpenWeather API",
-			"Browser Geolocation API",
+			"Express 5",
+			"Google Maps APIs",
+			"OpenWeather",
+			"Claude AI",
+			"Leaflet",
+			"Cloud Run",
 			"Vercel",
+			"Docker",
+			"pnpm Monorepo",
 		],
 		accent: "rose",
 		year: "2026",
 		images: [
 			{
-				label: "Evacuation Routing",
+				label: "Real-Road Routing",
 				bg: "from-green/20 to-transparent",
 				icon: "🧭",
+				stat: "Google Directions API · Encoded polyline decoded client-side",
 			},
 			{
-				label: "Community Awards",
+				label: "AI Survival Brief",
 				bg: "from-rose/20 to-transparent",
-				icon: "🏆",
+				icon: "⚡",
+				stat: "Claude AI · 3-sentence brief · server-side",
+			},
+		],
+	},
+	{
+		slug: "impactify",
+		index: "02",
+		category: "Civic Tech · Full-Stack · BlackRock Capstone",
+		title: "Impactify",
+		tagline: "Civic engagement for the overwhelmed but informed. Actions, not awareness.",
+		description:
+			"Rebuilt the entire stack from Firebase/Vite to Next.js App Router under deadline for a BlackRock capstone demo. Guardian News API + Claude AI generate plain-English issue summaries cached to Supabase — confident prose with one citation beats source carousels.",
+		highlights: [
+			"Full stack rebuild under deadline: Firebase/Stripe/Vite → Next.js App Router for BlackRock real estate demo",
+			"Claude AI generates bill summaries server-side, cached to Supabase — no repeated API calls",
+			"Promise.all parallelizes all briefing fetches, cutting load from 3s sequential waterfall to under 800ms",
+			"Designed around Sofia — a named 27-year-old NYC persona — not a generic user",
+		],
+		stack: [
+			"Next.js 14",
+			"TypeScript",
+			"Tailwind CSS",
+			"Supabase",
+			"Anthropic API",
+			"Guardian News API",
+			"VolunteerMatch API",
+			"Vercel",
+		],
+		accent: "green",
+		year: "2024–2025",
+		images: [
+			{
+				label: "Weekly Briefing",
+				bg: "from-green/20 to-transparent",
+				icon: "📰",
+				stat: "Guardian API · Claude AI · Supabase cache",
+			},
+			{
+				label: "BlackRock Demo",
+				bg: "from-rose/20 to-transparent",
+				icon: "🗳️",
+				stat: "Next.js App Router · rebuilt under deadline",
 			},
 		],
 	},
 	{
 		slug: "elite-global",
-		index: "02",
-		category: "Corporate · Performance",
+		index: "03",
+		category: "Corporate · Client Work",
 		title: "Elite Global Cleaning Services",
-		tagline: "High-performance digital presence for industrial B2B.",
+		tagline: "Production client site maintained through real infrastructure failures.",
 		description:
-			"A performance-first corporate platform engineered with static architecture to ensure fast load times, strong SEO, and reliability.",
+			"Astro-powered static site for a Queens-based environmental remediation company. Resolved a production SSL certificate expiry post-launch — diagnosed Netlify webhook and Porkbun DNS propagation failure, restored HTTPS. Added English/Spanish i18n via Astro routing after initial delivery.",
 		highlights: [
-			"100/100 Lighthouse performance and SEO scores",
-			"Zero-JavaScript architecture using Astro",
-			"Implemented schema markup and structured SEO strategy",
+			"Resolved production SSL expiry: diagnosed Netlify webhook + Porkbun DNS failure, restored HTTPS",
+			"Zero-JavaScript Astro architecture — sub-second load on mobile industrial connections",
+			"English/Spanish bilingual routing via Astro i18n layer, no third-party translation service",
 		],
 		stack: [
 			"Astro",
 			"TypeScript",
 			"Tailwind CSS",
 			"React (Astro Islands)",
-			"Vercel",
+			"Netlify",
+			"Porkbun DNS",
 		],
-		accent: "green",
+		accent: "rose",
 		year: "2023",
 		images: [
-			{ label: "Homepage", bg: "from-green/20 to-transparent", icon: "🏢" },
-			{ label: "Services", bg: "from-zinc-800 to-transparent", icon: "🛡️" },
-		],
-	},
-	{
-		slug: "impactify",
-		index: "03",
-		category: "Civic Tech · Full-Stack",
-		title: "Impactify",
-		tagline: "A real-time platform that turns awareness into action.",
-		description:
-			"A full-stack platform centralizing activism tools using real-time data and seamless donation flows.",
-		highlights: [
-			"Real-time updates via Firebase Firestore",
-			"Stripe-powered donation flow integration",
-			"Coordinated multiple async APIs into a unified interface",
-		],
-		stack: [
-			"React",
-			"Firebase",
-			"Stripe",
-			"NewsAPI",
-			"Google Maps API",
-			"Material UI",
-			"React Spring",
-			"Netlify",
-		],
-		accent: "violet & green",
-		year: "2024",
-		images: [
 			{
-				label: "Event Discovery",
-				bg: "from-rose/20 to-transparent",
-				icon: "🗺️",
+				label: "Production Site",
+				bg: "from-green/20 to-transparent",
+				icon: "🏢",
+				stat: "Astro · zero JS · SSL incident resolved",
 			},
 			{
-				label: "Donation Flow",
-				bg: "from-green/20 to-transparent",
-				icon: "💳",
+				label: "Bilingual i18n",
+				bg: "from-zinc-800 to-transparent",
+				icon: "🌐",
+				stat: "EN/ES · Astro i18n routing layer",
 			},
 		],
 	},
@@ -119,23 +148,29 @@ const caseStudies = [
 function ProjectVisuals({
 	images,
 }: {
-	images: (typeof caseStudies)[0]["images"];
+	images: CaseStudyImage[];
 }) {
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 			{images.map((img) => (
 				<div
 					key={img.label}
-					className="relative aspect-video rounded-2xl overflow-hidden bg-zinc-900 border border-white/[0.05] group/img"
+					className="relative aspect-video rounded-2xl overflow-hidden bg-zinc-950 border border-white/[0.06] group/img flex flex-col justify-between p-5"
 				>
 					<div
-						className={`absolute inset-0 bg-gradient-to-br ${img.bg} opacity-40 group-hover:opacity-60 transition-opacity duration-500`}
+						className={`absolute inset-0 bg-gradient-to-br ${img.bg} opacity-20 group-hover/img:opacity-40 transition-opacity duration-500`}
 					/>
-					<div className="absolute inset-0 flex items-center justify-center text-5xl grayscale group-hover/img:grayscale-0 group-hover/img:scale-110 transition-all duration-700">
-						{img.icon}
+					<div className="relative z-10 flex items-center justify-between">
+						<span className="text-[9px] uppercase tracking-[0.25em] font-mono text-white/30">
+							{img.label}
+						</span>
+						<span className="text-2xl">{img.icon}</span>
 					</div>
-					<div className="absolute bottom-4 left-4 text-[10px] uppercase tracking-[0.2em] font-mono text-white/30">
-						{img.label}
+					<div className="relative z-10">
+						<div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-3" />
+						<p className="text-[10px] font-mono text-white/20 uppercase tracking-widest">
+							{img.stat ?? "Case study"}
+						</p>
 					</div>
 				</div>
 			))}
@@ -163,7 +198,7 @@ function CaseStudyCard({ study }: { study: (typeof caseStudies)[0] }) {
 		<motion.article
 			ref={cardRef}
 			style={{ opacity }}
-			className="relative py-20  border-white/10 group"
+			className="relative py-12 border-white/10 group"
 		>
 			<div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 				{/* Left Side: Info */}
@@ -246,9 +281,9 @@ export function Projects() {
 			id="work"
 			className="relative  px-6 md:px-12 bg-transparent overflow-hidden"
 		>
-			<div className="max-w-7xl mx-auto relative z-10 border-t border-white/[0.05] pt-25">
+			<div className="max-w-7xl mx-auto relative z-10 border-t border-white/[0.05] pt-16">
 				{/* Editorial Header */}
-				<header className="mb-25">
+				<header className="mb-16">
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						whileInView={{ opacity: 1, y: 0 }}

@@ -16,8 +16,6 @@ export default function Home() {
 
 	useEffect(() => {
 		document.title = "Nicole Rodriguez — Developer Portfolio";
-		// High-end smooth scroll management
-		document.documentElement.style.scrollBehavior = "smooth";
 		return () => {
 			document.documentElement.style.scrollBehavior = "auto";
 		};

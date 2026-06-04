@@ -147,7 +147,7 @@ export default function CaseStudy() {
 									The Vision
 								</h3>
 								<p className="text-2xl md:text-3xl font-serif italic leading-relaxed">
-									{project.why}
+									{project.why.split(".")[0]}.
 								</p>
 							</motion.div>
 
@@ -210,24 +210,66 @@ export default function CaseStudy() {
 							</div>
 						</div> */}
 
-						{/* Core Decisions Section */}
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-16 pt-16 border-t border-white/5">
+						<div className="space-y-16 pt-16 border-t border-white/5">
 							<div className="space-y-6">
 								<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
-									Strategic Logic
+									Engineering Decisions
 								</h3>
-								<p className="font-light text-muted-foreground leading-relaxed">
+								<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
 									{project.decisions}
 								</p>
 							</div>
-							<div className="space-y-6">
-								<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
-									UX Philosophy
-								</h3>
-								<p className="font-light text-muted-foreground leading-relaxed">
-									{project.ux}
-								</p>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-white/5 pt-12">
+								<div className="space-y-4">
+									<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
+										UX Philosophy
+									</h3>
+									<p className="font-light text-muted-foreground leading-relaxed text-sm">
+										{project.ux}
+									</p>
+								</div>
+								<div className="space-y-4">
+									<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-green italic opacity-80">
+										Performance
+									</h3>
+									<p className="font-light text-muted-foreground leading-relaxed text-sm">
+										{project.performance}
+									</p>
+								</div>
 							</div>
+						</div>
+					</div>
+				</section>
+
+				<section className="px-6 md:px-20 py-20 border-t border-white/5 max-w-screen-xl mx-auto">
+					<div className="grid grid-cols-1 md:grid-cols-12 gap-20">
+						<div className="md:col-span-4 space-y-4">
+							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-green italic opacity-80">
+								Impact
+							</h3>
+							<p className="font-serif text-xl italic leading-relaxed text-muted-foreground">
+								{project.impact}
+							</p>
+						</div>
+						<div className="md:col-span-8 space-y-8">
+							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
+								Retrospective
+							</h3>
+							<ul className="space-y-6">
+								{project.lessons.map((lesson: string, i: number) => (
+									<li
+										key={i}
+										className="flex gap-6 items-start border-b border-white/5 pb-6 last:border-0"
+									>
+										<span className="font-mono text-[10px] text-rose/40 mt-1 shrink-0">
+											/0{i + 1}
+										</span>
+										<p className="text-sm font-light text-muted-foreground leading-relaxed">
+											{lesson}
+										</p>
+									</li>
+								))}
+							</ul>
 						</div>
 					</div>
 				</section>

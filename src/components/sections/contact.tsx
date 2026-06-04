@@ -1,8 +1,20 @@
 import { useInView } from "../../hooks/useInView";
 import { ArrowRight } from "lucide-react";
+import confetti from "canvas-confetti";
 
 export function Contact() {
 	const { ref, inView } = useInView();
+
+	function fireConfetti() {
+		confetti({
+			particleCount: 80,
+			spread: 70,
+			origin: { y: 0.8 },
+			colors: ["#D4849A", "#4ADE80", "#C4A8FF", "#F5C97A"],
+			disableForReducedMotion: true,
+		});
+	}
+
 	return (
 		<section
 			id="contact"
@@ -25,6 +37,7 @@ export function Contact() {
 				</h2>
 				<a
 					href="mailto:hello@nicolerodriguez.me"
+					onClick={fireConfetti}
 					className="inline-flex items-center gap-4 text-xl md:text-2xl font-light hover:text-rose transition-colors duration-300 group"
 				>
 					nicolerodriguez@pursuit.org

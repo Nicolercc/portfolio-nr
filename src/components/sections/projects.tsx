@@ -283,7 +283,7 @@ export function Projects() {
 		>
 			<div className="max-w-7xl mx-auto relative z-10 border-t border-white/[0.05] pt-16">
 				{/* Editorial Header */}
-				<header className="mb-16">
+				<header className="mb-16 overflow-hidden">
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						whileInView={{ opacity: 1, y: 0 }}
@@ -292,19 +292,44 @@ export function Projects() {
 					>
 						Selected Works
 					</motion.div>
-
-					<motion.h2
-						initial={{ opacity: 0, y: 30 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.1, duration: 0.8 }}
-						viewport={{ once: true }}
-						className="text-6xl md:text-9xl font-serif tracking-tighter leading-[0.85]"
-					>
-						Crafting with <br />
+					<h2 className="text-6xl md:text-9xl font-serif tracking-tighter leading-[0.85]">
+						{"Crafting with".split("").map((char, i) => (
+							<motion.span
+								key={i}
+								initial={{ opacity: 0, y: 60 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								viewport={{ once: true }}
+								transition={{
+									duration: 0.5,
+									delay: i * 0.03,
+									ease: [0.16, 1, 0.3, 1],
+								}}
+								className="inline-block"
+								style={{ whiteSpace: char === " " ? "pre" : "normal" }}
+							>
+								{char}
+							</motion.span>
+						))}
+						<br />
 						<span className="italic text-transparent bg-clip-text bg-gradient-to-r from-rose via-purple-400 to-green">
-							Intention.
+							{"Intention.".split("").map((char, i) => (
+								<motion.span
+									key={i}
+									initial={{ opacity: 0, y: 60 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									viewport={{ once: true }}
+									transition={{
+										duration: 0.5,
+										delay: 0.2 + i * 0.04,
+										ease: [0.16, 1, 0.3, 1],
+									}}
+									className="inline-block"
+								>
+									{char}
+								</motion.span>
+							))}
 						</span>
-					</motion.h2>
+					</h2>
 				</header>
 
 				{/* The Timeline of Projects */}

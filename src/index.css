@@ -67,10 +67,6 @@
 		box-sizing: border-box;
 	}
 
-	html {
-		scroll-behavior: smooth;
-	}
-
 	body {
 		@apply bg-background text-foreground antialiased font-sans overflow-x-hidden;
 	}

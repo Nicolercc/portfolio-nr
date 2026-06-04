@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { projectsData } from "../data/projects";
-import { ArrowUpRight, Play } from "lucide-react";
+import { ArrowUpRight, GitBranch, Play } from "lucide-react";
 
 export default function CaseStudy() {
 	const { slug } = useParams();
@@ -101,6 +101,28 @@ export default function CaseStudy() {
 					</motion.div>
 				</header>
 
+				{(project as { metrics?: { label: string; value: string }[] })
+					.metrics && (
+					<div className="px-6 md:px-20 py-10 border-y border-white/5 bg-white/[0.01]">
+						<div className="max-w-screen-xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+							{(
+								project as {
+									metrics?: { label: string; value: string }[];
+								}
+							).metrics!.map((m: { label: string; value: string }) => (
+								<div key={m.label} className="space-y-1">
+									<p className="font-mono text-3xl md:text-4xl font-bold text-white tracking-tighter">
+										{m.value}
+									</p>
+									<p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50 mt-1">
+										{m.label}
+									</p>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
 				{/* ── NARRATIVE GRID ── */}
 				<section className="px-6 md:px-20 py-20 grid grid-cols-1 md:grid-cols-12 gap-20">
 					{/* Metadata Sidebar */}
@@ -128,18 +150,36 @@ export default function CaseStudy() {
 								{project.role}
 							</p>
 						</div>
-						<a
-							href={project.live}
-							target="_blank"
-							rel="noreferrer"
-							className="inline-flex items-center gap-3 text-rose font-mono text-[10px] uppercase tracking-widest hover:gap-5 transition-all duration-300"
-						>
-							Explore Site <ArrowUpRight size={14} />
-						</a>
+						<div className="space-y-3 pt-4 border-t border-white/5">
+							<a
+								href={project.live}
+								target="_blank"
+								rel="noreferrer"
+								className="group inline-flex items-center gap-3 px-5 py-3 rounded-full border border-rose/30 bg-rose/5 hover:bg-rose/10 hover:border-rose/60 w-full justify-center text-rose font-mono text-[11px] uppercase tracking-widest transition-all duration-300"
+							>
+								<span className="w-1.5 h-1.5 rounded-full bg-rose animate-pulse" />
+								View Live Site
+								<ArrowUpRight
+									size={12}
+									className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+								/>
+							</a>
+							{project.github && (
+								<a
+									href={project.github}
+									target="_blank"
+									rel="noreferrer"
+									className="inline-flex items-center justify-center gap-2 w-full font-mono text-[10px] uppercase tracking-widest text-white/30 hover:text-white/60 transition-colors py-2"
+								>
+									<GitBranch size={10} />
+									Source Code
+								</a>
+							)}
+						</div>
 					</aside>
 
 					{/* Main Story Content */}
-					<div className="md:col-span-8 space-y-32">
+					<div className="md:col-span-8 space-y-20">
 						{/* 2. THE FEATURE SPLIT: TEXT + VISUAL */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 							<motion.div {...fadeUp} className="space-y-6">
@@ -153,7 +193,7 @@ export default function CaseStudy() {
 
 							<motion.div
 								{...fadeUp}
-								className="aspect-square bg-muted rounded-lg overflow-hidden border border-white/5 relative group"
+								className="aspect-video bg-muted rounded-lg overflow-hidden border border-white/5 relative group"
 							>
 								{"detailImage" in project && project.detailImage ? (
 									<img
@@ -241,7 +281,7 @@ export default function CaseStudy() {
 					</div>
 				</section>
 
-				<section className="px-6 md:px-20 py-20 border-t border-white/5 max-w-screen-xl mx-auto">
+				<section className="px-6 md:px-20 py-14 border-t border-white/5 max-w-screen-xl mx-auto">
 					<div className="grid grid-cols-1 md:grid-cols-12 gap-20">
 						<div className="md:col-span-4 space-y-4">
 							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-green italic opacity-80">
@@ -273,6 +313,26 @@ export default function CaseStudy() {
 						</div>
 					</div>
 				</section>
+
+				{project.future && (
+					<section className="px-6 md:px-20 py-16 border-t border-white/5">
+						<div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
+							<div className="md:col-span-4">
+								<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose/60 italic mb-4">
+									If I Had More Time
+								</h3>
+								<p className="font-serif text-2xl italic text-white/70 leading-relaxed">
+									What comes next.
+								</p>
+							</div>
+							<div className="md:col-span-8">
+								<p className="font-light text-muted-foreground leading-relaxed text-sm border-l border-white/10 pl-8">
+									{project.future}
+								</p>
+							</div>
+						</div>
+					</section>
+				)}
 
 				{/* ── NEXT PROJECT FOOTER ── */}
 				<footer className="relative py-60 px-6 overflow-hidden border-t border-white/5 group mt-40">

@@ -68,7 +68,6 @@ export function Navbar() {
 									{ label: "Home", id: "hero" },
 									{ label: "About", id: "about" },
 									{ label: "Work", id: "work" },
-									{ label: "Blog", id: "blog" },
 								].map((link) => (
 									<button
 										key={link.id}
@@ -97,12 +96,6 @@ export function Navbar() {
 										className="px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200"
 									>
 										About
-									</Link>
-									<Link
-										to="/"
-										className="px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200"
-									>
-										Blog
 									</Link>
 								</>
 							)}

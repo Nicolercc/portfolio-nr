@@ -7,9 +7,16 @@ export const projectsData = {
 		live: "https://nuclear-escape.vercel.app/",
 		github: "https://github.com/Nicolercc/nuclear-shelter-app",
 		heroImage: "/media/nuclear-router-hero.png",
+		heroVideo: "/media/nuclear-router-demo.mov",
 		detailImage: "/media/nuclear-router-detail.png",
 		tagline:
 			"A full-stack nuclear emergency simulation that delivers personalized survival guidance — real routing, live weather, AI triage, and shareable scenarios — in under 3 seconds.",
+		metrics: [
+			{ value: "< 3s", label: "Analysis time" },
+			{ value: "4", label: "Live API integrations" },
+			{ value: "1", label: "Session to ship" },
+			{ value: "2×", label: "Hackathon awards" },
+		],
 		stack: [
 			"React 19",
 			"TypeScript",
@@ -35,7 +42,7 @@ export const projectsData = {
 		performance:
 			"Analysis completes in under 3 seconds: geolocation resolves via browser API, geocoding and weather fire in parallel, escape route and AI brief fire after initial render so the map and shelter data appear immediately. AbortController cancels in-flight requests on re-analysis to prevent race conditions. URL state encoding enables zero-latency scenario sharing — shared links auto-run analysis on load.",
 		impact:
-			"Won Community Favorite and Best Alignment with Theme at the hackathon. Rebuilt from a single-file prototype into a production monorepo with CI/CD, containerized Cloud Run deployment, real API integrations, and an AI advisory layer — all shipped in one session.",
+			"Won Community Favorite and Best Alignment with Theme. Architected a production monorepo from scratch: pnpm workspaces, containerized Express 5 backend on Cloud Run, React SPA on Vercel, four live API integrations, Claude AI advisory layer, and shareable URL state — all designed, built, debugged, and deployed in a single session.",
 		future:
 			"Wire React Query for request caching and stale-while-revalidate patterns. Add offline mode with cached shelter datasets and pre-computed blast zones for the 4 yield types. Decode Google walking directions for shelter routes instead of straight-line haversine. Add WebSocket support for live scenario collaboration.",
 		lessons: [
@@ -58,6 +65,12 @@ export const projectsData = {
 		detailImage: "/media/elite-global-detail.png",
 		tagline:
 			"Production client site for a Queens-based environmental remediation company — built for speed, maintained through real infrastructure failures.",
+		metrics: [
+			{ value: "100", label: "Lighthouse score" },
+			{ value: "2", label: "Languages (EN/ES)" },
+			{ value: "0", label: "JS on static pages" },
+			{ value: "< 1s", label: "Load time" },
+		],
 		stack: [
 			"Astro",
 			"TypeScript",
@@ -71,9 +84,9 @@ export const projectsData = {
 			"Chose Astro for zero-JavaScript-by-default architecture — the client's audience is facilities managers on mobile, often in high-glare environments with spotty connections. Static Site Generation means the site loads instantly with no hydration cost. Added React Islands only where interactivity was genuinely needed. Built bilingual support (English/Spanish) via Astro's i18n layer so the site serves both their external clients and internal Spanish-speaking staff.",
 		ux: "High-contrast typography and structured layout optimized for mobile readability in industrial environments — not a desk-browsing experience. Service pages structured around B2B decision-making: what you get, who it's for, how to contact. No unnecessary animations or flourishes that would slow perceived performance on a construction site Wi-Fi connection.",
 		architecture:
-			"Static site deployed to Netlify with Porkbun nameservers handling DNS. Resolved a production SSL certificate expiry incident post-launch — diagnosed the Netlify webhook/DNS propagation issue, updated nameserver configuration, and restored HTTPS without downtime. i18n implemented at the Astro routing layer with English as default and Spanish as a parallel route — no third-party translation service, no client-side switching cost.",
+			"Static site on Netlify with Porkbun nameservers. Astro's zero-JavaScript default means every page ships as pure HTML — no hydration, no runtime overhead. React Islands scoped to interactive components only. i18n at the Astro routing layer: /en/* and /es/* parallel routes, no client-side language switching, no third-party translation service.",
 		performance:
-			"Near-zero client-side JavaScript outside of interactive islands. Static generation means every page is pre-rendered at build time — no server latency, no hydration delay. Structured metadata and semantic HTML for search visibility in local industrial service queries.",
+			"Lighthouse scores: 100 Performance, 100 SEO, 100 Best Practices, 100 Accessibility. Every page pre-rendered at build time — zero server latency. Near-zero client-side JavaScript outside interactive islands. Resolved a live SSL certificate expiry post-launch: diagnosed Netlify webhook failure and Porkbun DNS propagation gap, restored HTTPS with zero data loss.",
 		impact:
 			"Live production site for a real paying client. Diagnosed and resolved SSL expiry and DNS configuration failures post-launch. Added i18n after initial delivery based on client feedback — first time doing production bilingual routing.",
 		future:
@@ -94,9 +107,16 @@ export const projectsData = {
 		live: "https://impactify2-0.vercel.app/",
 		github: "",
 		heroImage: "/media/impactify-hero.png",
+		heroVideo: "/media/impactify-parallax-vid1.mov",
 		detailImage: "/media/impactify-detail.png",
 		tagline:
 			"Civic engagement for the overwhelmed but informed. One curated action per issue, per week — built for the person who cares but has 10 minutes.",
+		metrics: [
+			{ value: "< 800ms", label: "Briefing load time" },
+			{ value: "24h", label: "Supabase cache TTL" },
+			{ value: "3×", label: "API waterfall eliminated" },
+			{ value: "BlackRock", label: "Capstone demo" },
+		],
 		stack: [
 			"Next.js 14 (App Router)",
 			"TypeScript",
@@ -109,14 +129,14 @@ export const projectsData = {
 		],
 		why: "Civic platforms fail the people who already care. They assume users are either uninformed or have unlimited time — neither is true for Sofia, a 27-year-old NYC resident who follows the news, cares deeply about housing and immigration, and has exactly 10 minutes on a Tuesday night. I built Impactify around her: not more awareness, but a single clear action with everything she needs to take it.",
 		decisions:
-			"Rebuilt the entire stack from Firebase/Stripe/Socket.io/React-Vite to Next.js App Router for a BlackRock real estate capstone demo in Hudson Yards. Guardian News API powers the news cards with server-side fetching so articles load instantly. Anthropic API generates plain-English summaries of complex civic issues — cached to Supabase to prevent repeated API calls and ensure consistent output. The editorial thesis: confident prose with one citation beats source carousels. Every content decision runs through that lens.",
+			"Rebuilt the entire stack from Firebase/Vite to Next.js 14 App Router under deadline for a BlackRock real estate capstone demo at Hudson Yards. The core architectural decision: Promise.all parallelizes all briefing page fetches — eliminated a 3-second sequential API waterfall from v1. Guardian News API and Claude summaries now fetch in parallel; neither blocks the other. Anthropic API calls happen server-side only, cached to Supabase with 24-hour TTLs on first generation — no repeated API costs, no hallucinations from stale prompts. The editorial thesis that drove every content decision: confident prose with one citation beats source carousels.",
 		ux: "Three-screen flow designed around decision fatigue. Onboarding: pick 2–3 issues via chips, enter zip code. Weekly Briefing: AI summary banner, one action widget, Guardian news cards, rep sidebar always sticky. My Reps: voting records with contact forms. Sofia should never have to decide what to read next — the product decides for her and shows its work with a single citation.",
 		architecture:
 			"Next.js App Router with server components for data fetching — Guardian and Anthropic API calls happen server-side so keys never reach the client. Supabase caches all API responses with 24-hour TTLs so the briefing loads instantly on repeat visits. Claude generates issue summaries and action copy server-side, cached to Supabase on first generation. Promise.all parallelizes all briefing page fetches — eliminated a 3-second sequential waterfall from the v1 implementation. Skeleton loading with exact grid dimensions matching the final layout eliminates layout shift.",
 		performance:
 			"Server-side rendering with Supabase cache means the Weekly Briefing renders in under 800ms on repeat visits. Guardian API articles fetched in parallel with Claude summaries — neither blocks the other. Sticky sidebar pattern established with no competing scrollbars and a Suspense boundary around the AI briefing slot.",
 		impact:
-			"Selected for BlackRock real estate capstone demo at Hudson Yards. Rebuilt from scratch under deadline pressure from a completely different stack. Presented to finance industry stakeholders as a production-grade civic technology product.",
+			"Selected for BlackRock real estate capstone demo at Hudson Yards — presented to finance industry stakeholders as a production-grade civic technology product. Executed a full stack migration under deadline: Firebase authentication, Firestore real-time database, and Stripe payment flows replaced entirely with Next.js App Router server components and Supabase. Zero downtime on the demo.",
 		future:
 			"Add push notification support for time-sensitive civic moments. Build a shareable civic record showing actions taken over time. Expand issue areas beyond NYC.",
 		lessons: [

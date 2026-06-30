@@ -3,6 +3,7 @@
 
 /* ── Tailwind ─────────────────────────────────────────────────────────────── */
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* ── Tailwind v4 Theme — Midnight Rose ───────────────────────────────────── */
 @theme inline {
@@ -180,6 +181,16 @@
 
 	.animate-pulse-slow {
 		animation: pulse-slow 3s ease-in-out infinite;
+	}
+
+	.blog-prose {
+		@apply prose prose-invert prose-base md:prose-lg max-w-none
+			prose-headings:font-serif prose-headings:italic prose-headings:tracking-tight
+			prose-a:text-rose prose-a:no-underline hover:prose-a:underline
+			prose-strong:text-foreground prose-blockquote:border-rose/30
+			prose-blockquote:text-muted-foreground prose-code:text-rose
+			prose-code:bg-white/5 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+			prose-pre:bg-muted prose-pre:border prose-pre:border-white/10;
 	}
 }
 

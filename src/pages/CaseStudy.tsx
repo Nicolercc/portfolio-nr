@@ -5,6 +5,7 @@ import {
 	getProject,
 	getNextProjectSlug,
 	type ProjectMedia,
+	type ProjectCaseStudy,
 	type CaseStudyGlanceItem,
 	type CaseStudyWalkthroughStep,
 	type CaseStudyDecisionCard,
@@ -20,6 +21,20 @@ const GLANCE_PROOF_LABELS = new Set([
 	"Integrations",
 	"Core stack",
 ]);
+
+function hasStructuredCaseStudyContent(cs: ProjectCaseStudy): boolean {
+	return Boolean(
+		cs.atAGlance?.length ||
+			cs.walkthrough?.length ||
+			cs.persona ||
+			cs.architectureLayers?.length ||
+			cs.decisionCards?.length,
+	);
+}
+
+function hasDecisionCardFields(card: CaseStudyDecisionCard): boolean {
+	return Boolean(card.context || card.tradeOff || card.result || card.body);
+}
 
 type FadeUpProps = {
 	initial: { opacity: number; y: number };
@@ -210,17 +225,10 @@ function ArchitectureLayersSection({
 }
 
 function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
-	const structured = Boolean(card.tradeOff);
-
-	if (!structured) {
+	if (!hasDecisionCardFields(card)) {
 		return (
 			<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3">
 				<h4 className="font-serif text-lg italic text-white/85">{card.title}</h4>
-				{card.body && (
-					<p className="font-light text-muted-foreground leading-relaxed text-sm">
-						{card.body}
-					</p>
-				)}
 			</div>
 		);
 	}
@@ -261,6 +269,16 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 						</dt>
 						<dd className="font-light text-muted-foreground leading-relaxed">
 							{card.result}
+						</dd>
+					</div>
+				)}
+				{card.body && (
+					<div>
+						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">
+							Notes
+						</dt>
+						<dd className="font-light text-muted-foreground leading-relaxed">
+							{card.body}
 						</dd>
 					</div>
 				)}
@@ -311,43 +329,63 @@ function CaseStudyHeroMedia({
 }) {
 	const reduceMotion = useReducedMotion();
 	const [videoError, setVideoError] = useState(false);
-	const poster = media.poster ?? media.hero;
+	const staticFrame = media.poster ?? media.hero;
 	const alt = media.alt ?? `${title} hero`;
 	const motionClass = reduceMotion
 		? "absolute inset-0 h-full w-full object-cover object-top"
 		: "absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100";
+	const canPlayVideo = Boolean(media.video && !videoError);
 
-	if (media.video && !videoError) {
-		if (reduceMotion && poster) {
+	if (canPlayVideo) {
+		if (reduceMotion) {
+			if (staticFrame) {
+				return (
+					<img
+						src={staticFrame}
+						alt={alt}
+						className={motionClass}
+						loading="eager"
+						decoding="async"
+					/>
+				);
+			}
+
 			return (
-				<img
-					src={poster}
-					alt={alt}
-					className={motionClass}
-					loading="eager"
-					decoding="async"
-				/>
+				<CaseStudyMediaPlaceholder label="Product demo · video available with motion enabled" />
 			);
 		}
 
 		return (
-			<video
-				src={media.video}
-				poster={poster}
-				controls
-				preload="none"
-				playsInline
-				aria-label={`${title} demo video`}
-				onError={() => setVideoError(true)}
-				className={motionClass}
-			/>
+			<>
+				{!staticFrame && <CaseStudyMediaPlaceholder label="" />}
+				<video
+					src={media.video}
+					poster={staticFrame}
+					controls
+					preload="none"
+					playsInline
+					aria-label={`${title} demo video`}
+					onError={() => setVideoError(true)}
+					className={`${motionClass} z-[1]`}
+				/>
+				{!staticFrame && (
+					<div className="pointer-events-none absolute inset-0 z-[2] flex flex-col items-center justify-center gap-4">
+						<div className="rounded-full border border-white/10 bg-black/35 p-4 backdrop-blur-sm">
+							<Play size={22} className="text-rose/80" fill="currentColor" />
+						</div>
+						<p className="font-mono text-[10px] uppercase tracking-[0.28em] text-white/45">
+							Product demo · press play
+						</p>
+					</div>
+				)}
+			</>
 		);
 	}
 
-	if (poster) {
+	if (staticFrame) {
 		return (
 			<img
-				src={poster}
+				src={staticFrame}
 				alt={alt}
 				className={motionClass}
 				loading="eager"
@@ -356,16 +394,8 @@ function CaseStudyHeroMedia({
 		);
 	}
 
-	if (media.hero) {
-		return (
-			<img
-				src={media.hero}
-				alt={alt}
-				className={motionClass}
-				loading="eager"
-				decoding="async"
-			/>
-		);
+	if (media.video && videoError) {
+		return <CaseStudyMediaPlaceholder label="Demo video unavailable" />;
 	}
 
 	return <CaseStudyMediaPlaceholder label="Screenshot coming soon" />;
@@ -391,7 +421,7 @@ export default function CaseStudy() {
 	}
 
 	const { caseStudy: cs, media, links, metrics } = project;
-	const hasStructuredContent = Boolean(cs.atAGlance?.length);
+	const hasStructuredContent = hasStructuredCaseStudyContent(cs);
 
 	// Framer Motion Variants for smooth entrance
 	const fadeUp = {

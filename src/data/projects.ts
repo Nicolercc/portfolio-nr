@@ -178,11 +178,11 @@ const projects: Record<ProjectSlug, Project> = {
 			performance:
 				"Server-side rendering with Supabase-backed caching keeps the Weekly Briefing responsive on repeat visits. Guardian API articles fetched in parallel with Claude civic issue briefings — neither blocks the other. Sticky sidebar pattern with no competing scrollbars and a Suspense boundary around the AI briefing slot.",
 			impact:
-				"Selected for BlackRock real estate capstone demo at Hudson Yards — presented as a production-grade civic technology product. Executed a full stack migration under deadline: Firebase authentication and Firestore replaced with Next.js App Router server components and Supabase. Preserved the live demo path during migration.",
+				"Selected for BlackRock real estate capstone demo at Hudson Yards — presented as a presentation-ready civic technology product. Executed a full stack migration under deadline: Firebase authentication and Firestore replaced with Next.js App Router server components and Supabase. Preserved the live demo path during migration.",
 			lessons: [
 				"Building for a named design persona with a specific life situation produces sharper product decisions than building for 'users'.",
-				"Caching Claude civic issue briefings in Supabase is non-negotiable — uncached API calls on every page load create both cost and consistency risk.",
-				"The competitive moat in civic tech is editorial judgment, not data breadth — one good sentence beats five sources.",
+				"Caching Claude civic issue briefings in Supabase matters — uncached API calls on every page load create both cost and consistency risk.",
+				"The product advantage in civic tech is editorial judgment, not data breadth — one good sentence beats five sources.",
 				"A full stack rebuild under deadline is a different skill than greenfield development — scope control matters more than clean architecture.",
 			],
 			nextSteps:
@@ -224,7 +224,7 @@ const projects: Record<ProjectSlug, Project> = {
 				{
 					title: "Rebuild under deadline",
 					context:
-						"Capstone demo presentation required a credible Next.js stack; v1 was Firebase/Vite.",
+						"Capstone demo presentation required a modern Next.js foundation; v1 was Firebase/Vite.",
 					tradeOff:
 						"Less time for polish and incremental migration vs. delivering a coherent App Router architecture on stage.",
 					result:

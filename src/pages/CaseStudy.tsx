@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
 	getProject,
@@ -21,6 +21,60 @@ const GLANCE_PROOF_LABELS = new Set([
 	"Integrations",
 	"Core stack",
 ]);
+
+type ImpactifyIssue = {
+	id: string;
+	label: string;
+	briefing: string;
+	citation: string;
+	actionLabel: string;
+	actionPath: string;
+};
+
+const IMPACTIFY_ISSUES: ImpactifyIssue[] = [
+	{
+		id: "housing",
+		label: "Housing",
+		briefing:
+			"Rent and zoning decisions are moving faster than most residents can track. Impactify turns the week into one plain-English briefing, then points the user toward the representative or local action most connected to the issue.",
+		citation:
+			"Citation: Guardian briefing pattern + representative context, sample cached issue state.",
+		actionLabel: "Read housing briefings",
+		actionPath: "/news",
+	},
+	{
+		id: "immigration",
+		label: "Immigration",
+		briefing:
+			"Immigration coverage often leaves readers with urgency but no next step. This loop frames what changed, who is affected, and one concrete civic action a busy user can take without opening five tabs.",
+		citation:
+			"Citation: Guardian issue coverage + Impactify action copy, sample cached issue state.",
+		actionLabel: "Open civic news",
+		actionPath: "/news",
+	},
+	{
+		id: "democracy",
+		label: "Democracy",
+		briefing:
+			"Voting-rights and representation stories only become useful when they connect back to the person reading. Impactify pairs the briefing with a reps pathway so the user can move from context to contact.",
+		citation:
+			"Citation: Guardian briefing pattern + reps scorecard context, sample cached issue state.",
+		actionLabel: "Find representatives",
+		actionPath: "/reps",
+	},
+];
+
+function getImpactifyActionHref(liveHref: string | undefined, actionPath: string) {
+	if (!liveHref) {
+		return undefined;
+	}
+
+	try {
+		return new URL(actionPath, liveHref).toString();
+	} catch {
+		return liveHref;
+	}
+}
 
 function hasStructuredCaseStudyContent(cs: ProjectCaseStudy): boolean {
 	return Boolean(
@@ -137,6 +191,114 @@ function PersonaSection({
 	);
 }
 
+function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
+	const reduceMotion = useReducedMotion();
+	const [selectedIssueId, setSelectedIssueId] = useState(IMPACTIFY_ISSUES[0].id);
+	const selectedIssue =
+		IMPACTIFY_ISSUES.find((issue) => issue.id === selectedIssueId) ??
+		IMPACTIFY_ISSUES[0];
+	const contentId = useId();
+	const actionHref = getImpactifyActionHref(liveHref, selectedIssue.actionPath);
+	const transition = reduceMotion
+		? { duration: 0.18, ease: "easeOut" as const }
+		: { duration: 0.28, ease: [0.16, 1, 0.3, 1] as const };
+
+	return (
+		<motion.div
+			initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
+			whileInView={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+			viewport={{ once: true }}
+			transition={transition}
+			className="space-y-6 border-t border-white/5 pt-16"
+		>
+			<div className="space-y-2">
+				<SectionLabel>Core Loop Prototype</SectionLabel>
+				<p className="font-light text-muted-foreground leading-relaxed text-sm max-w-2xl">
+					Pick an issue, get the briefing, then take one clear next step.
+				</p>
+			</div>
+
+			<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-6">
+				<div
+					className="flex flex-wrap gap-3"
+					role="group"
+					aria-label="Select a civic issue"
+				>
+					{IMPACTIFY_ISSUES.slice(0, 3).map((issue) => {
+						const selected = issue.id === selectedIssue.id;
+
+						return (
+							<button
+								key={issue.id}
+								type="button"
+								aria-pressed={selected}
+								aria-controls={contentId}
+								onClick={() => setSelectedIssueId(issue.id)}
+								className={`min-h-[44px] rounded-full border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green ${
+									selected
+										? "border-green/60 bg-green/15 text-green"
+										: "border-white/10 bg-black/20 text-muted-foreground hover:border-rose/40 hover:text-white"
+								}`}
+							>
+								{issue.label}
+							</button>
+						);
+					})}
+				</div>
+
+				<div
+					id={contentId}
+					aria-live="polite"
+					className="rounded-sm border border-white/5 bg-black/20 p-5 md:p-6 min-h-[260px] md:min-h-[236px]"
+				>
+					<AnimatePresence mode="wait">
+						<motion.div
+							key={selectedIssue.id}
+							initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+							animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+							exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+							transition={transition}
+							className="space-y-5"
+						>
+							<div className="flex items-start justify-between gap-4">
+								<div className="space-y-2">
+									<p className="font-mono text-[9px] uppercase tracking-[0.24em] text-rose/70">
+										Selected Issue
+									</p>
+									<h4 className="font-serif text-2xl italic text-white/90">
+										{selectedIssue.label}
+									</h4>
+								</div>
+								<span className="shrink-0 rounded-full border border-green/20 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-green/80">
+									One action
+								</span>
+							</div>
+
+							<p className="font-light text-muted-foreground leading-relaxed text-sm md:text-base">
+								{selectedIssue.briefing}
+							</p>
+							<p className="border-l border-white/10 pl-4 font-mono text-[10px] uppercase tracking-[0.16em] leading-relaxed text-white/40">
+								{selectedIssue.citation}
+							</p>
+							{actionHref && (
+								<a
+									href={actionHref}
+									target="_blank"
+									rel="noreferrer"
+									className="inline-flex min-h-[44px] items-center justify-center gap-3 rounded-full border border-rose/30 bg-rose/5 px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-rose transition-colors hover:border-rose/60 hover:bg-rose/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green"
+								>
+									{selectedIssue.actionLabel}
+									<ArrowUpRight size={12} aria-hidden="true" />
+								</a>
+							)}
+						</motion.div>
+					</AnimatePresence>
+				</div>
+			</div>
+		</motion.div>
+	);
+}
+
 function WalkthroughSection({
 	steps,
 	media,
@@ -154,37 +316,41 @@ function WalkthroughSection({
 		<motion.div {...fadeUp} className="space-y-10 border-t border-white/5 pt-16">
 			<SectionLabel>Product Walkthrough</SectionLabel>
 			<ol className="space-y-10">
-				{steps.map((step, index) => (
-					<li
-						key={step.title}
-						className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start"
-					>
-						<div className="md:col-span-5 space-y-4">
-							<span className="font-mono text-[10px] text-rose/40">
-								/0{index + 1}
-							</span>
-							<h4 className="font-serif text-xl italic text-white/85">
-								{step.title}
-							</h4>
-							<p className="font-light text-muted-foreground leading-relaxed text-sm">
-								{step.description}
-							</p>
-						</div>
-						<div className="md:col-span-7 aspect-video bg-muted rounded-lg overflow-hidden border border-white/5 relative">
-							{stepMedia[index] ? (
-								<img
-									src={stepMedia[index]}
-									alt={`${title} — ${step.title}`}
-									className="absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-700"
-									loading="lazy"
-									decoding="async"
-								/>
-							) : (
-								<CaseStudyMediaPlaceholder label={`${step.title} — screenshot soon`} />
-							)}
-						</div>
-					</li>
-				))}
+				{steps.map((step, index) => {
+					const visual = step.media ?? stepMedia[index];
+
+					return (
+						<li
+							key={step.title}
+							className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start"
+						>
+							<div className="md:col-span-5 space-y-4">
+								<span className="font-mono text-[10px] text-rose/40">
+									/0{index + 1}
+								</span>
+								<h4 className="font-serif text-xl italic text-white/85">
+									{step.title}
+								</h4>
+								<p className="font-light text-muted-foreground leading-relaxed text-sm">
+									{step.description}
+								</p>
+							</div>
+							<div className="md:col-span-7 aspect-video bg-muted rounded-lg overflow-hidden border border-white/5 relative">
+								{visual ? (
+									<img
+										src={visual}
+										alt={`${title} — ${step.title}`}
+										className="absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-700"
+										loading="lazy"
+										decoding="async"
+									/>
+								) : (
+									<CaseStudyMediaPlaceholder label={`${step.title} — screenshot soon`} />
+								)}
+							</div>
+						</li>
+					);
+				})}
 			</ol>
 		</motion.div>
 	);
@@ -619,6 +785,10 @@ export default function CaseStudy() {
 									{cs.solution}
 								</p>
 							</motion.div>
+						)}
+
+						{project.slug === "impactify" && (
+							<ImpactifyIssueLoopCard liveHref={links.live} />
 						)}
 
 						{cs.walkthrough && cs.walkthrough.length > 0 && (

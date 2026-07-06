@@ -215,6 +215,7 @@ const projects: Record<ProjectSlug, Project> = {
 			hero: "/media/nuclear-router-hero.png",
 			detail: "/media/nuclear-router-detail.png",
 			video: "/media/nuclear-router-demo.mov",
+			poster: "/media/nuclear-router-hero.png",
 			alt: "Nightfall nuclear emergency routing app",
 		},
 		caseStudy: {

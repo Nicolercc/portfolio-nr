@@ -1,12 +1,96 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
 	getProject,
 	getNextProjectSlug,
+	type ProjectMedia,
 } from "../data/projects";
 import { ArrowUpRight, GitBranch, Play } from "lucide-react";
 import NotFound from "./NotFound";
+
+function CaseStudyMediaPlaceholder({ label }: { label: string }) {
+	return (
+		<>
+			<div className="absolute inset-0 bg-rose/5 mix-blend-multiply" />
+			<div className="absolute inset-0 opacity-[0.18] bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:28px_28px]" />
+			<div className="relative flex h-full w-full items-center justify-center">
+				<p className="text-[10px] uppercase tracking-[0.28em] font-mono text-muted-foreground">
+					{label}
+				</p>
+			</div>
+		</>
+	);
+}
+
+function CaseStudyHeroMedia({
+	media,
+	title,
+}: {
+	media: ProjectMedia;
+	title: string;
+}) {
+	const reduceMotion = useReducedMotion();
+	const [videoError, setVideoError] = useState(false);
+	const poster = media.poster ?? media.hero;
+	const alt = media.alt ?? `${title} hero`;
+	const motionClass = reduceMotion
+		? "absolute inset-0 h-full w-full object-cover object-top"
+		: "absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100";
+
+	if (media.video && !videoError) {
+		if (reduceMotion && poster) {
+			return (
+				<img
+					src={poster}
+					alt={alt}
+					className={motionClass}
+					loading="eager"
+					decoding="async"
+				/>
+			);
+		}
+
+		return (
+			<video
+				src={media.video}
+				poster={poster}
+				controls
+				preload="none"
+				playsInline
+				aria-label={`${title} demo video`}
+				onError={() => setVideoError(true)}
+				className={motionClass}
+			/>
+		);
+	}
+
+	if (poster) {
+		return (
+			<img
+				src={poster}
+				alt={alt}
+				className={motionClass}
+				loading="eager"
+				decoding="async"
+			/>
+		);
+	}
+
+	if (media.hero) {
+		return (
+			<img
+				src={media.hero}
+				alt={alt}
+				className={motionClass}
+				loading="eager"
+				decoding="async"
+			/>
+		);
+	}
+
+	return <CaseStudyMediaPlaceholder label="Screenshot coming soon" />;
+}
 
 export default function CaseStudy() {
 	const { slug } = useParams();
@@ -78,35 +162,7 @@ export default function CaseStudy() {
 						transition={{ duration: 1.2, ease: "easeOut" }}
 						className="relative w-full aspect-[21/9] bg-muted rounded-sm overflow-hidden group border border-white/5"
 					>
-						{media.video ? (
-							<video
-								src={media.video}
-								autoPlay
-								loop
-								muted
-								playsInline
-								className="absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
-							/>
-						) : media.hero ? (
-							<img
-								src={media.hero}
-								alt={media.alt ?? `${project.title} hero`}
-								className="absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
-								loading="eager"
-								decoding="async"
-							/>
-						) : (
-							<>
-								{/* Screenshot placeholder — projectsData doesn't currently include image fields */}
-								<div className="absolute inset-0 bg-rose/5 mix-blend-multiply" />
-								<div className="absolute inset-0 opacity-[0.18] bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:28px_28px]" />
-								<div className="relative h-full w-full flex items-center justify-center">
-									<p className="text-[10px] uppercase tracking-[0.28em] font-mono text-muted-foreground">
-										Screenshot coming soon
-									</p>
-								</div>
-							</>
-						)}
+						<CaseStudyHeroMedia media={media} title={project.title} />
 					</motion.div>
 				</header>
 

@@ -27,6 +27,7 @@ export type CaseStudyGlanceItem = {
 export type CaseStudyWalkthroughStep = {
 	title: string;
 	description: string;
+	media?: string;
 };
 
 export type CaseStudyDecisionCard = {
@@ -154,7 +155,10 @@ const projects: Record<ProjectSlug, Project> = {
 			caseStudy: "/projects/impactify",
 		},
 		media: {
+			hero: "/media/impactify-hero.webp",
+			detail: "/media/impactify-weekly-briefing.webp",
 			video: "/media/impactify-parallax-vid1.mov",
+			poster: "/media/impactify-hero.webp",
 			alt: "Impactify civic engagement app demo",
 		},
 		caseStudy: {
@@ -209,15 +213,18 @@ const projects: Record<ProjectSlug, Project> = {
 					title: "Onboarding",
 					description:
 						"Pick 2–3 issues via chips, enter zip code.",
+					media: "/media/impactify-onboarding.webp",
 				},
 				{
 					title: "Weekly Briefing",
 					description:
 						"AI summary banner, one action widget, Guardian news cards, rep sidebar always sticky.",
+					media: "/media/impactify-weekly-briefing.webp",
 				},
 				{
 					title: "My Reps",
 					description: "Voting records with contact forms.",
+					media: "/media/impactify-my-reps.webp",
 				},
 			],
 			decisionCards: [

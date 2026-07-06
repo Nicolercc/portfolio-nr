@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { projectsData } from "../data/projects";
+import { getShowcaseProjects } from "../data/projects";
 import { useInView } from "../hooks/useInView";
 
 export default function ProjectsIndex() {
-	const entries = Object.entries(projectsData);
+	const projects = getShowcaseProjects();
 	const { ref, inView } = useInView();
 
 	useEffect(() => {
@@ -31,11 +31,11 @@ export default function ProjectsIndex() {
 					ref={ref}
 					className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6"
 				>
-					{entries.map(([key, project], idx) => {
+					{projects.map((project, idx) => {
 						const num = String(idx + 1).padStart(2, "0");
 						return (
 							<article
-								key={key}
+								key={project.slug}
 								style={{
 									opacity: inView ? 1 : 0,
 									transform: inView ? "none" : "translateY(18px)",
@@ -57,7 +57,7 @@ export default function ProjectsIndex() {
 									</p>
 
 									<Link
-										to={`/projects/${key}`}
+										to={`/projects/${project.slug}`}
 										className="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:text-rose transition-colors"
 									>
 										View Case Study <span aria-hidden>→</span>

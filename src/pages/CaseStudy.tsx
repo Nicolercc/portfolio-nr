@@ -1,24 +1,33 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { projectsData } from "../data/projects";
+import {
+	getProject,
+	getNextProjectSlug,
+} from "../data/projects";
 import { ArrowUpRight, GitBranch, Play } from "lucide-react";
+import NotFound from "./NotFound";
 
 export default function CaseStudy() {
 	const { slug } = useParams();
-	const project = projectsData[slug as keyof typeof projectsData];
-
-	const projectKeys = Object.keys(projectsData);
-	const currentIndex = projectKeys.indexOf(slug || "");
-	const nextIndex = (currentIndex + 1) % projectKeys.length;
-	const nextProjectKey = projectKeys[nextIndex];
-	const nextProject = projectsData[nextProjectKey as keyof typeof projectsData];
+	const project = slug ? getProject(slug) : undefined;
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [slug]);
 
-	if (!project) return null;
+	if (!project) {
+		return <NotFound />;
+	}
+
+	const nextProjectKey = getNextProjectSlug(project.slug);
+	const nextProject = getProject(nextProjectKey);
+
+	if (!nextProject) {
+		return <NotFound />;
+	}
+
+	const { caseStudy: cs, media, links, metrics } = project;
 
 	// Framer Motion Variants for smooth entrance
 	const fadeUp = {
@@ -69,19 +78,19 @@ export default function CaseStudy() {
 						transition={{ duration: 1.2, ease: "easeOut" }}
 						className="relative w-full aspect-[21/9] bg-muted rounded-sm overflow-hidden group border border-white/5"
 					>
-						{"heroVideo" in project && project.heroVideo ? (
+						{media.video ? (
 							<video
-								src={project.heroVideo as string}
+								src={media.video}
 								autoPlay
 								loop
 								muted
 								playsInline
 								className="absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
 							/>
-						) : "heroImage" in project && project.heroImage ? (
+						) : media.hero ? (
 							<img
-								src={project.heroImage as string}
-								alt={`${project.title} hero`}
+								src={media.hero}
+								alt={media.alt ?? `${project.title} hero`}
 								className="absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
 								loading="eager"
 								decoding="async"
@@ -101,15 +110,10 @@ export default function CaseStudy() {
 					</motion.div>
 				</header>
 
-				{(project as { metrics?: { label: string; value: string }[] })
-					.metrics && (
+				{metrics && metrics.length > 0 && (
 					<div className="px-6 md:px-20 py-10 border-y border-white/5 bg-white/[0.01]">
 						<div className="max-w-screen-xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-							{(
-								project as {
-									metrics?: { label: string; value: string }[];
-								}
-							).metrics!.map((m: { label: string; value: string }) => (
+							{metrics.map((m) => (
 								<div key={m.label} className="space-y-1">
 									<p className="font-mono text-3xl md:text-4xl font-bold text-white tracking-tighter">
 										{m.value}
@@ -151,22 +155,24 @@ export default function CaseStudy() {
 							</p>
 						</div>
 						<div className="space-y-3 pt-4 border-t border-white/5">
-							<a
-								href={project.live}
-								target="_blank"
-								rel="noreferrer"
-								className="group inline-flex items-center gap-3 px-5 py-3 rounded-full border border-rose/30 bg-rose/5 hover:bg-rose/10 hover:border-rose/60 w-full justify-center text-rose font-mono text-[11px] uppercase tracking-widest transition-all duration-300"
-							>
-								<span className="w-1.5 h-1.5 rounded-full bg-rose animate-pulse" />
-								View Live Site
-								<ArrowUpRight
-									size={12}
-									className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-								/>
-							</a>
-							{project.github && (
+							{links.live && (
 								<a
-									href={project.github}
+									href={links.live}
+									target="_blank"
+									rel="noreferrer"
+									className="group inline-flex items-center gap-3 px-5 py-3 rounded-full border border-rose/30 bg-rose/5 hover:bg-rose/10 hover:border-rose/60 w-full justify-center text-rose font-mono text-[11px] uppercase tracking-widest transition-all duration-300"
+								>
+									<span className="w-1.5 h-1.5 rounded-full bg-rose animate-pulse" />
+									View Live Site
+									<ArrowUpRight
+										size={12}
+										className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+									/>
+								</a>
+							)}
+							{links.github && (
+								<a
+									href={links.github}
 									target="_blank"
 									rel="noreferrer"
 									className="inline-flex items-center justify-center gap-2 w-full font-mono text-[10px] uppercase tracking-widest text-white/30 hover:text-white/60 transition-colors py-2"
@@ -187,7 +193,7 @@ export default function CaseStudy() {
 									The Vision
 								</h3>
 								<p className="text-2xl md:text-3xl font-serif italic leading-relaxed">
-									{project.why.split(".")[0]}.
+									{cs.problem.split(".")[0]}.
 								</p>
 							</motion.div>
 
@@ -195,10 +201,10 @@ export default function CaseStudy() {
 								{...fadeUp}
 								className="aspect-video bg-muted rounded-lg overflow-hidden border border-white/5 relative group"
 							>
-								{"detailImage" in project && project.detailImage ? (
+								{media.detail ? (
 									<img
-										src={project.detailImage as string}
-										alt={`${project.title} product detail`}
+										src={media.detail}
+										alt={media.alt ?? `${project.title} product detail`}
 										className="absolute inset-0 h-full w-full object-cover object-top-left grayscale hover:grayscale-0 transition-all duration-700"
 										loading="lazy"
 										decoding="async"
@@ -256,7 +262,7 @@ export default function CaseStudy() {
 									Engineering Decisions
 								</h3>
 								<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
-									{project.decisions}
+									{cs.decisions}
 								</p>
 							</div>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-white/5 pt-12">
@@ -265,7 +271,7 @@ export default function CaseStudy() {
 										UX Philosophy
 									</h3>
 									<p className="font-light text-muted-foreground leading-relaxed text-sm">
-										{project.ux}
+										{cs.ux}
 									</p>
 								</div>
 								<div className="space-y-4">
@@ -273,7 +279,7 @@ export default function CaseStudy() {
 										Performance
 									</h3>
 									<p className="font-light text-muted-foreground leading-relaxed text-sm">
-										{project.performance}
+										{cs.performance}
 									</p>
 								</div>
 							</div>
@@ -288,7 +294,7 @@ export default function CaseStudy() {
 								Impact
 							</h3>
 							<p className="font-serif text-xl italic leading-relaxed text-muted-foreground">
-								{project.impact}
+								{cs.impact}
 							</p>
 						</div>
 						<div className="md:col-span-8 space-y-8">
@@ -296,7 +302,7 @@ export default function CaseStudy() {
 								Retrospective
 							</h3>
 							<ul className="space-y-6">
-								{project.lessons.map((lesson: string, i: number) => (
+								{cs.lessons.map((lesson, i) => (
 									<li
 										key={i}
 										className="flex gap-6 items-start border-b border-white/5 pb-6 last:border-0"
@@ -314,7 +320,7 @@ export default function CaseStudy() {
 					</div>
 				</section>
 
-				{project.future && (
+				{cs.nextSteps && (
 					<section className="px-6 md:px-20 py-16 border-t border-white/5">
 						<div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
 							<div className="md:col-span-4">
@@ -327,7 +333,7 @@ export default function CaseStudy() {
 							</div>
 							<div className="md:col-span-8">
 								<p className="font-light text-muted-foreground leading-relaxed text-sm border-l border-white/10 pl-8">
-									{project.future}
+									{cs.nextSteps}
 								</p>
 							</div>
 						</div>

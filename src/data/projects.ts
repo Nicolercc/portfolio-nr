@@ -31,7 +31,11 @@ export type CaseStudyWalkthroughStep = {
 
 export type CaseStudyDecisionCard = {
 	title: string;
-	body: string;
+	/** @deprecated Prefer context + tradeOff + result when structured */
+	body?: string;
+	context?: string;
+	tradeOff?: string;
+	result?: string;
 };
 
 export type CaseStudyArchitectureLayer = {
@@ -219,19 +223,39 @@ const projects: Record<ProjectSlug, Project> = {
 			decisionCards: [
 				{
 					title: "Rebuild under deadline",
-					body: "Full stack rebuild under deadline: Firebase/Vite → Next.js App Router for capstone demo presentation.",
+					context:
+						"Capstone demo presentation required a credible Next.js stack; v1 was Firebase/Vite.",
+					tradeOff:
+						"Less time for polish and incremental migration vs. delivering a coherent App Router architecture on stage.",
+					result:
+						"Firebase/Vite replaced with Next.js App Router in time for the capstone demo.",
 				},
 				{
 					title: "Parallel briefing fetches",
-					body: "Promise.all parallelizes briefing fetches, replacing v1's sequential API waterfall.",
+					context:
+						"v1 loaded Guardian and Claude data sequentially on the briefing page.",
+					tradeOff:
+						"More server-side coordination vs. simpler sequential fetch code.",
+					result:
+						"Promise.all parallelizes briefing fetches, replacing v1's sequential API waterfall.",
 				},
 				{
 					title: "Cached server-side AI",
-					body: "Claude generates civic issue briefings server-side, with Supabase-backed caching designed around daily briefing windows.",
+					context:
+						"Civic issue briefings needed Claude on the server without repeating calls every visit.",
+					tradeOff:
+						"Daily cached copy vs. fresh generation on every page load.",
+					result:
+						"Server-side civic issue briefings with Supabase-backed caching designed around daily briefing windows.",
 				},
 				{
 					title: "Editorial judgment over breadth",
-					body: "Confident prose with one citation beats source carousels.",
+					context:
+						"Civic products often surface many sources and let users choose what to read.",
+					tradeOff:
+						"One authoritative voice vs. comprehensive source lists.",
+					result:
+						"Confident prose with one citation beats source carousels.",
 				},
 			],
 			architectureLayers: [

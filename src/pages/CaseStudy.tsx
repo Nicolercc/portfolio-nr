@@ -1,13 +1,292 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
 	getProject,
 	getNextProjectSlug,
 	type ProjectMedia,
+	type CaseStudyGlanceItem,
+	type CaseStudyWalkthroughStep,
+	type CaseStudyDecisionCard,
+	type CaseStudyArchitectureLayer,
+	type CaseStudyPersona,
 } from "../data/projects";
 import { ArrowUpRight, GitBranch, Play } from "lucide-react";
 import NotFound from "./NotFound";
+
+const GLANCE_PROOF_LABELS = new Set([
+	"Status",
+	"Capstone",
+	"Integrations",
+	"Core stack",
+]);
+
+type FadeUpProps = {
+	initial: { opacity: number; y: number };
+	whileInView: { opacity: number; y: number };
+	viewport: { once: boolean };
+	transition: { duration: number; ease: readonly [number, number, number, number] };
+};
+
+function SectionLabel({
+	children,
+	accent = "rose",
+}: {
+	children: ReactNode;
+	accent?: "rose" | "green";
+}) {
+	return (
+		<h3
+			className={`font-mono text-[10px] uppercase tracking-[0.3em] italic opacity-80 ${
+				accent === "green" ? "text-green" : "text-rose"
+			}`}
+		>
+			{children}
+		</h3>
+	);
+}
+
+function AtAGlanceSection({
+	items,
+	fadeUp,
+}: {
+	items: CaseStudyGlanceItem[];
+	fadeUp: FadeUpProps;
+}) {
+	return (
+		<section className="px-6 md:px-20 py-14 border-b border-white/5 bg-white/[0.01]">
+			<div className="max-w-screen-xl mx-auto space-y-8">
+				<SectionLabel>At a Glance</SectionLabel>
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+					{items.map((item) => (
+						<motion.div
+							key={item.label}
+							{...fadeUp}
+							className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-2"
+						>
+							<p className="font-mono text-[10px] uppercase tracking-[0.25em] text-rose/80">
+								{item.label}
+							</p>
+							<p
+								className={`text-sm leading-relaxed ${
+									GLANCE_PROOF_LABELS.has(item.label)
+										? "text-green/90 font-mono text-[11px] uppercase tracking-wider"
+										: "text-muted-foreground font-light"
+								}`}
+							>
+								{item.value}
+							</p>
+						</motion.div>
+					))}
+				</div>
+			</div>
+		</section>
+	);
+}
+
+function PersonaSection({
+	persona,
+	fadeUp,
+}: {
+	persona: CaseStudyPersona;
+	fadeUp: FadeUpProps;
+}) {
+	return (
+		<motion.div {...fadeUp} className="space-y-6 border-t border-white/5 pt-16">
+			<div className="space-y-2">
+				<SectionLabel>Design Persona</SectionLabel>
+				<p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
+					Not validated user research — a scenario for product decisions
+				</p>
+			</div>
+			<div className="rounded-sm border border-white/5 bg-white/[0.02] p-6 md:p-8 space-y-5">
+				<p className="font-serif text-2xl italic text-white/90">{persona.name}</p>
+				<p className="font-light text-muted-foreground leading-relaxed text-sm max-w-2xl">
+					{persona.summary}
+				</p>
+				<div className="flex flex-wrap gap-2">
+					{persona.issueAreas.map((area) => (
+						<span
+							key={area}
+							className="px-3 py-1 border border-green/20 rounded-full font-mono text-[9px] uppercase tracking-wider text-green/80"
+						>
+							{area}
+						</span>
+					))}
+				</div>
+				<p className="font-mono text-[10px] uppercase tracking-[0.2em] text-rose/60">
+					Time budget · {persona.timeConstraint}
+				</p>
+			</div>
+		</motion.div>
+	);
+}
+
+function WalkthroughSection({
+	steps,
+	media,
+	title,
+	fadeUp,
+}: {
+	steps: CaseStudyWalkthroughStep[];
+	media: ProjectMedia;
+	title: string;
+	fadeUp: FadeUpProps;
+}) {
+	const stepMedia = [media.detail, media.hero].filter(Boolean) as string[];
+
+	return (
+		<motion.div {...fadeUp} className="space-y-10 border-t border-white/5 pt-16">
+			<SectionLabel>Product Walkthrough</SectionLabel>
+			<ol className="space-y-10">
+				{steps.map((step, index) => (
+					<li
+						key={step.title}
+						className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start"
+					>
+						<div className="md:col-span-5 space-y-4">
+							<span className="font-mono text-[10px] text-rose/40">
+								/0{index + 1}
+							</span>
+							<h4 className="font-serif text-xl italic text-white/85">
+								{step.title}
+							</h4>
+							<p className="font-light text-muted-foreground leading-relaxed text-sm">
+								{step.description}
+							</p>
+						</div>
+						<div className="md:col-span-7 aspect-video bg-muted rounded-lg overflow-hidden border border-white/5 relative">
+							{stepMedia[index] ? (
+								<img
+									src={stepMedia[index]}
+									alt={`${title} — ${step.title}`}
+									className="absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-700"
+									loading="lazy"
+									decoding="async"
+								/>
+							) : (
+								<CaseStudyMediaPlaceholder label={`${step.title} — screenshot soon`} />
+							)}
+						</div>
+					</li>
+				))}
+			</ol>
+		</motion.div>
+	);
+}
+
+function ArchitectureLayersSection({
+	layers,
+	fadeUp,
+}: {
+	layers: CaseStudyArchitectureLayer[];
+	fadeUp: FadeUpProps;
+}) {
+	return (
+		<motion.div {...fadeUp} className="space-y-8 border-t border-white/5 pt-16">
+			<SectionLabel accent="green">Technical Architecture</SectionLabel>
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+				{layers.map((layer, index) => (
+					<div
+						key={layer.title}
+						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3"
+					>
+						<div className="flex items-center gap-3">
+							<span className="font-mono text-[10px] text-green/50">
+								{String(index + 1).padStart(2, "0")}
+							</span>
+							<h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-green/90">
+								{layer.title}
+							</h4>
+						</div>
+						<p className="font-light text-muted-foreground leading-relaxed text-sm">
+							{layer.description}
+						</p>
+					</div>
+				))}
+			</div>
+		</motion.div>
+	);
+}
+
+function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
+	const structured = Boolean(card.tradeOff);
+
+	if (!structured) {
+		return (
+			<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3">
+				<h4 className="font-serif text-lg italic text-white/85">{card.title}</h4>
+				{card.body && (
+					<p className="font-light text-muted-foreground leading-relaxed text-sm">
+						{card.body}
+					</p>
+				)}
+			</div>
+		);
+	}
+
+	return (
+		<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-4">
+			<dl className="space-y-3 text-sm">
+				<div>
+					<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/70 mb-1">
+						Decision
+					</dt>
+					<dd className="font-serif text-lg italic text-white/85">{card.title}</dd>
+				</div>
+				{card.context && (
+					<div>
+						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/70 mb-1">
+							Context
+						</dt>
+						<dd className="font-light text-muted-foreground leading-relaxed">
+							{card.context}
+						</dd>
+					</div>
+				)}
+				{card.tradeOff && (
+					<div className="border-l-2 border-amber-500/40 pl-4">
+						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-amber-200/80 mb-1">
+							Trade-off
+						</dt>
+						<dd className="font-light text-muted-foreground leading-relaxed">
+							{card.tradeOff}
+						</dd>
+					</div>
+				)}
+				{card.result && (
+					<div>
+						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-green/70 mb-1">
+							Result
+						</dt>
+						<dd className="font-light text-muted-foreground leading-relaxed">
+							{card.result}
+						</dd>
+					</div>
+				)}
+			</dl>
+		</div>
+	);
+}
+
+function DecisionCardsSection({
+	cards,
+	fadeUp,
+}: {
+	cards: CaseStudyDecisionCard[];
+	fadeUp: FadeUpProps;
+}) {
+	return (
+		<motion.div {...fadeUp} className="space-y-8">
+			<SectionLabel>Engineering Decisions</SectionLabel>
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+				{cards.map((card) => (
+					<DecisionCardItem key={card.title} card={card} />
+				))}
+			</div>
+		</motion.div>
+	);
+}
 
 function CaseStudyMediaPlaceholder({ label }: { label: string }) {
 	return (
@@ -112,6 +391,7 @@ export default function CaseStudy() {
 	}
 
 	const { caseStudy: cs, media, links, metrics } = project;
+	const hasStructuredContent = Boolean(cs.atAGlance?.length);
 
 	// Framer Motion Variants for smooth entrance
 	const fadeUp = {
@@ -183,6 +463,10 @@ export default function CaseStudy() {
 					</div>
 				)}
 
+				{cs.atAGlance && cs.atAGlance.length > 0 && (
+					<AtAGlanceSection items={cs.atAGlance} fadeUp={fadeUp} />
+				)}
+
 				{/* ── NARRATIVE GRID ── */}
 				<section className="px-6 md:px-20 py-20 grid grid-cols-1 md:grid-cols-12 gap-20">
 					{/* Metadata Sidebar */}
@@ -242,14 +526,25 @@ export default function CaseStudy() {
 
 					{/* Main Story Content */}
 					<div className="md:col-span-8 space-y-20">
+						{hasStructuredContent && (
+							<motion.div {...fadeUp} className="space-y-6">
+								<SectionLabel>Product Thesis</SectionLabel>
+								<p className="text-2xl md:text-3xl font-serif italic leading-relaxed text-white/90">
+									{cs.thesis}
+								</p>
+							</motion.div>
+						)}
+
 						{/* 2. THE FEATURE SPLIT: TEXT + VISUAL */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 							<motion.div {...fadeUp} className="space-y-6">
-								<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
-									The Vision
-								</h3>
+								<SectionLabel>
+									{hasStructuredContent ? "The Problem" : "The Vision"}
+								</SectionLabel>
 								<p className="text-2xl md:text-3xl font-serif italic leading-relaxed">
-									{cs.problem.split(".")[0]}.
+									{hasStructuredContent
+										? cs.problem
+										: `${cs.problem.split(".")[0]}.`}
 								</p>
 							</motion.div>
 
@@ -283,6 +578,28 @@ export default function CaseStudy() {
 							</motion.div>
 						</div>
 
+						{cs.persona && (
+							<PersonaSection persona={cs.persona} fadeUp={fadeUp} />
+						)}
+
+						{hasStructuredContent && (
+							<motion.div {...fadeUp} className="space-y-6 border-t border-white/5 pt-16">
+								<SectionLabel>The Solution</SectionLabel>
+								<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+									{cs.solution}
+								</p>
+							</motion.div>
+						)}
+
+						{cs.walkthrough && cs.walkthrough.length > 0 && (
+							<WalkthroughSection
+								steps={cs.walkthrough}
+								media={media}
+								title={project.title}
+								fadeUp={fadeUp}
+							/>
+						)}
+
 						{/* 3. DOUBLE SPREAD: MOBILE/DESKTOP OR TWO SCREENS // UNCOMMENT WHEN IMAGES ARE READY */}
 						{/* <div className="space-y-12">
 							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80 text-center">
@@ -313,27 +630,33 @@ export default function CaseStudy() {
 						</div> */}
 
 						<div className="space-y-16 pt-16 border-t border-white/5">
-							<div className="space-y-6">
-								<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
-									Engineering Decisions
-								</h3>
-								<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
-									{cs.decisions}
-								</p>
-							</div>
+							{cs.decisionCards && cs.decisionCards.length > 0 ? (
+								<DecisionCardsSection cards={cs.decisionCards} fadeUp={fadeUp} />
+							) : (
+								<div className="space-y-6">
+									<SectionLabel>Engineering Decisions</SectionLabel>
+									<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+										{cs.decisions}
+									</p>
+								</div>
+							)}
+
+							{cs.architectureLayers && cs.architectureLayers.length > 0 && (
+								<ArchitectureLayersSection
+									layers={cs.architectureLayers}
+									fadeUp={fadeUp}
+								/>
+							)}
+
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-white/5 pt-12">
 								<div className="space-y-4">
-									<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
-										UX Philosophy
-									</h3>
+									<SectionLabel>UX Philosophy</SectionLabel>
 									<p className="font-light text-muted-foreground leading-relaxed text-sm">
 										{cs.ux}
 									</p>
 								</div>
 								<div className="space-y-4">
-									<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-green italic opacity-80">
-										Performance
-									</h3>
+									<SectionLabel accent="green">Performance</SectionLabel>
 									<p className="font-light text-muted-foreground leading-relaxed text-sm">
 										{cs.performance}
 									</p>

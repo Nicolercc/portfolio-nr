@@ -19,6 +19,39 @@ export type ProjectMedia = {
 	alt?: string;
 };
 
+export type CaseStudyGlanceItem = {
+	label: string;
+	value: string;
+};
+
+export type CaseStudyWalkthroughStep = {
+	title: string;
+	description: string;
+};
+
+export type CaseStudyDecisionCard = {
+	title: string;
+	body: string;
+};
+
+export type CaseStudyArchitectureLayer = {
+	title: string;
+	description: string;
+};
+
+export type CaseStudyPersona = {
+	name: string;
+	summary: string;
+	issueAreas: string[];
+	timeConstraint: string;
+};
+
+export type CaseStudyCta = {
+	label: string;
+	href: string;
+	kind: "live" | "github" | "case-study";
+};
+
 export type ProjectCaseStudy = {
 	thesis: string;
 	problem: string;
@@ -31,6 +64,13 @@ export type ProjectCaseStudy = {
 	impact: string;
 	lessons: string[];
 	nextSteps?: string;
+	/** Brief-aligned sections — optional; populated per project when structured copy exists */
+	atAGlance?: CaseStudyGlanceItem[];
+	walkthrough?: CaseStudyWalkthroughStep[];
+	decisionCards?: CaseStudyDecisionCard[];
+	architectureLayers?: CaseStudyArchitectureLayer[];
+	persona?: CaseStudyPersona;
+	cta?: CaseStudyCta[];
 };
 
 export type HomepageVisual = {
@@ -145,6 +185,93 @@ const projects: Record<ProjectSlug, Project> = {
 			],
 			nextSteps:
 				"Add push notification support for time-sensitive civic moments. Build a shareable civic record showing actions taken over time. Expand issue areas beyond NYC.",
+			atAGlance: [
+				{ label: "Role", value: "Lead Developer" },
+				{ label: "Status", value: "Live" },
+				{ label: "Timeline", value: "2024–2025" },
+				{
+					label: "Capstone",
+					value: "BlackRock real estate demo at Hudson Yards",
+				},
+				{
+					label: "Core stack",
+					value: "Next.js 14 App Router · TypeScript · Supabase · Vercel",
+				},
+				{
+					label: "Integrations",
+					value: "Guardian News API · Anthropic · VolunteerMatch",
+				},
+			],
+			walkthrough: [
+				{
+					title: "Onboarding",
+					description:
+						"Pick 2–3 issues via chips, enter zip code.",
+				},
+				{
+					title: "Weekly Briefing",
+					description:
+						"AI summary banner, one action widget, Guardian news cards, rep sidebar always sticky.",
+				},
+				{
+					title: "My Reps",
+					description: "Voting records with contact forms.",
+				},
+			],
+			decisionCards: [
+				{
+					title: "Rebuild under deadline",
+					body: "Full stack rebuild under deadline: Firebase/Stripe/Vite → Next.js App Router for BlackRock real estate demo.",
+				},
+				{
+					title: "Parallel briefing fetches",
+					body: "Promise.all parallelizes all briefing fetches, cutting load from 3s sequential waterfall to under 800ms.",
+				},
+				{
+					title: "Cached server-side AI",
+					body: "Claude AI generates bill summaries server-side, cached to Supabase — no repeated API calls.",
+				},
+				{
+					title: "Editorial judgment over breadth",
+					body: "Confident prose with one citation beats source carousels.",
+				},
+			],
+			architectureLayers: [
+				{
+					title: "App shell",
+					description:
+						"Next.js App Router with server components for data fetching — API keys never reach the client.",
+				},
+				{
+					title: "Cache layer",
+					description:
+						"Supabase caches all API responses with 24-hour TTLs so the briefing loads instantly on repeat visits.",
+				},
+				{
+					title: "Integrations",
+					description:
+						"Guardian News API and Anthropic API calls happen server-side; Claude generates issue summaries and action copy, cached on first generation.",
+				},
+				{
+					title: "Briefing assembly",
+					description:
+						"Promise.all parallelizes all briefing page fetches — eliminated a 3-second sequential waterfall from v1. Skeleton loading with exact grid dimensions eliminates layout shift.",
+				},
+			],
+			persona: {
+				name: "Sofia",
+				summary:
+					"A 27-year-old NYC resident who follows the news, cares deeply about housing and immigration, and has exactly 10 minutes on a Tuesday night.",
+				issueAreas: ["housing", "immigration"],
+				timeConstraint: "10 minutes on a Tuesday night",
+			},
+			cta: [
+				{
+					label: "View Live Site",
+					href: "https://impactify2-0.vercel.app/",
+					kind: "live",
+				},
+			],
 		},
 		homepage: {
 			accent: "green",

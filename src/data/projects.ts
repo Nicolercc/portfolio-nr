@@ -130,7 +130,7 @@ const projects: Record<ProjectSlug, Project> = {
 		tagline:
 			"Civic engagement for the overwhelmed but informed. One curated action per issue, per week — built for the person who cares but has 10 minutes.",
 		description:
-			"Rebuilt the entire stack from Firebase/Vite to Next.js App Router under deadline for a BlackRock capstone demo. Guardian News API + Claude AI generate plain-English issue summaries cached to Supabase — confident prose with one citation beats source carousels.",
+			"Rebuilt the entire stack from Firebase/Vite to Next.js App Router under deadline for a BlackRock capstone demo. Guardian News API + Claude AI generate plain-English civic issue briefings, designed around cacheable daily briefing windows in Supabase — confident prose with one citation beats source carousels.",
 		stack: [
 			"Next.js 14 (App Router)",
 			"TypeScript",
@@ -138,14 +138,12 @@ const projects: Record<ProjectSlug, Project> = {
 			"Supabase",
 			"Anthropic API",
 			"Guardian News API",
-			"VolunteerMatch API",
 			"Vercel",
 		],
 		metrics: [
-			{ value: "< 800ms", label: "Briefing load time" },
-			{ value: "24h", label: "Supabase cache TTL" },
-			{ value: "3×", label: "API waterfall eliminated" },
-			{ value: "BlackRock", label: "Capstone demo" },
+			{ value: "Weekly", label: "Briefing cadence" },
+			{ value: "3", label: "Core product screens" },
+			{ value: "Capstone", label: "Demo presentation" },
 		],
 		links: {
 			live: "https://impactify2-0.vercel.app/",
@@ -159,27 +157,27 @@ const projects: Record<ProjectSlug, Project> = {
 			thesis:
 				"Civic engagement for the overwhelmed but informed. One curated action per issue, per week — built for the person who cares but has 10 minutes.",
 			problem:
-				"Civic platforms fail the people who already care. They assume users are either uninformed or have unlimited time — neither is true for Sofia, a 27-year-old NYC resident who follows the news, cares deeply about housing and immigration, and has exactly 10 minutes on a Tuesday night. I built Impactify around her: not more awareness, but a single clear action with everything she needs to take it.",
+				"Civic platforms fail the people who already care. They assume users are either uninformed or have unlimited time — neither fits Sofia, a design persona: a 27-year-old NYC resident who follows the news, cares deeply about housing and immigration, and has about 10 minutes on a weekday evening. I built Impactify around that scenario: not more awareness, but a single clear action with everything needed to take it.",
 			solution:
-				"Rebuilt the entire stack from Firebase/Vite to Next.js 14 App Router under deadline for a BlackRock real estate capstone demo at Hudson Yards. The core architectural decision: Promise.all parallelizes all briefing page fetches — eliminated a 3-second sequential API waterfall from v1. Guardian News API and Claude summaries now fetch in parallel; neither blocks the other. Anthropic API calls happen server-side only, cached to Supabase with 24-hour TTLs on first generation — no repeated API costs, no hallucinations from stale prompts. The editorial thesis that drove every content decision: confident prose with one citation beats source carousels.",
+				"Rebuilt the entire stack from Firebase/Vite to Next.js 14 App Router under deadline for a BlackRock real estate capstone demo at Hudson Yards. The core architectural decision: Promise.all parallelizes all briefing page fetches — replacing v1's sequential API waterfall. Guardian News API and Claude civic issue briefings fetch in parallel; neither blocks the other. Anthropic API calls happen server-side only, with responses designed around cacheable daily briefing windows in Supabase — reducing repeated API costs and keeping copy consistent. The editorial thesis that drove every content decision: confident prose with one citation beats source carousels.",
 			technicalHighlights: [
-				"Full stack rebuild under deadline: Firebase/Stripe/Vite → Next.js App Router for BlackRock real estate demo",
-				"Claude AI generates bill summaries server-side, cached to Supabase — no repeated API calls",
-				"Promise.all parallelizes all briefing fetches, cutting load from 3s sequential waterfall to under 800ms",
-				"Designed around Sofia — a named 27-year-old NYC persona — not a generic user",
+				"Full stack rebuild under deadline: Firebase/Vite → Next.js App Router for capstone demo presentation",
+				"Claude generates civic issue briefings server-side, with Supabase-backed caching — fewer repeated API calls on every visit",
+				"Promise.all parallelizes briefing fetches, replacing v1's sequential API waterfall",
+				"Designed around Sofia — a named design persona — not validated user research",
 			],
 			decisions:
-				"Rebuilt the entire stack from Firebase/Vite to Next.js 14 App Router under deadline for a BlackRock real estate capstone demo at Hudson Yards. The core architectural decision: Promise.all parallelizes all briefing page fetches — eliminated a 3-second sequential API waterfall from v1. Guardian News API and Claude summaries now fetch in parallel; neither blocks the other. Anthropic API calls happen server-side only, cached to Supabase with 24-hour TTLs on first generation — no repeated API costs, no hallucinations from stale prompts. The editorial thesis that drove every content decision: confident prose with one citation beats source carousels.",
-			ux: "Three-screen flow designed around decision fatigue. Onboarding: pick 2–3 issues via chips, enter zip code. Weekly Briefing: AI summary banner, one action widget, Guardian news cards, rep sidebar always sticky. My Reps: voting records with contact forms. Sofia should never have to decide what to read next — the product decides for her and shows its work with a single citation.",
+				"Rebuilt the entire stack from Firebase/Vite to Next.js 14 App Router under deadline for a BlackRock real estate capstone demo at Hudson Yards. Promise.all parallelizes all briefing page fetches — replacing v1's sequential API waterfall. Guardian News API and Claude civic issue briefings fetch in parallel; neither blocks the other. Anthropic API calls happen server-side only, with responses designed around cacheable daily briefing windows in Supabase. The editorial thesis: confident prose with one citation beats source carousels.",
+			ux: "Three-screen flow designed around decision fatigue. Onboarding: pick 2–3 issues via chips, enter zip code. Weekly Briefing: AI summary banner, one action widget, Guardian news cards, rep sidebar always sticky. My Reps: voting records with contact forms. The design persona should never have to decide what to read next — the product decides for her and shows its work with a single citation.",
 			architecture:
-				"Next.js App Router with server components for data fetching — Guardian and Anthropic API calls happen server-side so keys never reach the client. Supabase caches all API responses with 24-hour TTLs so the briefing loads instantly on repeat visits. Claude generates issue summaries and action copy server-side, cached to Supabase on first generation. Promise.all parallelizes all briefing page fetches — eliminated a 3-second sequential waterfall from the v1 implementation. Skeleton loading with exact grid dimensions matching the final layout eliminates layout shift.",
+				"Next.js App Router with server components for data fetching — Guardian and Anthropic API calls happen server-side so keys never reach the client. Supabase backing designed around cacheable daily briefing windows so repeat visits avoid unnecessary refetching. Claude generates civic issue briefings and action copy server-side, cached on first generation. Promise.all parallelizes all briefing page fetches — replacing the sequential waterfall from v1. Skeleton loading with exact grid dimensions matching the final layout reduces layout shift.",
 			performance:
-				"Server-side rendering with Supabase cache means the Weekly Briefing renders in under 800ms on repeat visits. Guardian API articles fetched in parallel with Claude summaries — neither blocks the other. Sticky sidebar pattern established with no competing scrollbars and a Suspense boundary around the AI briefing slot.",
+				"Server-side rendering with Supabase-backed caching keeps the Weekly Briefing responsive on repeat visits. Guardian API articles fetched in parallel with Claude civic issue briefings — neither blocks the other. Sticky sidebar pattern with no competing scrollbars and a Suspense boundary around the AI briefing slot.",
 			impact:
-				"Selected for BlackRock real estate capstone demo at Hudson Yards — presented to finance industry stakeholders as a production-grade civic technology product. Executed a full stack migration under deadline: Firebase authentication, Firestore real-time database, and Stripe payment flows replaced entirely with Next.js App Router server components and Supabase. Zero downtime on the demo.",
+				"Selected for BlackRock real estate capstone demo at Hudson Yards — presented as a production-grade civic technology product. Executed a full stack migration under deadline: Firebase authentication and Firestore replaced with Next.js App Router server components and Supabase. Preserved the live demo path during migration.",
 			lessons: [
-				"Building for a named persona with a specific life situation produces sharper product decisions than building for 'users'.",
-				"Caching Claude responses in Supabase is non-negotiable — uncached API calls on every page load create both cost and consistency risk.",
+				"Building for a named design persona with a specific life situation produces sharper product decisions than building for 'users'.",
+				"Caching Claude civic issue briefings in Supabase is non-negotiable — uncached API calls on every page load create both cost and consistency risk.",
 				"The competitive moat in civic tech is editorial judgment, not data breadth — one good sentence beats five sources.",
 				"A full stack rebuild under deadline is a different skill than greenfield development — scope control matters more than clean architecture.",
 			],
@@ -199,7 +197,7 @@ const projects: Record<ProjectSlug, Project> = {
 				},
 				{
 					label: "Integrations",
-					value: "Guardian News API · Anthropic · VolunteerMatch",
+					value: "Guardian News API · Anthropic",
 				},
 			],
 			walkthrough: [
@@ -221,15 +219,15 @@ const projects: Record<ProjectSlug, Project> = {
 			decisionCards: [
 				{
 					title: "Rebuild under deadline",
-					body: "Full stack rebuild under deadline: Firebase/Stripe/Vite → Next.js App Router for BlackRock real estate demo.",
+					body: "Full stack rebuild under deadline: Firebase/Vite → Next.js App Router for capstone demo presentation.",
 				},
 				{
 					title: "Parallel briefing fetches",
-					body: "Promise.all parallelizes all briefing fetches, cutting load from 3s sequential waterfall to under 800ms.",
+					body: "Promise.all parallelizes briefing fetches, replacing v1's sequential API waterfall.",
 				},
 				{
 					title: "Cached server-side AI",
-					body: "Claude AI generates bill summaries server-side, cached to Supabase — no repeated API calls.",
+					body: "Claude generates civic issue briefings server-side, with Supabase-backed caching designed around daily briefing windows.",
 				},
 				{
 					title: "Editorial judgment over breadth",
@@ -245,33 +243,26 @@ const projects: Record<ProjectSlug, Project> = {
 				{
 					title: "Cache layer",
 					description:
-						"Supabase caches all API responses with 24-hour TTLs so the briefing loads instantly on repeat visits.",
+						"Supabase backing designed around cacheable daily briefing windows so repeat visits avoid unnecessary refetching.",
 				},
 				{
 					title: "Integrations",
 					description:
-						"Guardian News API and Anthropic API calls happen server-side; Claude generates issue summaries and action copy, cached on first generation.",
+						"Guardian News API and Anthropic API calls happen server-side; Claude generates civic issue briefings and action copy, cached on first generation.",
 				},
 				{
 					title: "Briefing assembly",
 					description:
-						"Promise.all parallelizes all briefing page fetches — eliminated a 3-second sequential waterfall from v1. Skeleton loading with exact grid dimensions eliminates layout shift.",
+						"Promise.all parallelizes all briefing page fetches — replacing the sequential waterfall from v1. Skeleton loading with exact grid dimensions reduces layout shift.",
 				},
 			],
 			persona: {
 				name: "Sofia",
 				summary:
-					"A 27-year-old NYC resident who follows the news, cares deeply about housing and immigration, and has exactly 10 minutes on a Tuesday night.",
+					"A design persona — 27-year-old NYC resident who follows the news, cares about housing and immigration, and has about 10 minutes on a weekday evening.",
 				issueAreas: ["housing", "immigration"],
-				timeConstraint: "10 minutes on a Tuesday night",
+				timeConstraint: "~10 minutes on a weekday evening",
 			},
-			cta: [
-				{
-					label: "View Live Site",
-					href: "https://impactify2-0.vercel.app/",
-					kind: "live",
-				},
-			],
 		},
 		homepage: {
 			accent: "green",
@@ -281,20 +272,20 @@ const projects: Record<ProjectSlug, Project> = {
 					label: "Weekly Briefing",
 					bg: "from-green/20 to-transparent",
 					icon: "📰",
-					stat: "Guardian API · Claude AI · Supabase cache",
+					stat: "Guardian API · Claude AI · cached briefings",
 				},
 				{
-					label: "BlackRock Demo",
+					label: "Capstone Demo",
 					bg: "from-rose/20 to-transparent",
 					icon: "🗳️",
 					stat: "Next.js App Router · rebuilt under deadline",
 				},
 			],
 			highlights: [
-				"Full stack rebuild under deadline: Firebase/Stripe/Vite → Next.js App Router for BlackRock real estate demo",
-				"Claude AI generates bill summaries server-side, cached to Supabase — no repeated API calls",
-				"Promise.all parallelizes all briefing fetches, cutting load from 3s sequential waterfall to under 800ms",
-				"Designed around Sofia — a named 27-year-old NYC persona — not a generic user",
+				"Full stack rebuild under deadline: Firebase/Vite → Next.js App Router for capstone demo presentation",
+				"Claude generates civic issue briefings server-side, with Supabase-backed caching",
+				"Promise.all parallelizes briefing fetches, replacing v1's sequential API waterfall",
+				"Designed around Sofia — a named design persona — not validated user research",
 			],
 		},
 	},

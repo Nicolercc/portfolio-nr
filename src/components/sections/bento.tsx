@@ -76,15 +76,25 @@ function useTypingEffect(text: string, speed = 40, start = true): string {
 
 	useEffect(() => {
 		if (!start) return;
-		setDisplayed("");
+
 		let i = 0;
-		const id = setInterval(() => {
-			i++;
-			setDisplayed(text.slice(0, i));
-			if (i >= text.length) clearInterval(id);
-		}, speed);
-		return () => clearInterval(id);
+		let intervalId: ReturnType<typeof setInterval> | undefined;
+		const frameId = requestAnimationFrame(() => {
+			setDisplayed("");
+			intervalId = setInterval(() => {
+				i++;
+				setDisplayed(text.slice(0, i));
+				if (i >= text.length && intervalId) clearInterval(intervalId);
+			}, speed);
+		});
+
+		return () => {
+			cancelAnimationFrame(frameId);
+			if (intervalId) clearInterval(intervalId);
+		};
 	}, [text, speed, start]);
+
+	if (!start) return "";
 
 	return displayed;
 }

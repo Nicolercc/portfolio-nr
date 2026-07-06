@@ -6,14 +6,13 @@ export function CustomCursor() {
 	const mouseY = useSpring(0, { damping: 20, stiffness: 100 });
 
 	// Landing = shooting star + parallax; keep system cursor here so motion isn’t doubled.
-	const [landingInView, setLandingInView] = useState(true);
+	const [landingInView, setLandingInView] = useState(
+		() => Boolean(document.getElementById("landing")),
+	);
 
 	useEffect(() => {
 		const landing = document.getElementById("landing");
-		if (!landing) {
-			setLandingInView(false);
-			return;
-		}
+		if (!landing) return;
 		const io = new IntersectionObserver(
 			([entry]) => {
 				setLandingInView(entry.isIntersecting);

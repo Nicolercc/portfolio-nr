@@ -15,27 +15,29 @@ export function Navbar() {
 	const navigate = useNavigate();
 	const isHome = location.pathname === "/";
 	const { scrollY } = useScroll();
-	const [visible, setVisible] = useState(false);
-	const [scrolled, setScrolled] = useState(false);
+	const [homeVisible, setHomeVisible] = useState(false);
+	const [homeScrolled, setHomeScrolled] = useState(false);
+	const visible = isHome ? homeVisible : true;
+	const scrolled = isHome ? homeScrolled : true;
 
 	useEffect(() => {
-		if (!isHome) {
-			setVisible(true);
-			setScrolled(true);
-			return;
-		}
+		if (!isHome) return;
 
-		const threshold = window.innerHeight;
-		const latest = scrollY.get();
-		setVisible(latest > threshold);
-		setScrolled(latest > threshold + 50);
+		const frame = requestAnimationFrame(() => {
+			const threshold = window.innerHeight;
+			const latest = scrollY.get();
+			setHomeVisible(latest > threshold);
+			setHomeScrolled(latest > threshold + 50);
+		});
+
+		return () => cancelAnimationFrame(frame);
 	}, [isHome, scrollY]);
 
 	useMotionValueEvent(scrollY, "change", (latest) => {
 		if (!isHome) return;
 		const threshold = window.innerHeight;
-		setVisible(latest > threshold);
-		setScrolled(latest > threshold + 50);
+		setHomeVisible(latest > threshold);
+		setHomeScrolled(latest > threshold + 50);
 	});
 
 	const scrollTo = (id: string) => {

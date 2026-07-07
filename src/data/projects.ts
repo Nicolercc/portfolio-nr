@@ -337,9 +337,9 @@ const projects: Record<ProjectSlug, Project> = {
 		status: "live",
 		role: "Product Lead · Full-Stack Engineer",
 		tagline:
-			"A full-stack nuclear emergency simulation that delivers personalized survival guidance — real routing, live weather, AI triage, and shareable scenarios — in under 3 seconds.",
+			"A hackathon emergency-routing prototype that compresses shelter context and escape guidance into one analyze→act flow — decision support, not operational safety guidance.",
 		description:
-			"Full-stack nuclear emergency simulator deployed on Google Cloud Run + Vercel. Architected a pnpm monorepo, decoded Google's encoded polyline format for real road geometry, and built a geospatial scoring algorithm that routes escape destinations away from — not through — the blast zone.",
+			"Hackathon build deployed on Google Cloud Run + Vercel. pnpm monorepo with Google Directions polylines for road-following routes and geospatial scoring that ranks destinations away from the blast zone.",
 		stack: [
 			"React 19",
 			"TypeScript",
@@ -357,8 +357,8 @@ const projects: Record<ProjectSlug, Project> = {
 			"Docker",
 		],
 		metrics: [
-			{ value: "< 3s", label: "Analysis time" },
-			{ value: "4", label: "Live API integrations" },
+			{ value: "Analyze", label: "Single decision loop" },
+			{ value: "4", label: "API integrations" },
 			{ value: "1", label: "Session to ship" },
 			{ value: "2×", label: "Hackathon awards" },
 		],
@@ -378,7 +378,7 @@ const projects: Record<ProjectSlug, Project> = {
 			thesis:
 				"Emergency tools fail when they assume calm users. Nightfall explores how shelter discovery and route guidance can be compressed into a faster, clearer decision loop.",
 			problem:
-				"Most emergency preparedness tools are static PDFs or generic government pages. I wanted to build something that actually thinks — an app that takes your exact location, the blast site, real wind data, and live road conditions, then tells you in plain English what to do next. The constraint was: a frightened person should be able to act on this information in under 10 seconds.",
+				"Most emergency preparedness tools are static PDFs or generic government pages. I wanted a decision-support interface that takes blast location, your position, weather context, and routing data — then surfaces shelter vs evacuate guidance in plain language. The constraint was: someone under stress should understand the next action quickly, not parse a dashboard.",
 			solution:
 				"I architected a pnpm monorepo with a split deployment — React SPA on Vercel, Express 5 backend on Google Cloud Run — so API keys never touch the browser. I implemented Google's encoded polyline format to draw real road-following escape routes instead of synthetic arcs, and built a geospatial scoring algorithm that selects safe zone destinations by calculating flee-from-blast bearing weighted against upwind direction, ensuring routes never pass through the danger zone. I added a Claude-powered AI survival brief that synthesizes blast distance, zone classification, weather, and nearest shelter into a 3-sentence plain-English advisory generated server-side on every analysis.",
 			technicalHighlights: [
@@ -394,7 +394,7 @@ const projects: Record<ProjectSlug, Project> = {
 			architecture:
 				"Split-deploy monorepo: React 19 + Vite frontend on Vercel, Express 5 API on Google Cloud Run (port 8080, 0.0.0.0 bind). Backend proxies OpenWeather, Google Geocoding, Google Directions, and Anthropic APIs — all keys server-side only. Frontend calls relative /api/* routes in production (same-origin via STATIC_DIR), or VITE_API_BASE_URL in split-deploy mode. Graceful degradation throughout: every live API has a client-side fallback so the app functions without any keys. Google's encoded polyline is decoded client-side using a pure implementation to render real road geometry on the Leaflet map.",
 			performance:
-				"Analysis completes in under 3 seconds: geolocation resolves via browser API, geocoding and weather fire in parallel, escape route and AI brief fire after initial render so the map and shelter data appear immediately. AbortController cancels in-flight requests on re-analysis to prevent race conditions. URL state encoding enables zero-latency scenario sharing — shared links auto-run analysis on load.",
+				"Analysis is structured to surface map and shelter context quickly: geolocation via the browser API, geocoding and weather in parallel, escape route and AI brief after initial render. AbortController cancels in-flight requests on re-analysis. URL state encoding lets shared links reopen the same scenario.",
 			impact:
 				"Won Community Favorite and Best Alignment with Theme. Architected a production monorepo from scratch: pnpm workspaces, containerized Express 5 backend on Cloud Run, React SPA on Vercel, four live API integrations, Claude AI advisory layer, and shareable URL state — all designed, built, debugged, and deployed in a single session.",
 			lessons: [
@@ -408,7 +408,7 @@ const projects: Record<ProjectSlug, Project> = {
 				"Wire React Query for request caching and stale-while-revalidate patterns. Add offline mode with cached shelter datasets and pre-computed blast zones for the 4 yield types. Decode Google walking directions for shelter routes instead of straight-line haversine. Add WebSocket support for live scenario collaboration. Validate language and decision flow with emergency-preparedness practitioners before treating routing output as operational guidance.",
 			atAGlance: [
 				{ label: "Role", value: "Product Lead · Full-Stack Engineer" },
-				{ label: "Status", value: "Live demo" },
+				{ label: "Status", value: "Hackathon prototype" },
 				{
 					label: "Product type",
 					value: "Hackathon nuclear emergency simulation",
@@ -437,13 +437,13 @@ const projects: Record<ProjectSlug, Project> = {
 					title: "Set blast and your location",
 					description:
 						"Two address inputs mirror how people think in emergencies: where the event happened and where they are now.",
-					media: "/media/nuclear-router-detail.png",
+					media: "/media/nuclear-router-hero.png",
 				},
 				{
 					title: "Compare shelter and escape options",
 					description:
 						"Analysis surfaces shelter-in-place vs evacuate first, then nearest shelter context and scored safe destinations.",
-					media: "/media/nuclear-router-hero.png",
+					media: "/media/nuclear-router-detail.png",
 				},
 				{
 					title: "Review route and briefing",
@@ -565,10 +565,10 @@ const projects: Record<ProjectSlug, Project> = {
 			"Porkbun DNS",
 		],
 		metrics: [
-			{ value: "100", label: "Lighthouse score" },
-			{ value: "2", label: "Languages (EN/ES)" },
-			{ value: "0", label: "JS on static pages" },
-			{ value: "< 1s", label: "Load time" },
+			{ value: "EN/ES", label: "Bilingual routes" },
+			{ value: "SSG", label: "Static-first pages" },
+			{ value: "Minimal", label: "Client JS on content pages" },
+			{ value: "Live", label: "Client production site" },
 		],
 		links: {
 			live: "https://eliteglobalcleaningservices.netlify.app/",
@@ -581,14 +581,14 @@ const projects: Record<ProjectSlug, Project> = {
 		},
 		caseStudy: {
 			thesis:
-				"Production client site for a Queens-based environmental remediation company — built for speed, maintained through real infrastructure failures.",
+				"A bilingual client website for a service business, designed around trust, clarity, and fast access to core services.",
 			problem:
 				"Elite Global Cleaning Services is a Queens-based environmental remediation company serving industrial B2B clients. Their existing web presence wasn't converting — slow load times, no bilingual support for their Spanish-speaking staff and clients, and zero SEO structure. I built them a production site they could rely on, then kept it running when things broke.",
 			solution:
 				"Chose Astro for zero-JavaScript-by-default architecture — the client's audience is facilities managers on mobile, often in high-glare environments with spotty connections. Static Site Generation means the site loads instantly with no hydration cost. Added React Islands only where interactivity was genuinely needed. Built bilingual support (English/Spanish) via Astro's i18n layer so the site serves both their external clients and internal Spanish-speaking staff.",
 			technicalHighlights: [
 				"Resolved production SSL expiry: diagnosed Netlify webhook + Porkbun DNS failure, restored HTTPS",
-				"Zero-JavaScript Astro architecture — sub-second load on mobile industrial connections",
+				"Zero-JavaScript Astro architecture — fast first paint on mobile industrial connections",
 				"English/Spanish bilingual routing via Astro i18n layer, no third-party translation service",
 			],
 			decisions:
@@ -597,7 +597,7 @@ const projects: Record<ProjectSlug, Project> = {
 			architecture:
 				"Static site on Netlify with Porkbun nameservers. Astro's zero-JavaScript default means every page ships as pure HTML — no hydration, no runtime overhead. React Islands scoped to interactive components only. i18n at the Astro routing layer: /en/* and /es/* parallel routes, no client-side language switching, no third-party translation service.",
 			performance:
-				"Lighthouse scores: 100 Performance, 100 SEO, 100 Best Practices, 100 Accessibility. Every page pre-rendered at build time — zero server latency. Near-zero client-side JavaScript outside interactive islands. Resolved a live SSL certificate expiry post-launch: diagnosed Netlify webhook failure and Porkbun DNS propagation gap, restored HTTPS with zero data loss.",
+				"Static-first delivery: every page pre-rendered at build time with minimal client JavaScript outside interactive islands — tuned for mobile readability on industrial connections. Resolved a live SSL certificate expiry post-launch: diagnosed Netlify webhook failure and Porkbun DNS propagation gap, restored HTTPS with zero data loss.",
 			impact:
 				"Live production site for a real paying client. Diagnosed and resolved SSL expiry and DNS configuration failures post-launch. Added i18n after initial delivery based on client feedback — first time doing production bilingual routing.",
 			lessons: [
@@ -608,6 +608,115 @@ const projects: Record<ProjectSlug, Project> = {
 			],
 			nextSteps:
 				"Add a service request form with Netlify Forms. Build a client portal for job scheduling and status updates.",
+			atAGlance: [
+				{ label: "Role", value: "Full-Stack Developer" },
+				{
+					label: "Client type",
+					value: "Queens-based environmental remediation · B2B service",
+				},
+				{
+					label: "Core stack",
+					value: "Astro · TypeScript · Tailwind CSS · Netlify",
+				},
+				{
+					label: "Scope",
+					value:
+						"Marketing site, bilingual service pages, post-launch SSL/DNS maintenance",
+				},
+				{
+					label: "Key constraint",
+					value:
+						"Fast, legible pages for facilities managers on mobile industrial connections",
+				},
+				{ label: "Status", value: "Live production site" },
+			],
+			featuredDecisionTitle: "Static-first architecture",
+			featuredDecisionSummary:
+				"Prioritized a lightweight static architecture and bilingual content structure so the site stayed fast, maintainable, and clear for service-business users.",
+			walkthrough: [
+				{
+					title: "Homepage and service overview",
+					description:
+						"English homepage hero with service positioning, primary CTAs, and navigation into core remediation offerings.",
+					media: "/media/elite-global-hero.png",
+				},
+				{
+					title: "Bilingual content and trust",
+					description:
+						"Spanish homepage with the same service structure — parallel language routes via Astro i18n, no third-party translation layer.",
+					media: "/media/elite-global-detail.png",
+				},
+				{
+					title: "Contact and conversion path",
+					description:
+						"High-contrast layout keeps contact and service CTAs easy to find on mobile, including high-glare and spotty-connection environments.",
+				},
+			],
+			decisionCards: [
+				{
+					title: "Static-first architecture",
+					context:
+						"The audience often browses on mobile with limited bandwidth; a heavier app framework would add hydration cost without benefit.",
+					tradeOff:
+						"Less client-side interactivity by default vs. simpler hosting and faster first paint.",
+					result:
+						"Astro ships most pages as static HTML with React Islands only where interactivity was genuinely needed.",
+				},
+				{
+					title: "Bilingual content clarity",
+					context:
+						"Spanish-speaking staff and clients needed the same service information as English readers after launch feedback.",
+					tradeOff:
+						"Maintaining parallel language routes vs. a single-language site with faster initial delivery.",
+					result:
+						"English/Spanish routing at the Astro layer — no client-side language toggle or third-party translation service.",
+				},
+				{
+					title: "Service-business trust signals",
+					context:
+						"B2B remediation buyers need credibility and scanability more than decorative marketing polish.",
+					tradeOff:
+						"Restrained visual design vs. trend-heavy landing-page patterns.",
+					result:
+						"High-contrast typography and structured service pages prioritized legibility and contact clarity over flourishes.",
+				},
+				{
+					title: "Maintenance-friendly client handoff",
+					context:
+						"A paying client site has to keep running after launch — certificates and DNS do not maintain themselves.",
+					tradeOff:
+						"Time spent on post-launch incident response vs. only billing for the initial build.",
+					result:
+						"Diagnosed and resolved a production SSL expiry tied to Netlify webhook and Porkbun DNS propagation issues.",
+				},
+			],
+			architectureLayers: [
+				{
+					title: "Static content shell",
+					description:
+						"Astro static site generation — pages ship as HTML with near-zero client JavaScript on content routes.",
+				},
+				{
+					title: "Bilingual routing",
+					description:
+						"Astro i18n parallel routes (/en/*, /es/*) so each language has explicit URLs without runtime translation.",
+				},
+				{
+					title: "Interactive islands",
+					description:
+						"React scoped to Astro Islands only where client interactivity was required.",
+				},
+				{
+					title: "Hosting and DNS",
+					description:
+						"Netlify deployment with Porkbun nameservers — production HTTPS depends on both staying in sync.",
+				},
+				{
+					title: "Operations",
+					description:
+						"Post-launch maintenance: SSL renewal incident diagnosed across Netlify webhooks and DNS propagation.",
+				},
+			],
 		},
 		homepage: {
 			accent: "rose",

@@ -437,11 +437,13 @@ const projects: Record<ProjectSlug, Project> = {
 					title: "Set blast and your location",
 					description:
 						"Two address inputs mirror how people think in emergencies: where the event happened and where they are now.",
+					media: "/media/nuclear-router-detail.png",
 				},
 				{
 					title: "Compare shelter and escape options",
 					description:
 						"Analysis surfaces shelter-in-place vs evacuate first, then nearest shelter context and scored safe destinations.",
+					media: "/media/nuclear-router-hero.png",
 				},
 				{
 					title: "Review route and briefing",

@@ -20,6 +20,8 @@ const GLANCE_PROOF_LABELS = new Set([
 	"Capstone",
 	"Integrations",
 	"Core stack",
+	"Product type",
+	"Core interaction",
 ]);
 
 type ImpactifyIssue = {
@@ -163,13 +165,13 @@ function AtAGlanceSection({
 						<motion.div
 							key={item.label}
 							{...fadeUp}
-							className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-2"
+							className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-2 min-w-0"
 						>
 							<p className="font-mono text-[10px] uppercase tracking-[0.25em] text-rose/80">
 								{item.label}
 							</p>
 							<p
-								className={`text-sm leading-relaxed ${
+								className={`text-sm leading-relaxed break-words ${
 									GLANCE_PROOF_LABELS.has(item.label)
 										? "text-green/90 font-mono text-[11px] uppercase tracking-wider"
 										: "text-muted-foreground font-light"
@@ -336,42 +338,44 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 
 function WalkthroughSection({
 	steps,
-	media,
 	title,
 	fadeUp,
+	sectionLabel = "Product Walkthrough",
 }: {
 	steps: CaseStudyWalkthroughStep[];
-	media: ProjectMedia;
 	title: string;
 	fadeUp: FadeUpProps;
+	sectionLabel?: string;
 }) {
-	const stepMedia = [media.detail, media.hero].filter(Boolean) as string[];
-
 	return (
-		<motion.div {...fadeUp} className="space-y-10 border-t border-white/5 pt-16">
-			<SectionLabel>Product Walkthrough</SectionLabel>
+		<motion.div {...fadeUp} className="space-y-10 border-t border-white/5 pt-16 min-w-0">
+			<SectionLabel>{sectionLabel}</SectionLabel>
 			<ol className="space-y-10">
 				{steps.map((step, index) => {
-					const visual = step.media ?? stepMedia[index];
+					const visual = step.media;
 
 					return (
 						<li
 							key={step.title}
-							className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start"
+							className={
+								visual
+									? "grid grid-cols-1 md:grid-cols-12 gap-8 items-start min-w-0"
+									: "space-y-4 border-b border-white/5 pb-10 last:border-0 last:pb-0 min-w-0"
+							}
 						>
-							<div className="md:col-span-5 space-y-4">
+							<div className={visual ? "md:col-span-5 space-y-4 min-w-0" : "space-y-4 min-w-0"}>
 								<span className="font-mono text-[10px] text-rose/40">
 									/0{index + 1}
 								</span>
-								<h4 className="font-serif text-xl italic text-white/85">
+								<h4 className="font-serif text-xl italic text-white/85 break-words">
 									{step.title}
 								</h4>
-								<p className="font-light text-muted-foreground leading-relaxed text-sm">
+								<p className="font-light text-muted-foreground leading-relaxed text-sm break-words">
 									{step.description}
 								</p>
 							</div>
-							<div className="md:col-span-7 aspect-video bg-muted rounded-lg overflow-hidden border border-white/5 relative">
-								{visual ? (
+							{visual && (
+								<div className="md:col-span-7 aspect-video bg-muted rounded-lg overflow-hidden border border-white/5 relative min-w-0">
 									<img
 										src={visual}
 										alt={`${title} — ${step.title}`}
@@ -379,10 +383,8 @@ function WalkthroughSection({
 										loading="lazy"
 										decoding="async"
 									/>
-								) : (
-									<CaseStudyMediaPlaceholder label={`${step.title} — screenshot soon`} />
-								)}
-							</div>
+								</div>
+							)}
 						</li>
 					);
 				})}
@@ -405,7 +407,7 @@ function ArchitectureLayersSection({
 				{layers.map((layer, index) => (
 					<div
 						key={layer.title}
-						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3"
+						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3 min-w-0"
 					>
 						<div className="flex items-center gap-3">
 							<span className="font-mono text-[10px] text-green/50">
@@ -415,7 +417,7 @@ function ArchitectureLayersSection({
 								{layer.title}
 							</h4>
 						</div>
-						<p className="font-light text-muted-foreground leading-relaxed text-sm">
+						<p className="font-light text-muted-foreground leading-relaxed text-sm break-words">
 							{layer.description}
 						</p>
 					</div>
@@ -435,20 +437,20 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 	}
 
 	return (
-		<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-4">
+		<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-4 min-w-0">
 			<dl className="space-y-3 text-sm">
 				<div>
 					<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/70 mb-1">
 						Decision
 					</dt>
-					<dd className="font-serif text-lg italic text-white/85">{card.title}</dd>
+					<dd className="font-serif text-lg italic text-white/85 break-words">{card.title}</dd>
 				</div>
 				{card.context && (
 					<div>
 						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/70 mb-1">
 							Context
 						</dt>
-						<dd className="font-light text-muted-foreground leading-relaxed">
+						<dd className="font-light text-muted-foreground leading-relaxed break-words">
 							{card.context}
 						</dd>
 					</div>
@@ -458,7 +460,7 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-amber-200/80 mb-1">
 							Trade-off
 						</dt>
-						<dd className="font-light text-muted-foreground leading-relaxed">
+						<dd className="font-light text-muted-foreground leading-relaxed break-words">
 							{card.tradeOff}
 						</dd>
 					</div>
@@ -468,7 +470,7 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-green/70 mb-1">
 							Result
 						</dt>
-						<dd className="font-light text-muted-foreground leading-relaxed">
+						<dd className="font-light text-muted-foreground leading-relaxed break-words">
 							{card.result}
 						</dd>
 					</div>
@@ -855,9 +857,13 @@ export default function CaseStudy() {
 						{cs.walkthrough && cs.walkthrough.length > 0 && (
 							<WalkthroughSection
 								steps={cs.walkthrough}
-								media={media}
 								title={project.title}
 								fadeUp={fadeUp}
+								sectionLabel={
+									project.slug === "nuclear-router"
+										? "Emergency Flow"
+										: "Product Walkthrough"
+								}
 							/>
 						)}
 
@@ -953,17 +959,18 @@ export default function CaseStudy() {
 					</div>
 				</section>
 
+				{cs.lessons && cs.lessons.length > 0 && (
 				<section className="px-6 md:px-20 py-14 border-t border-white/5 max-w-screen-xl mx-auto">
 					<div className="grid grid-cols-1 md:grid-cols-12 gap-20">
-						<div className="md:col-span-4 space-y-4">
+						<div className="md:col-span-4 space-y-4 min-w-0">
 							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-green italic opacity-80">
 								Impact
 							</h3>
-							<p className="font-serif text-xl italic leading-relaxed text-muted-foreground">
+							<p className="font-serif text-xl italic leading-relaxed text-muted-foreground break-words">
 								{cs.impact}
 							</p>
 						</div>
-						<div className="md:col-span-8 space-y-8">
+						<div className="md:col-span-8 space-y-8 min-w-0">
 							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
 								Retrospective
 							</h3>
@@ -971,12 +978,12 @@ export default function CaseStudy() {
 								{cs.lessons.map((lesson, i) => (
 									<li
 										key={i}
-										className="flex gap-6 items-start border-b border-white/5 pb-6 last:border-0"
+										className="flex gap-6 items-start border-b border-white/5 pb-6 last:border-0 min-w-0"
 									>
 										<span className="font-mono text-[10px] text-rose/40 mt-1 shrink-0">
 											/0{i + 1}
 										</span>
-										<p className="text-sm font-light text-muted-foreground leading-relaxed">
+										<p className="text-sm font-light text-muted-foreground leading-relaxed break-words">
 											{lesson}
 										</p>
 									</li>
@@ -985,6 +992,7 @@ export default function CaseStudy() {
 						</div>
 					</div>
 				</section>
+				)}
 
 				{cs.nextSteps && (
 					<section className="px-6 md:px-20 py-16 border-t border-white/5">
@@ -998,7 +1006,7 @@ export default function CaseStudy() {
 								</p>
 							</div>
 							<div className="md:col-span-8">
-								<p className="font-light text-muted-foreground leading-relaxed text-sm border-l border-white/10 pl-8">
+								<p className="font-light text-muted-foreground leading-relaxed text-sm border-l border-white/10 pl-8 break-words">
 									{cs.nextSteps}
 								</p>
 							</div>

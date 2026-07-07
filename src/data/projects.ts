@@ -76,6 +76,8 @@ export type ProjectCaseStudy = {
 	architectureLayers?: CaseStudyArchitectureLayer[];
 	persona?: CaseStudyPersona;
 	cta?: CaseStudyCta[];
+	/** Title match for a decision card to highlight above the fold */
+	featuredDecisionTitle?: string;
 };
 
 export type HomepageVisual = {
@@ -227,6 +229,7 @@ const projects: Record<ProjectSlug, Project> = {
 					media: "/media/impactify-my-reps.webp",
 				},
 			],
+			featuredDecisionTitle: "Parallel briefing fetches",
 			decisionCards: [
 				{
 					title: "Rebuild under deadline",

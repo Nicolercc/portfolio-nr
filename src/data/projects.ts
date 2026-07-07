@@ -78,6 +78,8 @@ export type ProjectCaseStudy = {
 	cta?: CaseStudyCta[];
 	/** Title match for a decision card to highlight above the fold */
 	featuredDecisionTitle?: string;
+	/** One-line scan summary for the featured decision (shown in At a Glance) */
+	featuredDecisionSummary?: string;
 };
 
 export type HomepageVisual = {
@@ -230,6 +232,8 @@ const projects: Record<ProjectSlug, Project> = {
 				},
 			],
 			featuredDecisionTitle: "Parallel briefing fetches",
+			featuredDecisionSummary:
+				"Parallelized briefing fetches and cached server-side AI output to reduce repeated work and keep the weekly briefing responsive.",
 			decisionCards: [
 				{
 					title: "Rebuild under deadline",

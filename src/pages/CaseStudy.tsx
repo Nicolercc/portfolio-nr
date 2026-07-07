@@ -38,7 +38,7 @@ const IMPACTIFY_ISSUES: ImpactifyIssue[] = [
 		briefing:
 			"Rent and zoning decisions are moving faster than most residents can track. Impactify turns the week into one plain-English briefing, then points the user toward the representative or local action most connected to the issue.",
 		sourceNote:
-			"Illustrative Guardian briefing pattern + rep context (portfolio sample state).",
+			"Static demo state · mirrors Impactify's issue-card flow",
 		actionLabel: "Read housing briefings",
 		actionPath: "/news",
 	},
@@ -48,7 +48,7 @@ const IMPACTIFY_ISSUES: ImpactifyIssue[] = [
 		briefing:
 			"Immigration coverage often leaves readers with urgency but no next step. This loop frames what changed, who is affected, and one concrete civic action a busy user can take without opening five tabs.",
 		sourceNote:
-			"Illustrative issue coverage + action copy (portfolio sample state).",
+			"Static demo state · mirrors Impactify's issue-card flow",
 		actionLabel: "Open civic news",
 		actionPath: "/news",
 	},
@@ -58,7 +58,7 @@ const IMPACTIFY_ISSUES: ImpactifyIssue[] = [
 		briefing:
 			"Voting-rights and representation stories only become useful when they connect back to the person reading. Impactify pairs the briefing with a reps pathway so the user can move from context to contact.",
 		sourceNote:
-			"Illustrative briefing pattern + reps scorecard context (portfolio sample state).",
+			"Static demo state · mirrors Impactify's issue-card flow",
 		actionLabel: "Find representatives",
 		actionPath: "/reps",
 	},
@@ -135,13 +135,28 @@ function FeaturedDecisionSection({
 function AtAGlanceSection({
 	items,
 	fadeUp,
+	keyDecisionSummary,
 }: {
 	items: CaseStudyGlanceItem[];
 	fadeUp: FadeUpProps;
+	keyDecisionSummary?: string;
 }) {
 	return (
 		<section className="px-6 md:px-20 py-14 border-b border-white/5 bg-white/[0.01]">
 			<div className="max-w-screen-xl mx-auto space-y-8">
+				{keyDecisionSummary && (
+					<motion.div
+						{...fadeUp}
+						className="rounded-sm border border-green/20 bg-green/[0.03] p-5 md:p-6 space-y-2 min-w-0"
+					>
+						<p className="font-mono text-[10px] uppercase tracking-[0.25em] text-green/90">
+							Key Decision
+						</p>
+						<p className="text-sm leading-relaxed text-green/90 font-light break-words">
+							{keyDecisionSummary}
+						</p>
+					</motion.div>
+				)}
 				<SectionLabel>At a Glance</SectionLabel>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 					{items.map((item) => (
@@ -674,6 +689,14 @@ export default function CaseStudy() {
 					</motion.div>
 				</header>
 
+				{cs.atAGlance && cs.atAGlance.length > 0 && cs.featuredDecisionSummary && (
+					<AtAGlanceSection
+						items={cs.atAGlance}
+						fadeUp={fadeUp}
+						keyDecisionSummary={cs.featuredDecisionSummary}
+					/>
+				)}
+
 				{metrics && metrics.length > 0 && (
 					<div className="px-6 md:px-20 py-10 border-y border-white/5 bg-white/[0.01]">
 						<div className="max-w-screen-xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -691,7 +714,7 @@ export default function CaseStudy() {
 					</div>
 				)}
 
-				{cs.atAGlance && cs.atAGlance.length > 0 && (
+				{cs.atAGlance && cs.atAGlance.length > 0 && !cs.featuredDecisionSummary && (
 					<AtAGlanceSection items={cs.atAGlance} fadeUp={fadeUp} />
 				)}
 

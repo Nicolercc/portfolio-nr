@@ -26,7 +26,7 @@ type ImpactifyIssue = {
 	id: string;
 	label: string;
 	briefing: string;
-	citation: string;
+	sourceNote: string;
 	actionLabel: string;
 	actionPath: string;
 };
@@ -37,8 +37,8 @@ const IMPACTIFY_ISSUES: ImpactifyIssue[] = [
 		label: "Housing",
 		briefing:
 			"Rent and zoning decisions are moving faster than most residents can track. Impactify turns the week into one plain-English briefing, then points the user toward the representative or local action most connected to the issue.",
-		citation:
-			"Citation: Guardian briefing pattern + representative context, sample cached issue state.",
+		sourceNote:
+			"Illustrative Guardian briefing pattern + rep context (portfolio sample state).",
 		actionLabel: "Read housing briefings",
 		actionPath: "/news",
 	},
@@ -47,8 +47,8 @@ const IMPACTIFY_ISSUES: ImpactifyIssue[] = [
 		label: "Immigration",
 		briefing:
 			"Immigration coverage often leaves readers with urgency but no next step. This loop frames what changed, who is affected, and one concrete civic action a busy user can take without opening five tabs.",
-		citation:
-			"Citation: Guardian issue coverage + Impactify action copy, sample cached issue state.",
+		sourceNote:
+			"Illustrative issue coverage + action copy (portfolio sample state).",
 		actionLabel: "Open civic news",
 		actionPath: "/news",
 	},
@@ -57,8 +57,8 @@ const IMPACTIFY_ISSUES: ImpactifyIssue[] = [
 		label: "Democracy",
 		briefing:
 			"Voting-rights and representation stories only become useful when they connect back to the person reading. Impactify pairs the briefing with a reps pathway so the user can move from context to contact.",
-		citation:
-			"Citation: Guardian briefing pattern + reps scorecard context, sample cached issue state.",
+		sourceNote:
+			"Illustrative briefing pattern + reps scorecard context (portfolio sample state).",
 		actionLabel: "Find representatives",
 		actionPath: "/reps",
 	},
@@ -91,8 +91,8 @@ function hasDecisionCardFields(card: CaseStudyDecisionCard): boolean {
 }
 
 type FadeUpProps = {
-	initial: { opacity: number; y: number };
-	whileInView: { opacity: number; y: number };
+	initial: { opacity: number; y?: number };
+	whileInView: { opacity: number; y?: number };
 	viewport: { once: boolean };
 	transition: { duration: number; ease: readonly [number, number, number, number] };
 };
@@ -112,6 +112,23 @@ function SectionLabel({
 		>
 			{children}
 		</h3>
+	);
+}
+
+function FeaturedDecisionSection({
+	card,
+	fadeUp,
+}: {
+	card: CaseStudyDecisionCard;
+	fadeUp: FadeUpProps;
+}) {
+	return (
+		<section className="px-6 md:px-20 py-12 border-b border-white/5 bg-white/[0.015]">
+			<motion.div {...fadeUp} className="max-w-screen-xl mx-auto space-y-5">
+				<SectionLabel accent="green">Key Engineering Decision</SectionLabel>
+				<DecisionCardItem card={card} />
+			</motion.div>
+		</section>
 	);
 }
 
@@ -218,7 +235,7 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 				</p>
 			</div>
 
-			<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-6">
+			<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-6 min-w-0 overflow-hidden">
 				<div
 					className="flex flex-wrap gap-3"
 					role="group"
@@ -274,11 +291,14 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 								</span>
 							</div>
 
-							<p className="font-light text-muted-foreground leading-relaxed text-sm md:text-base">
+							<p className="font-light text-muted-foreground leading-relaxed text-sm md:text-base break-words">
 								{selectedIssue.briefing}
 							</p>
-							<p className="border-l border-white/10 pl-4 font-mono text-[10px] uppercase tracking-[0.16em] leading-relaxed text-white/40">
-								{selectedIssue.citation}
+							<p className="border-l border-white/10 pl-4 font-mono text-[10px] normal-case tracking-normal leading-relaxed text-white/40 break-words">
+								<span className="uppercase tracking-[0.14em] text-white/30">
+									Source note ·{" "}
+								</span>
+								{selectedIssue.sourceNote}
 							</p>
 							{actionHref && (
 								<a
@@ -517,7 +537,7 @@ function CaseStudyHeroMedia({
 			}
 
 			return (
-				<CaseStudyMediaPlaceholder label="Product demo · video available with motion enabled" />
+				<CaseStudyMediaPlaceholder label="Product demo" />
 			);
 		}
 
@@ -570,6 +590,7 @@ function CaseStudyHeroMedia({
 export default function CaseStudy() {
 	const { slug } = useParams();
 	const project = slug ? getProject(slug) : undefined;
+	const reduceMotion = useReducedMotion();
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -588,14 +609,25 @@ export default function CaseStudy() {
 
 	const { caseStudy: cs, media, links, metrics } = project;
 	const hasStructuredContent = hasStructuredCaseStudyContent(cs);
+	const featuredDecision =
+		cs.featuredDecisionTitle && cs.decisionCards?.length
+			? cs.decisionCards.find((card) => card.title === cs.featuredDecisionTitle)
+			: undefined;
 
 	// Framer Motion Variants for smooth entrance
-	const fadeUp = {
-		initial: { opacity: 0, y: 20 },
-		whileInView: { opacity: 1, y: 0 },
-		viewport: { once: true },
-		transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const },
-	};
+	const fadeUp = reduceMotion
+		? {
+				initial: { opacity: 0 },
+				whileInView: { opacity: 1 },
+				viewport: { once: true },
+				transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] as const },
+			}
+		: {
+				initial: { opacity: 0, y: 20 },
+				whileInView: { opacity: 1, y: 0 },
+				viewport: { once: true },
+				transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const },
+			};
 
 	return (
 		<AnimatePresence mode="wait">
@@ -604,7 +636,7 @@ export default function CaseStudy() {
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0 }}
-				className="bg-background text-foreground min-h-screen selection:bg-rose/30 pb-20"
+				className="bg-background text-foreground min-h-screen overflow-x-hidden selection:bg-rose/30 pb-20"
 			>
 				{/* ── GHOST NAV ── */}
 				<nav className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start mix-blend-difference pointer-events-none">
@@ -618,12 +650,12 @@ export default function CaseStudy() {
 				</nav>
 
 				{/* ── HERO SECTION ── */}
-				<header className="relative pt-40 md:pt-60 px-6 md:px-20 mb-20">
+				<header className="relative pt-40 md:pt-60 px-6 md:px-20 mb-20 max-w-full">
 					<motion.div {...fadeUp}>
-						<span className="section-label mb-6 block font-mono text-rose uppercase tracking-[0.5em]">
+						<span className="section-label mb-6 block max-w-full font-mono text-rose uppercase tracking-[0.3em] md:tracking-[0.5em] text-pretty">
 							{project.category} — {project.year}
 						</span>
-						<h1 className="text-[12vw] md:text-[9vw] font-serif italic leading-[0.8] mb-12 tracking-tighter">
+						<h1 className="max-w-full text-[11vw] sm:text-[10vw] md:text-[9vw] font-serif italic leading-[0.85] mb-12 tracking-tighter break-words">
 							{project.title}
 						</h1>
 						<p className="max-w-2xl text-xl md:text-2xl font-light text-muted-foreground italic border-l border-rose/20 pl-8 mb-12">
@@ -633,9 +665,9 @@ export default function CaseStudy() {
 
 					{/* 1. CINEMATIC HERO IMAGE/VIDEO */}
 					<motion.div
-						initial={{ opacity: 0, scale: 0.95 }}
-						animate={{ opacity: 1, scale: 1 }}
-						transition={{ duration: 1.2, ease: "easeOut" }}
+						initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
+						animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+						transition={reduceMotion ? { duration: 0.2 } : { duration: 1.2, ease: "easeOut" }}
 						className="relative w-full aspect-[21/9] bg-muted rounded-sm overflow-hidden group border border-white/5"
 					>
 						<CaseStudyHeroMedia media={media} title={project.title} />
@@ -663,10 +695,14 @@ export default function CaseStudy() {
 					<AtAGlanceSection items={cs.atAGlance} fadeUp={fadeUp} />
 				)}
 
+				{featuredDecision && (
+					<FeaturedDecisionSection card={featuredDecision} fadeUp={fadeUp} />
+				)}
+
 				{/* ── NARRATIVE GRID ── */}
-				<section className="px-6 md:px-20 py-20 grid grid-cols-1 md:grid-cols-12 gap-20">
+				<section className="px-6 md:px-20 py-20 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 max-w-full">
 					{/* Metadata Sidebar */}
-					<aside className="md:col-span-4 space-y-16">
+					<aside className="md:col-span-4 space-y-16 min-w-0">
 						<div className="space-y-4">
 							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
 								Tech Stack
@@ -698,7 +734,9 @@ export default function CaseStudy() {
 									rel="noreferrer"
 									className="group inline-flex items-center gap-3 px-5 py-3 rounded-full border border-rose/30 bg-rose/5 hover:bg-rose/10 hover:border-rose/60 w-full justify-center text-rose font-mono text-[11px] uppercase tracking-widest transition-all duration-300"
 								>
-									<span className="w-1.5 h-1.5 rounded-full bg-rose animate-pulse" />
+									<span
+										className={`w-1.5 h-1.5 rounded-full bg-rose ${reduceMotion ? "" : "animate-pulse"}`}
+									/>
 									View Live Site
 									<ArrowUpRight
 										size={12}
@@ -721,7 +759,7 @@ export default function CaseStudy() {
 					</aside>
 
 					{/* Main Story Content */}
-					<div className="md:col-span-8 space-y-20">
+					<div className="md:col-span-8 space-y-20 min-w-0">
 						{hasStructuredContent && (
 							<motion.div {...fadeUp} className="space-y-6">
 								<SectionLabel>Product Thesis</SectionLabel>
@@ -830,16 +868,42 @@ export default function CaseStudy() {
 						</div> */}
 
 						<div className="space-y-16 pt-16 border-t border-white/5">
-							{cs.decisionCards && cs.decisionCards.length > 0 ? (
-								<DecisionCardsSection cards={cs.decisionCards} fadeUp={fadeUp} />
-							) : (
-								<div className="space-y-6">
-									<SectionLabel>Engineering Decisions</SectionLabel>
-									<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
-										{cs.decisions}
-									</p>
-								</div>
-							)}
+							{(() => {
+								const remainingDecisions = cs.decisionCards?.filter(
+									(card) => card.title !== cs.featuredDecisionTitle,
+								);
+
+								if (remainingDecisions && remainingDecisions.length > 0) {
+									return (
+										<DecisionCardsSection
+											cards={remainingDecisions}
+											fadeUp={fadeUp}
+										/>
+									);
+								}
+
+								if (!cs.featuredDecisionTitle && cs.decisionCards?.length) {
+									return (
+										<DecisionCardsSection
+											cards={cs.decisionCards}
+											fadeUp={fadeUp}
+										/>
+									);
+								}
+
+								if (!cs.decisionCards?.length) {
+									return (
+										<div className="space-y-6">
+											<SectionLabel>Engineering Decisions</SectionLabel>
+											<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+												{cs.decisions}
+											</p>
+										</div>
+									);
+								}
+
+								return null;
+							})()}
 
 							{cs.architectureLayers && cs.architectureLayers.length > 0 && (
 								<ArchitectureLayersSection

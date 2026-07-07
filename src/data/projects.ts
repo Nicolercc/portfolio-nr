@@ -376,7 +376,7 @@ const projects: Record<ProjectSlug, Project> = {
 		},
 		caseStudy: {
 			thesis:
-				"A full-stack nuclear emergency simulation that delivers personalized survival guidance — real routing, live weather, AI triage, and shareable scenarios — in under 3 seconds.",
+				"Emergency tools fail when they assume calm users. Nightfall explores how shelter discovery and route guidance can be compressed into a faster, clearer decision loop.",
 			problem:
 				"Most emergency preparedness tools are static PDFs or generic government pages. I wanted to build something that actually thinks — an app that takes your exact location, the blast site, real wind data, and live road conditions, then tells you in plain English what to do next. The constraint was: a frightened person should be able to act on this information in under 10 seconds.",
 			solution:
@@ -405,7 +405,115 @@ const projects: Record<ProjectSlug, Project> = {
 				"Graceful degradation isn't optional in safety-critical tools — every live API needs a fallback that keeps the app functional.",
 			],
 			nextSteps:
-				"Wire React Query for request caching and stale-while-revalidate patterns. Add offline mode with cached shelter datasets and pre-computed blast zones for the 4 yield types. Decode Google walking directions for shelter routes instead of straight-line haversine. Add WebSocket support for live scenario collaboration.",
+				"Wire React Query for request caching and stale-while-revalidate patterns. Add offline mode with cached shelter datasets and pre-computed blast zones for the 4 yield types. Decode Google walking directions for shelter routes instead of straight-line haversine. Add WebSocket support for live scenario collaboration. Validate language and decision flow with emergency-preparedness practitioners before treating routing output as operational guidance.",
+			atAGlance: [
+				{ label: "Role", value: "Product Lead · Full-Stack Engineer" },
+				{ label: "Status", value: "Live demo" },
+				{
+					label: "Product type",
+					value: "Hackathon nuclear emergency simulation",
+				},
+				{
+					label: "Core stack",
+					value:
+						"React · Express · Leaflet · Google Maps APIs · Vercel + Cloud Run",
+				},
+				{
+					label: "Core interaction",
+					value:
+						"Blast + location inputs → analyze → evacuate or shelter guidance",
+				},
+				{
+					label: "Portfolio media",
+					value:
+						"Demo video: controls only, poster-first (~137 MB .mov — compress or replace TBD)",
+				},
+			],
+			featuredDecisionTitle: "Decision-first result panel",
+			featuredDecisionSummary:
+				"Designed the experience around fast route comparison and shelter context instead of a dense emergency dashboard.",
+			walkthrough: [
+				{
+					title: "Set blast and your location",
+					description:
+						"Two address inputs mirror how people think in emergencies: where the event happened and where they are now.",
+				},
+				{
+					title: "Compare shelter and escape options",
+					description:
+						"Analysis surfaces shelter-in-place vs evacuate first, then nearest shelter context and scored safe destinations.",
+				},
+				{
+					title: "Review route and briefing",
+					description:
+						"The map shows a road-following escape route; an AI brief and radiation decay timer support the next action.",
+				},
+			],
+			decisionCards: [
+				{
+					title: "Decision-first result panel",
+					context:
+						"Emergency interfaces often lead with dense hazard readouts before telling someone what to do.",
+					tradeOff:
+						"Less upfront telemetry vs. faster comprehension when the user is stressed.",
+					result:
+						"Shelter-in-place vs evacuate leads the panel, followed by named shelter context, walk time, then the AI brief.",
+				},
+				{
+					title: "Flee-from-blast routing signal",
+					context:
+						"Wind-only heuristics can recommend paths that still cross the danger zone.",
+					tradeOff:
+						"More geospatial scoring logic vs. simpler weather-based routing.",
+					result:
+						"Destination scoring weights flee-from-blast bearing against wind so escape routes avoid the blast zone.",
+				},
+				{
+					title: "Crisis-readable advisory copy",
+					context:
+						"Users may scan results while alarmed, not read long hazard reports.",
+					tradeOff:
+						"A short plain-English brief vs. comprehensive incident detail.",
+					result:
+						"Server-side Claude brief synthesizes distance, zone, weather, and shelter context into a few sentences.",
+				},
+				{
+					title: "Safe portfolio demo media",
+					context:
+						"The hackathon demo is a large .mov asset reused in the portfolio case study.",
+					tradeOff:
+						"Rich motion demo vs. page weight and autoplay risk on a safety-themed product.",
+					result:
+						"Case study video keeps controls, preload none, poster fallback, and no autoplay.",
+				},
+			],
+			architectureLayers: [
+				{
+					title: "Client UI",
+					description:
+						"React 19 + Vite SPA on Vercel — single analyze→act flow with a decision-led result panel.",
+				},
+				{
+					title: "Map / routing layer",
+					description:
+						"Leaflet map with Google Directions polylines decoded client-side so escape routes follow roads, not synthetic arcs.",
+				},
+				{
+					title: "Location / geospatial",
+					description:
+						"Browser geolocation, Google Geocoding API, and geospatial scoring to rank safer destinations.",
+				},
+				{
+					title: "Emergency context",
+					description:
+						"Express backend on Cloud Run proxies OpenWeather, Google Directions, Anthropic (Claude brief), and related analysis calls — API keys stay server-side.",
+				},
+				{
+					title: "Deployment / media",
+					description:
+						"Split deploy: containerized API on Cloud Run, static frontend on Vercel; portfolio case study uses poster-first video loading for the demo asset.",
+				},
+			],
 		},
 		homepage: {
 			accent: "rose",

@@ -12,8 +12,8 @@ const technologies = [
 
 export function Marquee() {
 	return (
-		<section className="py-24 overflow-hidden border-y border-white/5 bg-white/[0.01]">
-			<div className="flex gap-20 animate-marquee whitespace-nowrap">
+		<section aria-hidden="true" data-a11y-decorative className="py-24 overflow-hidden border-y border-white/5 bg-white/[0.01]">
+			<div className="flex gap-20 motion-safe:animate-marquee whitespace-nowrap">
 				{[...technologies, ...technologies].map((t, i) => (
 					<span
 						key={i}

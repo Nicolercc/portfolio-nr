@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { PROFILE } from "../../data/profile";
 import "./landing.css";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -356,7 +357,8 @@ export default function Landing() {
 		let midStars: Star[] = [];
 		let brightStars: Star[] = [];
 		let nebula: HTMLCanvasElement | null = null;
-		let animId: number;
+		let animId = 0;
+		let visible = true;
 
 		let mouseX = 0,
 			mouseY = 0;
@@ -469,8 +471,26 @@ export default function Landing() {
 				}
 			}
 
-			animId = requestAnimationFrame(tick);
+			if (!reducedMotion && visible && !document.hidden) {
+				animId = requestAnimationFrame(tick);
+			} else {
+				animId = 0;
+			}
 		}
+
+		// Stop drawing while the starfield is scrolled away or the tab is hidden.
+		function resume() {
+			if (!reducedMotion && animId === 0 && visible && !document.hidden) {
+				animId = requestAnimationFrame(tick);
+			}
+		}
+
+		const observer = new IntersectionObserver(([entry]) => {
+			visible = entry.isIntersecting;
+			resume();
+		});
+		observer.observe(c);
+		document.addEventListener("visibilitychange", resume);
 
 		function onMouseMove(e: MouseEvent) {
 			targetMouseX = e.clientX;
@@ -479,6 +499,8 @@ export default function Landing() {
 
 		function onResize() {
 			init();
+			// Resizing clears the canvas; the static reduced-motion frame must be redrawn.
+			if (reducedMotion) tick();
 		}
 
 		init();
@@ -491,14 +513,19 @@ export default function Landing() {
 
 		return () => {
 			cancelAnimationFrame(animId);
+			observer.disconnect();
+			document.removeEventListener("visibilitychange", resume);
 			window.removeEventListener("mousemove", onMouseMove);
 			window.removeEventListener("resize", onResize);
 		};
 	}, []);
 
 	const handleScroll = () => {
-		const hero = document.getElementById("hero");
-		if (hero) hero.scrollIntoView({ behavior: "smooth" });
+		const capabilities = document.getElementById("hero");
+		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		if (capabilities) {
+			capabilities.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+		}
 	};
 
 	return (
@@ -508,29 +535,32 @@ export default function Landing() {
 
 			<div className="landing__content">
 				<span className="landing__eyebrow">
-					Full-Stack Engineer · Pursuit Fellow &amp; Media Strategist
+					{PROFILE.eyebrow}
 				</span>
-				<h1 className="landing__name">Nicole R.</h1>
+				<h1 data-route-heading tabIndex={-1} className="landing__name">
+					{PROFILE.displayName}
+				</h1>
 				<p className="landing__tagline">
 					<em>I can tell the story and ship the product.</em>
 				</p>
 
 				<div className="landing__meta">
-					<span className="landing__location">NYC · DR-raised 🌴</span>
+					<span className="landing__location">
+						{PROFILE.locationShort} · {PROFILE.background}
+					</span>
 				</div>
 
 				<div className="landing__actions">
-					<div className="landing__status">
-						<span className="landing__status-dot" aria-hidden />
-						Available for Work
-					</div>
+					<a href="#work" className="landing__primary-btn">
+						View selected work
+					</a>
 					<a
-						href="/Nicole_R_CV.pdf"
+						href={PROFILE.resumePath}
 						download
 						className="landing__cv-btn"
-						aria-label="Download CV"
+						aria-label="Download resume"
 					>
-						Download CV ↓
+						Download resume ↓
 					</a>
 				</div>
 			</div>
@@ -538,7 +568,7 @@ export default function Landing() {
 			<button
 				className="landing__scroll-cue"
 				onClick={handleScroll}
-				aria-label="Scroll to hero"
+				aria-label="Scroll to capabilities"
 			>
 				<span className="landing__scroll-label">scroll</span>
 				<span className="landing__scroll-arrow">↓</span>

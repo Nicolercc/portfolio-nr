@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { blogPostList } from "../data/blog";
 import { formatBlogDate } from "../lib/parseBlogPost";
+import { PROFILE } from "../data/profile";
+import { setDocumentMeta } from "../lib/documentMeta";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -17,7 +19,11 @@ function StaggerHeadline({
 
 	if (reduceMotion) {
 		return (
-			<h1 className="text-6xl md:text-9xl font-serif tracking-tighter leading-[0.85]">
+			<h1
+				data-route-heading
+				tabIndex={-1}
+				className="text-6xl md:text-9xl font-serif tracking-tighter leading-[0.85] focus:outline-none"
+			>
 				{line1} <br />
 				<span className="italic text-rose">{line2}</span>
 			</h1>
@@ -25,7 +31,11 @@ function StaggerHeadline({
 	}
 
 	return (
-		<h1 className="text-6xl md:text-9xl font-serif tracking-tighter leading-[0.85]">
+		<h1
+			data-route-heading
+			tabIndex={-1}
+			className="text-6xl md:text-9xl font-serif tracking-tighter leading-[0.85] focus:outline-none"
+		>
 			{line1.split("").map((char, i) => (
 				<motion.span
 					key={`l1-${i}`}
@@ -60,15 +70,36 @@ function StaggerHeadline({
 
 export default function Blog() {
 	useEffect(() => {
-		document.title = "Writing — Nicole Rodriguez";
+		setDocumentMeta({
+			title: `Writing — ${PROFILE.name}`,
+			description: `Essays and notes by ${PROFILE.name}, ${PROFILE.positioning}.`,
+			path: "/blog",
+			structuredData: {
+				"@context": "https://schema.org",
+				"@type": "Blog",
+				name: `Writing — ${PROFILE.name}`,
+				url: `${PROFILE.website}/blog`,
+				author: {
+					"@type": "Person",
+					name: PROFILE.name,
+					url: PROFILE.website,
+				},
+				blogPost: blogPostList.map((post) => ({
+					"@type": "BlogPosting",
+					headline: post.title,
+					url: `${PROFILE.website}/blog/${post.slug}`,
+					datePublished: post.date,
+				})),
+			},
+		});
 	}, []);
 
 	return (
-		<main className="min-h-screen bg-background text-foreground px-6 md:px-12 py-16 md:py-24 selection:bg-rose/30">
+		<main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-foreground px-6 md:px-12 py-16 md:py-24 selection:bg-rose/30 focus:outline-none">
 			<nav className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start pointer-events-none">
 				<Link
 					to="/"
-					className="pointer-events-auto group flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.4em] text-rose/60 hover:text-rose transition-all duration-500"
+					className="pointer-events-auto group flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
 				>
 					<span className="h-px w-8 bg-rose/30 group-hover:w-12 group-hover:bg-rose transition-all" />
 					Back to Home
@@ -108,7 +139,7 @@ export default function Blog() {
 									{formatBlogDate(post.date)} · {post.readTime}
 								</p>
 								{post.tags.length > 0 && (
-									<p className="text-[10px] uppercase tracking-[0.15em] font-mono text-rose/60 mb-5">
+									<p className="text-[10px] uppercase tracking-[0.15em] font-mono text-rose/90 mb-5">
 										{post.tags.join(" · ")}
 									</p>
 								)}

@@ -3,11 +3,28 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.13.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run generate:sitemap && tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json && vite build && node scripts/prerender-route-metadata.mjs",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:sitemap": "node scripts/generate-sitemap.mjs",
+    "verify:content": "node scripts/validate-content.mjs",
+    "verify:repo": "node scripts/validate-repo.mjs",
+    "verify:projects": "node scripts/validate-projects.mjs",
+    "verify:security": "node scripts/validate-security.mjs",
+    "verify:audit": "npm audit --audit-level=moderate",
+    "verify:links": "node scripts/validate-links.mjs",
+    "verify:performance": "node scripts/validate-performance.mjs",
+    "verify:seo": "node scripts/validate-seo.mjs",
+    "verify:ia": "node scripts/verify-ia.mjs",
+    "verify:a11y": "node scripts/verify-accessibility.mjs",
+    "verify:release": "node scripts/validate-release.mjs",
+    "verify": "npm run verify:content && npm run verify:repo && npm run verify:projects && npm run verify:security && npm run verify:audit && npm run verify:links && npm run lint && npm run build && npm run verify:performance && npm run verify:seo && npm run verify:ia && npm run verify:a11y && npm run verify:release"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
@@ -15,12 +32,10 @@
     "framer-motion": "^12.38.0",
     "lenis": "^1.3.23",
     "lucide-react": "^1.6.0",
-    "marked": "^18.0.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.2",
-    "splitting": "^1.1.0",
-    "wouter": "^3.9.0"
+    "splitting": "^1.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -32,6 +47,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/splitting": "^1.0.6",
     "@vitejs/plugin-react": "^6.0.1",
+    "axe-core": "^4.13.0",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",

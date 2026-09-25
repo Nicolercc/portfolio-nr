@@ -1,11 +1,13 @@
 import { useInView } from "../../hooks/useInView";
 import { ArrowRight } from "lucide-react";
-import confetti from "canvas-confetti";
+import { mailtoHref, PROFILE } from "../../data/profile";
 
 export function Contact() {
 	const { ref, inView } = useInView();
 
-	function fireConfetti() {
+	async function fireConfetti() {
+		// Loaded on demand to keep it out of the entry bundle.
+		const { default: confetti } = await import("canvas-confetti");
 		confetti({
 			particleCount: 80,
 			spread: 70,
@@ -36,11 +38,11 @@ export function Contact() {
 					Let's build <br /> something real.
 				</h2>
 				<a
-					href="mailto:hello@nicolerodriguez.me"
+					href={mailtoHref}
 					onClick={fireConfetti}
 					className="inline-flex items-center gap-4 text-xl md:text-2xl font-light hover:text-rose transition-colors duration-300 group"
 				>
-					nicolerodriguez@pursuit.org
+					{PROFILE.email}
 					<ArrowRight className="group-hover:translate-x-2 transition-transform" />
 				</a>
 			</div>

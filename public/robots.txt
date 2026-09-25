@@ -2,5 +2,4 @@ User-agent: *
 
 Allow: /
 
-Sitemap: https://NICOLERODRIGUEZ.DEV
-
+Sitemap: https://nicolerodriguez.dev/sitemap.xml

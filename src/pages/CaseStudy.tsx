@@ -12,6 +12,8 @@ import {
 	type CaseStudyArchitectureLayer,
 	type CaseStudyPersona,
 } from "../data/projects";
+import { PROFILE } from "../data/profile";
+import { setDocumentMeta } from "../lib/documentMeta";
 import { ArrowUpRight, GitBranch, Play } from "lucide-react";
 import NotFound from "./NotFound";
 
@@ -107,13 +109,13 @@ function SectionLabel({
 	accent?: "rose" | "green";
 }) {
 	return (
-		<h3
+		<h2
 			className={`font-mono text-[10px] uppercase tracking-[0.3em] italic opacity-80 ${
 				accent === "green" ? "text-green" : "text-rose"
 			}`}
 		>
 			{children}
-		</h3>
+		</h2>
 	);
 }
 
@@ -217,7 +219,7 @@ function PersonaSection({
 						</span>
 					))}
 				</div>
-				<p className="font-mono text-[10px] uppercase tracking-[0.2em] text-rose/60">
+				<p className="font-mono text-[10px] uppercase tracking-[0.2em] text-rose/90">
 					Time budget · {persona.timeConstraint}
 				</p>
 			</div>
@@ -296,12 +298,12 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 						>
 							<div className="flex items-start justify-between gap-4">
 								<div className="space-y-2">
-									<p className="font-mono text-[9px] uppercase tracking-[0.24em] text-rose/70">
+									<p className="font-mono text-[9px] uppercase tracking-[0.24em] text-rose/90">
 										Selected Issue
 									</p>
-									<h4 className="font-serif text-2xl italic text-white/90">
+									<h3 className="font-serif text-2xl italic text-white/90">
 										{selectedIssue.label}
-									</h4>
+									</h3>
 								</div>
 								<span className="shrink-0 rounded-full border border-green/20 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-green/80">
 									One action
@@ -311,8 +313,8 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 							<p className="font-light text-muted-foreground leading-relaxed text-sm md:text-base break-words">
 								{selectedIssue.briefing}
 							</p>
-							<p className="border-l border-white/10 pl-4 font-mono text-[10px] normal-case tracking-normal leading-relaxed text-white/40 break-words">
-								<span className="uppercase tracking-[0.14em] text-white/30">
+							<p className="border-l border-white/10 pl-4 font-mono text-[10px] normal-case tracking-normal leading-relaxed text-white/60 break-words">
+								<span className="uppercase tracking-[0.14em] text-white/55">
 									Source note ·{" "}
 								</span>
 								{selectedIssue.sourceNote}
@@ -364,12 +366,12 @@ function WalkthroughSection({
 							}
 						>
 							<div className={visual ? "md:col-span-5 space-y-4 min-w-0" : "space-y-4 min-w-0"}>
-								<span className="font-mono text-[10px] text-rose/40">
+								<span className="font-mono text-[10px] text-rose/90">
 									/0{index + 1}
 								</span>
-								<h4 className="font-serif text-xl italic text-white/85 break-words">
+								<h3 className="font-serif text-xl italic text-white/85 break-words">
 									{step.title}
-								</h4>
+								</h3>
 								<p className="font-light text-muted-foreground leading-relaxed text-sm break-words">
 									{step.description}
 								</p>
@@ -379,7 +381,11 @@ function WalkthroughSection({
 									<img
 										src={visual}
 										alt={`${title} — ${step.title}`}
-										className="absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-700"
+										className={`absolute inset-0 h-full w-full object-top grayscale hover:grayscale-0 transition-all duration-700 ${
+											step.mediaFit === "contain"
+												? "object-contain bg-black"
+												: "object-cover"
+										}`}
 										loading="lazy"
 										decoding="async"
 									/>
@@ -410,12 +416,12 @@ function ArchitectureLayersSection({
 						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3 min-w-0"
 					>
 						<div className="flex items-center gap-3">
-							<span className="font-mono text-[10px] text-green/50">
+							<span className="font-mono text-[10px] text-green/80">
 								{String(index + 1).padStart(2, "0")}
 							</span>
-							<h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-green/90">
+							<h3 className="font-mono text-[10px] uppercase tracking-[0.2em] text-green/90">
 								{layer.title}
-							</h4>
+							</h3>
 						</div>
 						<p className="font-light text-muted-foreground leading-relaxed text-sm break-words">
 							{layer.description}
@@ -431,7 +437,7 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 	if (!hasDecisionCardFields(card)) {
 		return (
 			<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3">
-				<h4 className="font-serif text-lg italic text-white/85">{card.title}</h4>
+				<h3 className="font-serif text-lg italic text-white/85">{card.title}</h3>
 			</div>
 		);
 	}
@@ -440,14 +446,14 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 		<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-4 min-w-0">
 			<dl className="space-y-3 text-sm">
 				<div>
-					<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/70 mb-1">
+					<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/90 mb-1">
 						Decision
 					</dt>
 					<dd className="font-serif text-lg italic text-white/85 break-words">{card.title}</dd>
 				</div>
 				{card.context && (
 					<div>
-						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/70 mb-1">
+						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/90 mb-1">
 							Context
 						</dt>
 						<dd className="font-light text-muted-foreground leading-relaxed break-words">
@@ -520,6 +526,51 @@ function CaseStudyMediaPlaceholder({ label }: { label: string }) {
 				</p>
 			</div>
 		</>
+	);
+}
+
+function ArchitectureEvidencePanel({
+	layers,
+	title,
+}: {
+	layers?: CaseStudyArchitectureLayer[];
+	title: string;
+}) {
+	if (!layers?.length) {
+		return <CaseStudyMediaPlaceholder label="Detail shot coming soon" />;
+	}
+
+	return (
+		<div className="absolute inset-0 flex flex-col justify-between border border-green/20 bg-[#0f1713] p-4 md:p-5 shadow-[inset_0_0_0_1px_rgba(74,222,128,0.06)]">
+			<div className="space-y-1">
+				<p className="font-mono text-[9px] uppercase tracking-[0.22em] text-green">
+					Architecture Evidence
+				</p>
+				<p className="font-serif text-lg italic leading-tight text-white">
+					{title}
+				</p>
+			</div>
+			<ol className="grid grid-cols-1 gap-2">
+				{layers.slice(0, 2).map((layer, index) => (
+					<li
+						key={layer.title}
+						className="grid grid-cols-[2rem_1fr] gap-3 rounded-sm border border-green/15 bg-black/25 p-2.5"
+					>
+						<span className="font-mono text-[10px] text-green">
+							{String(index + 1).padStart(2, "0")}
+						</span>
+						<div className="min-w-0">
+							<p className="font-mono text-[9px] uppercase tracking-[0.16em] text-white">
+								{layer.title}
+							</p>
+							<p className="line-clamp-2 text-xs leading-relaxed text-white/70">
+								{layer.description}
+							</p>
+						</div>
+					</li>
+				))}
+			</ol>
+		</div>
 	);
 }
 
@@ -601,7 +652,7 @@ function CaseStudyHeroMedia({
 		return <CaseStudyMediaPlaceholder label="Demo video unavailable" />;
 	}
 
-	return <CaseStudyMediaPlaceholder label="Screenshot coming soon" />;
+	return <CaseStudyMediaPlaceholder label={media.placeholder ?? "Screenshot coming soon"} />;
 }
 
 export default function CaseStudy() {
@@ -612,6 +663,34 @@ export default function CaseStudy() {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [slug]);
+
+	useEffect(() => {
+		if (!project) return;
+
+		setDocumentMeta({
+			title: `${project.title} Case Study — ${PROFILE.name}`,
+			description: project.description,
+			path: `/projects/${project.slug}`,
+			image: project.media.social ?? project.media.hero ?? project.media.detail,
+			structuredData: {
+				"@context": "https://schema.org",
+				"@type": "CreativeWork",
+				name: `${project.title} Case Study`,
+				description: project.description,
+				url: `${PROFILE.website}/projects/${project.slug}`,
+				image: project.media.hero
+					? `${PROFILE.website}${project.media.hero}`
+					: undefined,
+				author: {
+					"@type": "Person",
+					name: PROFILE.name,
+					url: PROFILE.website,
+				},
+				keywords: project.stack,
+				about: project.category,
+			},
+		});
+	}, [project]);
 
 	if (!project) {
 		return <NotFound />;
@@ -659,7 +738,7 @@ export default function CaseStudy() {
 				<nav className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start mix-blend-difference pointer-events-none">
 					<Link
 						to="/#work"
-						className="pointer-events-auto group flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.4em] text-rose/60 hover:text-rose transition-all duration-500"
+						className="pointer-events-auto group flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
 					>
 						<span className="h-[1px] w-8 bg-rose/30 group-hover:w-12 group-hover:bg-rose transition-all" />
 						Back to Work
@@ -672,7 +751,11 @@ export default function CaseStudy() {
 						<span className="section-label mb-6 block max-w-full font-mono text-rose uppercase tracking-[0.3em] md:tracking-[0.5em] text-pretty">
 							{project.category} — {project.year}
 						</span>
-						<h1 className="max-w-full text-[11vw] sm:text-[10vw] md:text-[9vw] font-serif italic leading-[0.85] mb-12 tracking-tighter break-words">
+						<h1
+							data-route-heading
+							tabIndex={-1}
+							className="max-w-full text-[11vw] sm:text-[10vw] md:text-[9vw] font-serif italic leading-[0.85] mb-12 tracking-tighter break-words focus:outline-none"
+						>
 							{project.title}
 						</h1>
 						<p className="max-w-2xl text-xl md:text-2xl font-light text-muted-foreground italic border-l border-rose/20 pl-8 mb-12">
@@ -729,9 +812,9 @@ export default function CaseStudy() {
 					{/* Metadata Sidebar */}
 					<aside className="md:col-span-4 space-y-16 min-w-0">
 						<div className="space-y-4">
-							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
+							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
 								Tech Stack
-							</h3>
+							</h2>
 							<div className="flex flex-wrap gap-2">
 								{project.stack.map((tech) => (
 									<span
@@ -744,9 +827,9 @@ export default function CaseStudy() {
 							</div>
 						</div>
 						<div className="space-y-4">
-							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
+							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
 								Role
-							</h3>
+							</h2>
 							<p className="font-serif text-lg italic opacity-70 leading-relaxed">
 								{project.role}
 							</p>
@@ -774,7 +857,7 @@ export default function CaseStudy() {
 									href={links.github}
 									target="_blank"
 									rel="noreferrer"
-									className="inline-flex items-center justify-center gap-2 w-full font-mono text-[10px] uppercase tracking-widest text-white/30 hover:text-white/60 transition-colors py-2"
+									className="inline-flex items-center justify-center gap-2 w-full font-mono text-[10px] uppercase tracking-widest text-white/60 hover:text-white/85 transition-colors py-2"
 								>
 									<GitBranch size={10} />
 									Source Code
@@ -820,19 +903,10 @@ export default function CaseStudy() {
 										decoding="async"
 									/>
 								) : (
-									<>
-										<div className="absolute inset-0 opacity-[0.16] bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:28px_28px]" />
-										<div className="relative z-[1] flex h-full w-full items-center justify-center">
-											<p className="text-[10px] uppercase tracking-[0.28em] font-mono text-muted-foreground">
-												Detail shot coming soon
-											</p>
-										</div>
-										<div className="absolute inset-0 z-[2] flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-											<div className="rounded-full bg-rose/80 p-4 text-background backdrop-blur-sm">
-												<Play size={20} fill="currentColor" />
-											</div>
-										</div>
-									</>
+									<ArchitectureEvidencePanel
+										layers={cs.architectureLayers}
+										title={project.title}
+									/>
 								)}
 							</motion.div>
 						</div>
@@ -869,9 +943,9 @@ export default function CaseStudy() {
 
 						{/* 3. DOUBLE SPREAD: MOBILE/DESKTOP OR TWO SCREENS // UNCOMMENT WHEN IMAGES ARE READY */}
 						{/* <div className="space-y-12">
-							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80 text-center">
+							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80 text-center">
 								Interface Dynamics
-							</h3>
+							</h2>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<motion.div
 									{...fadeUp}
@@ -963,24 +1037,24 @@ export default function CaseStudy() {
 				<section className="px-6 md:px-20 py-14 border-t border-white/5 max-w-screen-xl mx-auto">
 					<div className="grid grid-cols-1 md:grid-cols-12 gap-20">
 						<div className="md:col-span-4 space-y-4 min-w-0">
-							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-green italic opacity-80">
+							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-green italic opacity-80">
 								Impact
-							</h3>
+							</h2>
 							<p className="font-serif text-xl italic leading-relaxed text-muted-foreground break-words">
 								{cs.impact}
 							</p>
 						</div>
 						<div className="md:col-span-8 space-y-8 min-w-0">
-							<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
+							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
 								Retrospective
-							</h3>
+							</h2>
 							<ul className="space-y-6">
 								{cs.lessons.map((lesson, i) => (
 									<li
 										key={i}
 										className="flex gap-6 items-start border-b border-white/5 pb-6 last:border-0 min-w-0"
 									>
-										<span className="font-mono text-[10px] text-rose/40 mt-1 shrink-0">
+										<span className="font-mono text-[10px] text-rose/90 mt-1 shrink-0">
 											/0{i + 1}
 										</span>
 										<p className="text-sm font-light text-muted-foreground leading-relaxed break-words">
@@ -998,9 +1072,9 @@ export default function CaseStudy() {
 					<section className="px-6 md:px-20 py-16 border-t border-white/5">
 						<div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
 							<div className="md:col-span-4">
-								<h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose/60 italic mb-4">
+								<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose/90 italic mb-4">
 									If I Had More Time
-								</h3>
+								</h2>
 								<p className="font-serif text-2xl italic text-white/70 leading-relaxed">
 									What comes next.
 								</p>
@@ -1016,12 +1090,12 @@ export default function CaseStudy() {
 
 				{/* ── NEXT PROJECT FOOTER ── */}
 				<footer className="relative py-60 px-6 overflow-hidden border-t border-white/5 group mt-40">
-					<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] font-serif italic text-white/[0.015] whitespace-nowrap select-none pointer-events-none transition-transform duration-1000 group-hover:scale-110">
+					<div aria-hidden="true" data-a11y-decorative className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] font-serif italic text-white/[0.015] whitespace-nowrap select-none pointer-events-none transition-transform duration-1000 group-hover:scale-110">
 						{nextProject.title}
 					</div>
 
 					<div className="relative z-10 max-w-screen-xl mx-auto text-center">
-						<span className="section-label mb-10 block font-mono text-rose/60">
+						<span className="section-label mb-10 block font-mono text-rose/90">
 							Next Journey
 						</span>
 						<Link
@@ -1033,7 +1107,7 @@ export default function CaseStudy() {
 							</h2>
 							<div className="mt-10 flex flex-col items-center">
 								<div className="h-[1px] w-12 bg-rose transition-all duration-700 group-hover:w-48" />
-								<div className="mt-6 font-mono text-[10px] uppercase tracking-[0.6em] opacity-40 group-hover:opacity-100 group-hover:translate-y-2 transition-all">
+								<div className="mt-6 font-mono text-[10px] uppercase tracking-[0.6em] opacity-70 group-hover:opacity-100 group-hover:translate-y-2 transition-all">
 									Discover More
 								</div>
 							</div>

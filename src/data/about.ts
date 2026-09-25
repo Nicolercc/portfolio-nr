@@ -1,9 +1,11 @@
 /** About / bento section copy + hobby deck data (edit here; UI lives in bento.tsx). */
 
+import { PROFILE } from "./profile";
+
 export const BENTO_BIO = {
 	eyebrow: "About me",
 	name: "I'm Nicole,",
-	role: "full stack developer",
+	role: "software engineer",
 	paragraphs: [
 		"NYC-based, Dominican Republic-raised. I build web products that are as thoughtful as they look — clean architecture, intentional UI, real performance.",
 		"I care about technology that actually does something. When I'm not writing code I'm filming, hiking somewhere with no signal, or island hopping back to my roots.",
@@ -12,9 +14,9 @@ export const BENTO_BIO = {
 	links: [
 		{
 			label: "LinkedIn",
-			href: "https://www.linkedin.com/in/nicolerodriguezz/",
+			href: PROFILE.linkedin,
 		},
-		{ label: "GitHub", href: "https://github.com/Nicolercc" },
+		{ label: "GitHub", href: PROFILE.github },
 	],
 };
 

@@ -4,6 +4,7 @@ import {
 	useInView,
 	useMotionValue,
 	useTransform,
+	useReducedMotion,
 	animate,
 	AnimatePresence,
 	type PanInfo,
@@ -25,8 +26,8 @@ const T = {
 	green: "#4ADE80",
 	card: "#141414",
 	border: "rgba(255,255,255,0.08)",
-	muted: "rgba(245,240,232,0.45)",
-	mutedLo: "rgba(245,240,232,0.2)",
+	muted: "rgba(245,240,232,0.62)",
+	mutedLo: "rgba(245,240,232,0.55)",
 } as const;
 
 /** Card deck drag / layout tuning */
@@ -47,26 +48,6 @@ const CARD = {
 	roseOverlayRange: [0, -100] as const,
 	greenOverlayRange: [0, 100] as const,
 } as const;
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   DATA — paste this into src/data/about.ts and update BENTO_BIO
-
-   export const BENTO_BIO = {
-     eyebrow: "About me",
-     name: "I'm Nicole,",
-     role: "full stack developer",
-     paragraphs: [
-       "NYC-based, Dominican Republic-raised. I build web products that are as thoughtful as they look — clean architecture, intentional UI, real performance.",
-       "I care about technology that actually does something. When I'm not writing code I'm filming, hiking somewhere with no signal, or island hopping back to my roots.",
-     ],
-     tagline: "I make things. Usually with code. Sometimes with clay & paint.",
-     links: [
-       { label: "LinkedIn", href: "https://www.linkedin.com/in/nicolerodriguezz/" },
-       { label: "GitHub",   href: "https://github.com/Nicolercc" },
-       { label: "X",        href: "#" },
-     ],
-   };
-─────────────────────────────────────────────────────────────────────────────── */
 
 /* ─────────────────────────────────────────────
    TYPING EFFECT HOOK
@@ -110,8 +91,8 @@ function SocialPill({ label, href }: { label: string; href: string }) {
 			rel="noopener noreferrer"
 			className="group inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-transparent px-[15px] py-1.5 text-[0.78rem] font-medium tracking-wide no-underline transition-all duration-[220ms] hover:border-[#D4849A] hover:bg-[rgba(212,132,154,0.08)] hover:text-[#D4849A]"
 			style={{
-				fontFamily: "'DM Sans', sans-serif",
-				color: "rgba(245,240,232,0.45)",
+				fontFamily: "'Inter', sans-serif",
+				color: "rgba(245,240,232,0.62)",
 			}}
 		>
 			<span className="h-1 w-1 shrink-0 rounded-full bg-[rgba(245,240,232,0.2)] transition-colors group-hover:bg-[#D4849A]" />
@@ -124,12 +105,14 @@ function SocialPill({ label, href }: { label: string; href: string }) {
    ANIMATED ORB AVATAR
 ───────────────────────────────────────────── */
 function BlobOrb() {
+	const reduceMotion = useReducedMotion();
+
 	return (
 		<div className="bento__blobOrb">
 			<motion.div
 				className="bento__blobOrb-spin"
-				animate={{ rotate: 360 }}
-				transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+				animate={reduceMotion ? { rotate: 0 } : { rotate: 360 }}
+				transition={reduceMotion ? { duration: 0 } : { duration: 18, repeat: Infinity, ease: "linear" }}
 				style={{ willChange: "transform" }}
 			/>
 			<div className="bento__blobOrb-inner">🌺</div>
@@ -151,6 +134,7 @@ function StrategyCard() {
 		>
 			{/* Decorative background monogram */}
 			<div
+				data-a11y-decorative
 				className="pointer-events-none absolute right-0 top-0 p-4 opacity-10 transition-opacity group-hover:opacity-20"
 				aria-hidden="true"
 			>
@@ -184,7 +168,7 @@ function StrategyCard() {
 					of the stack
 				</h3>
 
-				<p className="max-w-sm text-sm font-light leading-relaxed text-[rgba(245,240,232,0.45)]">
+				<p className="max-w-sm text-sm font-light leading-relaxed text-[rgba(245,240,232,0.62)]">
 					I build interfaces with the same principles as good journalism:{" "}
 					<strong className="font-medium text-[rgba(245,240,232,0.85)]">
 						clarity
@@ -199,7 +183,7 @@ function StrategyCard() {
 			</div>
 
 			<div className="mt-8 flex items-center justify-between border-t border-white/5 pt-6">
-				<span className="font-mono text-[9px] uppercase tracking-widest text-white/20">
+				<span className="font-mono text-[9px] uppercase tracking-widest text-white/60">
 					Engineer × Media Specialist
 				</span>
 				<div className="flex -space-x-2">
@@ -389,7 +373,7 @@ function DraggableCard({
 				<p
 					className="m-0 text-[0.81rem] leading-[1.65]"
 					style={{
-						fontFamily: "'DM Sans', sans-serif",
+						fontFamily: "'Inter', sans-serif",
 						color: T.muted,
 					}}
 				>
@@ -414,6 +398,7 @@ function DraggableCard({
    CARD DECK
 ───────────────────────────────────────────── */
 function CardDeck() {
+	const reduceMotion = useReducedMotion();
 	const [topIndex, setTopIndex] = useState(0);
 	const total = HOBBIES.length;
 
@@ -455,7 +440,7 @@ function CardDeck() {
 			{/* Controls */}
 			<div
 				className="flex items-center gap-[18px]"
-				role="toolbar"
+				role="group"
 				aria-label="Hobby card controls"
 			>
 				<motion.button
@@ -464,34 +449,37 @@ function CardDeck() {
 					onClick={retreat}
 					whileHover={{ scale: 1.08, borderColor: T.rose }}
 					whileTap={{ scale: 0.94 }}
-					className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#D4849A] outline-none"
+					className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#D4849A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4849A]"
 				>
 					←
 				</motion.button>
 
-				<div
-					className="flex items-center gap-1.5"
-					role="tablist"
-					aria-label="Select hobby"
-				>
+				<div className="flex items-center" role="group" aria-label="Select hobby">
 					{HOBBIES.map((h, i) => {
 						const active = i === topIndex;
 						return (
-							<motion.button
+							// 24px hit area (WCAG 2.5.8) around the same small visual dot.
+							<button
 								key={h.title}
 								type="button"
-								role="tab"
-								aria-selected={active}
+								aria-current={active ? "true" : undefined}
 								aria-label={`Show ${h.title}`}
 								onClick={() => setTopIndex(i)}
-								animate={{
-									width: active ? 18 : 5,
-									background: active ? T.green : T.mutedLo,
-									boxShadow: active ? `0 0 8px ${T.green}` : "none",
-								}}
-								transition={{ type: "spring", stiffness: 300, damping: 28 }}
-								className="h-[5px] cursor-pointer rounded-full border-0 p-0 outline-none"
-							/>
+								className="flex h-6 min-w-6 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4ADE80]"
+							>
+								<motion.span
+									aria-hidden="true"
+									animate={{
+										width: active ? 18 : 5,
+										background: active ? T.green : T.mutedLo,
+										boxShadow: active ? `0 0 8px ${T.green}` : "none",
+									}}
+									transition={
+										reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 28 }
+									}
+									className="block h-[5px] rounded-full"
+								/>
+							</button>
 						);
 					})}
 				</div>
@@ -502,7 +490,7 @@ function CardDeck() {
 					onClick={advance}
 					whileHover={{ scale: 1.08, borderColor: T.green }}
 					whileTap={{ scale: 0.94 }}
-					className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#4ADE80] outline-none"
+					className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#4ADE80] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4ADE80]"
 				>
 					→
 				</motion.button>
@@ -518,14 +506,15 @@ function CardDeck() {
 ───────────────────────────────────────────── */
 export default function BentoSection() {
 	const sectionRef = useRef<HTMLElement>(null);
+	const reduceMotion = useReducedMotion();
 	const inView = useInView(sectionRef, { once: true, margin: "-80px" });
-	const tagline = useTypingEffect(BIO.tagline, 40, inView);
+	const tagline = useTypingEffect(BIO.tagline, 40, inView && !reduceMotion);
 
 	return (
 		<section
 			ref={sectionRef}
 			id="about"
-			className="bento"
+			className="bento scroll-mt-24"
 			style={
 				{
 					"--bento-bg": T.bg,
@@ -544,16 +533,19 @@ export default function BentoSection() {
 			<div className="bento__container">
 				{/* ── LEFT: Bio ── */}
 				<motion.div
-					initial={{ opacity: 0, x: -28 }}
+					initial={reduceMotion ? { opacity: 1 } : { opacity: 0, x: -28 }}
 					animate={inView ? { opacity: 1, x: 0 } : {}}
-					transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+					transition={reduceMotion ? { duration: 0 } : { duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
 					className="bento__col"
 				>
 					<BlobOrb />
 
 					<p className="bento__eyebrow">{BIO.eyebrow}</p>
-					<h2 className="bento__h2 bento__name">{BIO.name}</h2>
-					<h2 className="bento__h2 bento__role">{BIO.role}</h2>
+					<h2 className="sr-only">
+						{BIO.name} {BIO.role}
+					</h2>
+					<h2 aria-hidden="true" className="bento__h2 bento__name">{BIO.name}</h2>
+					<h2 aria-hidden="true" className="bento__h2 bento__role">{BIO.role}</h2>
 
 					{BIO.paragraphs.map((p, i) => (
 						<p key={i} className="bento__p">
@@ -563,14 +555,17 @@ export default function BentoSection() {
 
 					<div className="bento__taglineBox">
 						<p className="bento__taglineText">
-							{tagline}
-							<motion.span
-								animate={{ opacity: [1, 0, 1] }}
-								transition={{ duration: 0.85, repeat: Infinity }}
-								className="ml-0.5 inline-block w-0.5 align-middle"
-								style={{ height: "0.85em", background: T.rose }}
-								aria-hidden="true"
-							/>
+							<span className="sr-only">{BIO.tagline}</span>
+							<span aria-hidden="true">{reduceMotion ? BIO.tagline : tagline}</span>
+							{!reduceMotion && (
+								<motion.span
+									animate={{ opacity: [1, 0, 1] }}
+									transition={{ duration: 0.85, repeat: Infinity }}
+									className="ml-0.5 inline-block w-0.5 align-middle"
+									style={{ height: "0.85em", background: T.rose }}
+									aria-hidden="true"
+								/>
+							)}
 						</p>
 					</div>
 
@@ -583,9 +578,9 @@ export default function BentoSection() {
 
 				{/* ── RIGHT: Deck + Strategy Card ── */}
 				<motion.div
-					initial={{ opacity: 0, y: 32 }}
+					initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 32 }}
 					animate={inView ? { opacity: 1, y: 0 } : {}}
-					transition={{ delay: 0.25, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+					transition={reduceMotion ? { duration: 0 } : { delay: 0.25, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
 					className="bento__col"
 				>
 					<p className="bento__rightLabel">// what I love</p>

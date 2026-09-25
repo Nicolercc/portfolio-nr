@@ -10,12 +10,35 @@ import { Marquee } from "../components/sections/Marquee";
 import { CustomCursor } from "../components/ui/CustomCursor";
 import { GlobalCanvas } from "../components/layouts/GlobalCanvas";
 import { useLocation } from "react-router-dom";
+import { PROFILE } from "../data/profile";
+import { setDocumentMeta } from "../lib/documentMeta";
 
 export default function Home() {
 	const location = useLocation();
 
 	useEffect(() => {
-		document.title = "Nicole Rodriguez — Developer Portfolio";
+		setDocumentMeta({
+			title: `${PROFILE.name} — ${PROFILE.positioning}`,
+			description: PROFILE.summary,
+			path: "/",
+			structuredData: {
+				"@context": "https://schema.org",
+				"@type": "Person",
+				name: PROFILE.name,
+				url: PROFILE.website,
+				email: PROFILE.email,
+				jobTitle: PROFILE.title,
+				address: {
+					"@type": "PostalAddress",
+					addressLocality: "New York",
+					addressRegion: "NY",
+					addressCountry: "US",
+				},
+				sameAs: [PROFILE.github, PROFILE.linkedin],
+				knowsAbout: PROFILE.specialties,
+				description: PROFILE.summary,
+			},
+		});
 		return () => {
 			document.documentElement.style.scrollBehavior = "auto";
 		};
@@ -37,6 +60,9 @@ export default function Home() {
            our custom #F5F0E8 (Off-white) to take the lead 
         */
 		<div className="relative min-h-screen selection:bg-rose/30">
+			<a href="#main-content" className="skip-link">
+				Skip to content
+			</a>
 			{/* 1. THE FOUNDATION: Handles Gradients, Grid, and Noise */}
 			<GlobalCanvas />
 
@@ -49,14 +75,14 @@ export default function Home() {
 			<Navbar />
 
 			{/* 4. THE CONTENT: Ensure 'relative z-10' so it sits on top of the canvas */}
-			<main className="relative z-10">
+			<main id="main-content" tabIndex={-1} className="relative z-10 focus:outline-none">
 				<Landing />
 				<section id="hero">
 					<Hero />
 				</section>
-				<Bento />
 				<Projects />
 				<Experience />
+				<Bento />
 				<Marquee />
 				<Contact />
 			</main>

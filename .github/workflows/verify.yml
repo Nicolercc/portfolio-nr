@@ -1,0 +1,66 @@
+name: Verify
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.13.0"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Validate content
+        run: npm run verify:content
+
+      - name: Validate repository
+        run: npm run verify:repo
+
+      - name: Validate project stories
+        run: npm run verify:projects
+
+      - name: Validate security rules
+        run: npm run verify:security
+
+      - name: Audit dependencies
+        run: npm run verify:audit
+
+      - name: Validate external links
+        run: npm run verify:links
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Validate performance budgets
+        run: npm run verify:performance
+
+      - name: Verify SEO and social metadata
+        run: npm run verify:seo
+
+      - name: Verify information architecture
+        run: npm run verify:ia
+
+      - name: Verify accessibility and motion
+        run: npm run verify:a11y
+
+      - name: Validate release checklist
+        run: npm run verify:release

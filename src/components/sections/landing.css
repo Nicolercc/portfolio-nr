@@ -138,7 +138,7 @@
 
 /* ── Eyebrow ─────────────────────────────────────────────────*/
 .landing__eyebrow {
-	font-family: "Inter", system-ui, sans-serif;
+	font-family: var(--font-sans);
 	font-size: 0.7rem;
 	font-weight: 500;
 	letter-spacing: 0.22em;
@@ -150,7 +150,7 @@
 
 /* ── Name ────────────────────────────────────────────────────*/
 .landing__name {
-	font-family: "Playfair Display", Georgia, serif;
+	font-family: var(--font-serif);
 	font-size: clamp(4.5rem, 12vw, 9rem);
 	font-weight: 400;
 	line-height: 1;
@@ -167,9 +167,16 @@
 		0 0 160px rgba(212, 132, 154, 0.1);
 }
 
+.landing__name:focus-visible {
+	outline: none;
+	text-shadow:
+		0 0 90px rgba(212, 132, 154, 0.32),
+		0 0 170px rgba(212, 132, 154, 0.14);
+}
+
 /* ── Tagline ─────────────────────────────────────────────────*/
 .landing__tagline {
-	font-family: "Playfair Display", Georgia, serif;
+	font-family: var(--font-serif);
 	font-size: clamp(1.1rem, 2.5vw, 1.5rem);
 	font-style: italic;
 	color: var(--color-text-secondary);
@@ -194,10 +201,11 @@
 .landing__actions {
 	display: flex;
 	align-items: center;
-	gap: 20px;
+	gap: 12px;
 	margin-top: 36px;
 	flex-wrap: wrap;
 	justify-content: center;
+	max-width: min(560px, calc(100vw - 32px));
 }
 
 /* ── Status pill ─────────────────────────────────────────────*/
@@ -239,24 +247,55 @@
 }
 
 /* ── CV button ───────────────────────────────────────────────*/
-.landing__cv-btn {
+.landing__primary-btn,
+.landing__cv-btn,
+.landing__secondary-btn {
 	font-family: var(--font-mono);
 	font-size: 0.72rem;
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
-	color: var(--color-rose);
-	border: 1px solid var(--color-rose);
 	border-radius: 100px;
 	padding: 7px 20px;
-	background: transparent;
 	text-decoration: none;
 	transition:
 		background 0.2s ease,
 		color 0.2s ease,
+		border-color 0.2s ease,
 		box-shadow 0.2s ease;
-	/* Matching glass treatment */
 	backdrop-filter: blur(8px);
 	-webkit-backdrop-filter: blur(8px);
+}
+
+@media (max-width: 520px) {
+	.landing__actions {
+		gap: 10px;
+		margin-top: 30px;
+	}
+
+	.landing__primary-btn,
+	.landing__cv-btn,
+	.landing__secondary-btn,
+	.landing__status {
+		font-size: 0.68rem;
+		padding: 7px 16px;
+	}
+}
+
+.landing__primary-btn {
+	color: #0d0d0d;
+	border: 1px solid var(--color-green);
+	background: var(--color-green);
+}
+
+.landing__primary-btn:hover {
+	background: rgba(74, 222, 128, 0.86);
+	box-shadow: 0 0 24px rgba(74, 222, 128, 0.28);
+}
+
+.landing__cv-btn {
+	color: var(--color-rose);
+	border: 1px solid var(--color-rose);
+	background: transparent;
 }
 
 .landing__cv-btn:hover {
@@ -264,6 +303,18 @@
 	color: #0d0d0d;
 	/* Bloom on hover — echoes the star glow */
 	box-shadow: 0 0 24px rgba(212, 132, 154, 0.35);
+}
+
+.landing__secondary-btn {
+	color: var(--color-text-secondary);
+	border: 1px solid rgba(245, 240, 232, 0.28);
+	background: rgba(245, 240, 232, 0.04);
+}
+
+.landing__secondary-btn:hover {
+	color: var(--color-text-primary);
+	border-color: rgba(245, 240, 232, 0.48);
+	background: rgba(245, 240, 232, 0.08);
 }
 
 /* ── Scroll cue ──────────────────────────────────────────────*/

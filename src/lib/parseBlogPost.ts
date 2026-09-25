@@ -1,5 +1,3 @@
-import { marked } from "marked";
-
 export type BlogPost = {
 	slug: string;
 	title: string;
@@ -8,7 +6,6 @@ export type BlogPost = {
 	excerpt: string;
 	readTime: string;
 	body: string;
-	html: string;
 };
 
 type Frontmatter = {
@@ -65,7 +62,6 @@ export function parseBlogPost(raw: string, fallbackSlug?: string): BlogPost {
 		excerpt: frontmatter.excerpt ?? "",
 		readTime: frontmatter.readTime ?? "",
 		body,
-		html: marked.parse(body, { async: false }) as string,
 	};
 }
 

@@ -27,7 +27,7 @@ a **Midnight Rose** canvas with **rose** nuance and **green** energy, built for 
 
 ### Routing
 
-- **Wouter**
+- **React Router**
 
 ## Local development
 
@@ -65,6 +65,19 @@ src/
 | `npm run build`   | typecheck + production bundle |
 | `npm run preview` | preview production build      |
 | `npm run lint`    | run ESLint                    |
+| `npm run generate:sitemap` | regenerate `public/sitemap.xml` for finite public routes |
+| `npm run verify:content` | validate canonical profile, resume asset, and stale public strings |
+| `npm run verify:repo` | validate package-manager hygiene and route registry consistency |
+| `npm run verify:projects` | validate selected-work order and case-study completeness |
+| `npm run verify:security` | validate raw HTML, CSP/header, and external-link security rules |
+| `npm run verify:audit` | run npm audit at moderate-or-higher severity |
+| `npm run verify:links` | validate portfolio-owned external links |
+| `npm run verify:performance` | validate media, font, and bundle budgets after build |
+| `npm run verify:seo` | validate sitemap, robots, canonical, OG/Twitter, and JSON-LD metadata |
+| `npm run verify:ia` | smoke test production information architecture with Playwright |
+| `npm run verify:a11y` | smoke test keyboard focus, reduced motion, forced colors, and small viewports |
+| `npm run verify:release` | validate required release artifacts and gate wiring |
+| `npm run verify`  | run all release gates |
 
 ## License
 

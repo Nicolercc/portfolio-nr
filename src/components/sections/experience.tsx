@@ -1,8 +1,10 @@
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import { useRef } from "react";
+import { PROFILE } from "../../data/profile";
 
 export function Experience() {
 	const containerRef = useRef<HTMLDivElement>(null);
+	const reduceMotion = useReducedMotion();
 
 	// Track scroll progress through the entire section
 	const { scrollYProgress } = useScroll({
@@ -22,9 +24,9 @@ export function Experience() {
 			type: "Fellowship",
 			company: "Pursuit × AI Native Fellowship",
 			role: "Full-Stack Engineer Fellow",
-			period: "2024 — Present",
+			period: PROFILE.pursuitPeriod,
 			description:
-				"Selected for Pursuit's software engineering fellowship with a 9% acceptance rate — trained as a full-stack engineer and AI-native developer. Built and shipped production applications with LLM integrations, agentic workflows, and cloud deployment infrastructure. Selected for BlackRock real estate capstone demo at Hudson Yards. Rebuilt Impactify from Firebase/Vite to Next.js App Router under deadline for the presentation.",
+				"Training as a full-stack engineer with an AI-native development focus. Built and shipped applications with LLM integrations, cloud deployment workflows, and production-minded architecture. Rebuilt Impactify from Firebase/Vite to Next.js App Router under deadline for a capstone presentation.",
 			skills: ["React", "Next.js", "TypeScript", "Node.js", "PostgreSQL", "Claude AI", "Cloud Run", "Docker", "Vercel"],
 		},
 		{
@@ -37,21 +39,12 @@ export function Experience() {
 			skills: ["Astro", "React", "TypeScript", "Tailwind", "Netlify", "i18n", "Client Delivery"],
 		},
 		{
-			type: "Collaboration",
-			company: "Open Source Contributor",
-			role: "GitHub Community",
-			period: "2024 — Present",
-			description:
-				"Contributing to the global ecosystem by solving issues, refining documentation, and maintaining code quality in public repositories. Building in public across civic tech, emergency response, and developer tooling.",
-			skills: ["Git Workflow", "Code Review", "Public Docs", "TypeScript"],
-		},
-		{
 			type: "Engineering",
 			company: "Elite Global Cleaning Services",
 			role: "Full-Stack Developer",
 			period: "2023 — 2024",
 			description:
-				"Built and shipped a production site for a Queens-based environmental remediation company. Zero-JavaScript Astro architecture for sub-second mobile load times. Resolved a production SSL certificate expiry post-launch — diagnosed Netlify webhook and Porkbun DNS propagation failure, restored HTTPS. Added English/Spanish i18n via Astro routing layer after initial delivery.",
+				"Built and shipped a production site for a Queens-based environmental remediation company. Static-first Astro architecture with minimal client JavaScript. Resolved a production SSL certificate expiry post-launch — diagnosed Netlify webhook and Porkbun DNS propagation failure, restored HTTPS. Added English/Spanish i18n via Astro routing layer after initial delivery.",
 			skills: ["Astro", "TypeScript", "Tailwind", "Netlify", "Porkbun DNS", "i18n"],
 		},
 		{
@@ -75,8 +68,9 @@ export function Experience() {
 					{/* LEFT: Sticky Header */}
 					<div className="lg:col-span-4 lg:sticky lg:top-32 h-fit space-y-4">
 						<motion.p
-							initial={{ opacity: 0 }}
+							initial={reduceMotion ? false : { opacity: 0 }}
 							whileInView={{ opacity: 1 }}
+							viewport={{ once: true }}
 							className="font-mono text-[10px] tracking-[0.5em] text-rose uppercase"
 						>
 							Evolution
@@ -87,7 +81,7 @@ export function Experience() {
 								words to wires.
 							</span>
 						</h2>
-						<p className="text-sm text-white/30 font-light max-w-xs leading-relaxed">
+						<p className="text-sm text-white/60 font-light max-w-xs leading-relaxed">
 							A non-linear path into engineering, fueled by narrative precision
 							and technical curiosity.
 						</p>
@@ -108,16 +102,19 @@ export function Experience() {
 							{experiences.map((exp, i) => (
 								<motion.div
 									key={i}
-									initial={{ opacity: 0, x: 20 }}
+									// Reveal once; never hide content again after it has been read.
+									initial={reduceMotion ? false : { opacity: 0, x: 20 }}
 									whileInView={{ opacity: 1, x: 0 }}
-									transition={{ duration: 0.8, delay: i * 0.1 }}
+									viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+									transition={reduceMotion ? { duration: 0 } : { duration: 0.8, delay: i * 0.1 }}
 									className="relative group"
 								>
 									{/* The "Node" on the line */}
 									<div className="absolute -left-[33px] md:-left-[69px] top-2 w-3 h-3 rounded-full bg-[#0D0D0D] border border-white/20 z-10 group-hover:border-rose transition-colors duration-500">
 										<motion.div
-											initial={{ scale: 0 }}
+											initial={reduceMotion ? false : { scale: 0 }}
 											whileInView={{ scale: 1 }}
+											viewport={{ once: true }}
 											className="absolute inset-1 rounded-full bg-rose opacity-0 group-hover:opacity-100 transition-opacity"
 										/>
 									</div>
@@ -127,16 +124,16 @@ export function Experience() {
 											<h3 className="text-3xl font-serif text-white group-hover:text-rose transition-colors duration-500">
 												{exp.company}
 											</h3>
-											<span className="font-mono text-[10px] text-white/20 tracking-widest uppercase italic">
+											<span className="font-mono text-[10px] text-white/60 tracking-widest uppercase italic">
 												{exp.period}
 											</span>
 										</div>
 
 										<div className="flex items-center gap-3">
-											<span className="text-[10px] font-mono text-rose/60 border border-rose/20 px-2 py-0.5 rounded tracking-tighter uppercase">
+											<span className="text-[10px] font-mono text-rose/90 border border-rose/30 px-2 py-0.5 rounded tracking-tighter uppercase">
 												{exp.type}
 											</span>
-											<span className="text-sm text-white/50 font-mono tracking-tight">
+											<span className="text-sm text-white/65 font-mono tracking-tight">
 												{exp.role}
 											</span>
 										</div>
@@ -149,7 +146,7 @@ export function Experience() {
 											{exp.skills.map((skill) => (
 												<span
 													key={skill}
-													className="px-2 py-1 bg-white/[0.03] border border-white/5 rounded text-[9px] font-mono text-white/40 uppercase tracking-tighter"
+													className="px-2 py-1 bg-white/[0.03] border border-white/10 rounded text-[9px] font-mono text-white/60 uppercase tracking-tighter"
 												>
 													{skill}
 												</span>

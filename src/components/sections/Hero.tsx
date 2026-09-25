@@ -11,7 +11,7 @@ const techRows = [
 		"Tailwind CSS",
 		"Framer Motion",
 		"Vite",
-		"Wouter",
+		"React Router",
 		"Astro",
 	],
 	[
@@ -52,9 +52,11 @@ const stackLanes = [
 ] as const;
 
 function TechBadge({ name }: { name: string }) {
+	const reduceMotion = useReducedMotion();
+
 	return (
 		<motion.span
-			whileHover={{ scale: 1.04, y: -1 }}
+			whileHover={reduceMotion ? undefined : { scale: 1.04, y: -1 }}
 			transition={{ type: "spring", stiffness: 400, damping: 22 }}
 			className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-xs text-muted-foreground whitespace-nowrap shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] hover:border-rose/45 hover:text-foreground hover:shadow-[0_0_20px_-6px_rgba(212,132,154,0.35)] transition-[border-color,color,box-shadow] duration-300"
 		>
@@ -72,19 +74,23 @@ function MarqueeRow({
 	reverse?: boolean;
 	duration?: number;
 }) {
+	const reduceMotion = useReducedMotion();
+
 	return (
 		<div className="flex overflow-hidden gap-2 py-1 mask-fade-edges">
 			<motion.div
-				animate={{ x: reverse ? [-1000, 0] : [0, -1000] }}
-				transition={{ duration, repeat: Infinity, ease: "linear" }}
+				animate={reduceMotion ? { x: 0 } : { x: reverse ? [-1000, 0] : [0, -1000] }}
+				transition={reduceMotion ? { duration: 0 } : { duration, repeat: Infinity, ease: "linear" }}
 				className="flex gap-2 shrink-0 will-change-transform"
 			>
 				{items.map((t) => (
 					<TechBadge key={t} name={t} />
 				))}
-				{items.map((t) => (
-					<TechBadge key={`d-${t}`} name={t} />
-				))}
+				<span className="contents" aria-hidden="true">
+					{items.map((t) => (
+						<TechBadge key={`d-${t}`} name={t} />
+					))}
+				</span>
 			</motion.div>
 		</div>
 	);
@@ -95,11 +101,11 @@ function EngineRoomCard() {
 
 	return (
 		<motion.div
-			initial={{ opacity: 0, y: 28 }}
+			initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 28 }}
 			whileInView={{ opacity: 1, y: 0 }}
 			viewport={{ once: true, margin: "-60px" }}
-			transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-			whileHover={{ y: -5 }}
+			transition={reduceMotion ? { duration: 0 } : { duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+			whileHover={reduceMotion ? undefined : { y: -5 }}
 			className="group relative md:col-span-4 lg:col-span-4 row-span-1 glass-panel rounded-3xl p-6 overflow-hidden flex flex-col justify-between min-h-[240px] border-white/[0.07]"
 		>
 			{/* Ambient: soft grid + rotating wash + shimmer */}
@@ -193,6 +199,8 @@ function EngineRoomCard() {
 }
 
 export function Hero() {
+	const reduceMotion = useReducedMotion();
+
 	return (
 		<section
 			id="top"
@@ -222,11 +230,12 @@ export function Hero() {
 			/>
 
 			<div className="max-w-7xl mx-auto w-full relative z-10">
+				<h2 className="sr-only">Skills and capabilities</h2>
 				{/* Intro */}
 				<motion.div
-					initial={{ opacity: 0, y: 20 }}
+					initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8 }}
+					transition={reduceMotion ? { duration: 0 } : { duration: 0.8 }}
 					className="mb-8"
 				>
 					<p className="landing__tagline mx-auto max-w-xl text-center mt-2">
@@ -242,9 +251,9 @@ export function Hero() {
 					{/* 1. Tech Stack Card (Large) */}
 					<EngineRoomCard />
 
-					{/* 2. Available Card (Small) */}
+					{/* 2. Location Card (Small) */}
 					<motion.div
-						whileHover={{ y: -5 }}
+						whileHover={reduceMotion ? undefined : { y: -5 }}
 						className="md:col-span-2 lg:col-span-2 glass-panel rounded-3xl p-6 flex flex-col justify-between border-green/20"
 					>
 						<div className="flex justify-between items-start">
@@ -252,8 +261,7 @@ export function Hero() {
 								<Globe className="w-4 h-4 text-green" />
 							</div>
 							<span className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green/10 border border-green/25 text-[10px] text-green font-bold uppercase tracking-wide">
-								<span className="landing__status-dot" aria-hidden />
-								Available for Work
+								NYC / Remote
 							</span>
 						</div>
 						<div className="space-y-4">
@@ -272,7 +280,7 @@ export function Hero() {
 
 					{/* 3. Methodology Card (Medium) */}
 					<motion.div
-						whileHover={{ y: -5 }}
+						whileHover={reduceMotion ? undefined : { y: -5 }}
 						className="md:col-span-3 lg:col-span-3 glass-panel rounded-3xl p-8 flex flex-col justify-center gap-6"
 					>
 						<p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold">
@@ -287,7 +295,7 @@ export function Hero() {
 									</span>
 								</div>
 								<p className="text-xs text-muted-foreground">
-									Sub-second load times & SEO optimization.
+									Performance-minded builds with measured budgets.
 								</p>
 							</div>
 							<div className="space-y-1">
@@ -298,7 +306,7 @@ export function Hero() {
 									</span>
 								</div>
 								<p className="text-xs text-muted-foreground">
-									WCAG compliant & inclusive design.
+									Accessibility-conscious interfaces and motion controls.
 								</p>
 							</div>
 						</div>
@@ -306,7 +314,7 @@ export function Hero() {
 
 					{/* 4. Experience Card (Medium) */}
 					<motion.div
-						whileHover={{ y: -5 }}
+						whileHover={reduceMotion ? undefined : { y: -5 }}
 						className="md:col-span-3 lg:col-span-3 glass-panel rounded-3xl p-8 bg-gradient-to-br from-rose/5 to-transparent flex flex-col justify-center"
 					>
 						<h3 className="text-3xl font-serif italic mb-2">

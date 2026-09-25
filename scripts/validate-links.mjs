@@ -5,6 +5,7 @@ const root = process.cwd();
 const sourceFiles = [
 	"src/data/profile.ts",
 	"src/data/projects.ts",
+	"src/data/openSource.ts",
 	"README.md",
 	"public/robots.txt",
 ];

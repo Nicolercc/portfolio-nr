@@ -165,7 +165,7 @@ const projects: Record<ProjectSlug, Project> = {
 		],
 		links: {
 			live: "https://sano-nine.vercel.app/",
-			github: "https://github.com/Nicolercc/sano",
+			github: "https://github.com/Nicolercc/Sano",
 			caseStudy: "/projects/sano",
 		},
 		media: {
@@ -607,7 +607,7 @@ const projects: Record<ProjectSlug, Project> = {
 		status: "live",
 		role: "Product Designer & Frontend Engineer",
 		tagline:
-			"An HTML and CSS course for kids aged 7–10 that builds a real webpage about whatever they love — prototyped fast with AI, then audited and re-engineered by hand until it actually checked their work.",
+			"An HTML and CSS course for kids aged 7–10 that builds a real webpage about whatever they love — prototyped fast with AI, then audited and re-engineered until it actually checked their work.",
 		description:
 			"I designed the product and wrote the curriculum, prototyped it with Replit Agent, then audited the result like a senior reviewer: tests showed 29 of 123 answer-check cases were wrong, feedback was silent to screen readers, and the lesson screen broke on phones. I re-engineered it with pure validators, a tested lesson state machine and an accessibility pass enforced in CI.",
 		stack: [
@@ -628,6 +628,7 @@ const projects: Record<ProjectSlug, Project> = {
 		],
 		links: {
 			live: "https://code4kidz-six.vercel.app/",
+			github: "https://github.com/Nicolercc/C4K",
 			caseStudy: "/projects/code4kidz",
 		},
 		media: {
@@ -686,7 +687,7 @@ const projects: Record<ProjectSlug, Project> = {
 				},
 				{
 					label: "Origin",
-					value: "Prototyped with Replit Agent from my specs, then audited and re-engineered by hand",
+					value: "Prototyped with Replit Agent from my specs, then audited and re-engineered",
 				},
 				{
 					label: "Scope note",
@@ -812,7 +813,7 @@ const projects: Record<ProjectSlug, Project> = {
 				},
 			],
 				highlights: [
-					"Designed the product and curriculum, prototyped with AI, then audited and re-engineered it by hand",
+					"Designed the product and curriculum, prototyped with AI, then audited and re-engineered it",
 					"Rebuilt answer checks as pure, tested functions of the learner's code (29 failing cases → 0)",
 					"Lesson screen made usable by screen reader, keyboard and phone, with axe enforced in CI",
 					"Scoped honestly: live on Vercel, not yet tested by ear with a screen reader or real learners",
@@ -842,6 +843,7 @@ const projects: Record<ProjectSlug, Project> = {
 			"Playwright + axe",
 		],
 		links: {
+			github: "https://github.com/Nicolercc/travel-agent",
 			caseStudy: "/projects/tripcanvas",
 		},
 		media: {
@@ -862,7 +864,7 @@ const projects: Record<ProjectSlug, Project> = {
 				"Day-load engine returns one of four ordinal verdicts — Comfortable, Full, Tight, Overloaded — with reason codes and, for tight days, the single change that helps most",
 				"Durations come from each plan, its time window, or a labelled category estimate; estimate-heavy days say so instead of implying precision",
 				"JourneyRibbon implements the WAI-ARIA tabs pattern: roving tabindex, Arrow/Home/End keys, a labelled tab panel, 44px targets, and reduced-motion-aware scrolling",
-				"Typed, Zod-validated trip model with versioned browser-local persistence; 283 unit and component tests plus Playwright journeys with axe",
+				"Typed, Zod-validated trip model with versioned browser-local persistence; 283 unit and component tests plus 30 Playwright end-to-end tests with axe, all run in CI",
 			],
 			decisions:
 				"The central decision was to make the product's judgment inspectable. Verdicts are words, never scores; every number the engine uses lives in one heuristics file; and the UI shows the reason behind every verdict. That makes the prototype honest about what it knows and easy to tune once real data arrives.",
@@ -899,7 +901,7 @@ const projects: Record<ProjectSlug, Project> = {
 				},
 				{
 					label: "Verification",
-					value: "283 unit/component tests · Playwright journeys · axe: 0 violations on six screens at desktop and mobile widths",
+					value: "283 unit/component tests · 30 Playwright end-to-end tests · axe on 12 routes in jsdom and 7 routes with contrast in Chromium, at phone and desktop widths · CI green",
 				},
 			],
 			featuredDecisionTitle: "Make the judgment inspectable",

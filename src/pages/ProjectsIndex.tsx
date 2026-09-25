@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
+import { OPEN_SOURCE_CONTRIBUTIONS } from "../data/openSource";
 import { getShowcaseProjects } from "../data/projects";
 import { useInView } from "../hooks/useInView";
 import { PROFILE } from "../data/profile";
@@ -91,6 +93,62 @@ export default function ProjectsIndex() {
 						);
 					})}
 				</section>
+
+				{OPEN_SOURCE_CONTRIBUTIONS.length > 0 && (
+					<section aria-labelledby="open-source-heading" className="mt-20 md:mt-24">
+						<p className="text-[10px] uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
+							/ open source
+						</p>
+						<h2
+							id="open-source-heading"
+							className="text-3xl md:text-5xl font-serif tracking-tight mb-8"
+						>
+							Open Source
+						</h2>
+						<ul className="space-y-4">
+							{OPEN_SOURCE_CONTRIBUTIONS.map((contribution) => (
+								<li
+									key={contribution.url}
+									className="glass-panel rounded-3xl border border-white/8 p-6 md:p-7 flex flex-col md:flex-row md:items-center gap-4 md:gap-8"
+								>
+									<div className="min-w-0 flex-1">
+										<div className="flex flex-wrap items-center gap-3 mb-2">
+											<h3 className="text-xl md:text-2xl font-serif tracking-tight">
+												{contribution.repository}
+											</h3>
+											<span
+												className={`rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-widest ${
+													contribution.status === "Merged"
+														? "border-green/40 text-green"
+														: "border-white/20 text-white/75"
+												}`}
+											>
+												{contribution.status}
+											</span>
+										</div>
+										<p className="text-muted-foreground font-light leading-relaxed">
+											{contribution.summary}
+										</p>
+									</div>
+									<a
+										href={contribution.url}
+										target="_blank"
+										rel="noreferrer"
+										className="group inline-flex shrink-0 items-center gap-2 min-h-11 text-sm font-semibold text-foreground hover:text-rose transition-colors"
+									>
+										{contribution.label}
+										<span className="sr-only"> (opens in a new tab)</span>
+										<ArrowUpRight
+											size={14}
+											aria-hidden
+											className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+										/>
+									</a>
+								</li>
+							))}
+						</ul>
+					</section>
+				)}
 			</div>
 		</main>
 	);

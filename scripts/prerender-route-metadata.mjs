@@ -8,9 +8,9 @@ const distDir = join(root, "dist");
 const baseSiteUrl = "https://nicolerodriguez.dev";
 const profile = {
 	name: "Nicole Rodriguez",
-	positioning: "Software Engineer - Full-Stack, Applied AI, and Data Systems",
+	positioning: "Product Designer & Engineer - UX, Accessibility, and Frontend Systems",
 	summary:
-		"NYC-based software engineer building full-stack products, applied AI workflows, and public-data systems with TypeScript, Python, React, and PostgreSQL.",
+		"NYC-based product designer and engineer building accessible interfaces and public-data products from interaction decisions through implementation and validation.",
 };
 
 function assert(condition, message) {

@@ -197,8 +197,8 @@ async function main() {
 		image: "/og-image.jpg",
 	});
 	validateBuiltRouteShell("/", {
-		title: "Nicole Rodriguez — Software Engineer - Full-Stack, Applied AI, and Data Systems",
-		descriptionIncludes: "NYC-based software engineer",
+		title: "Nicole Rodriguez — Product Designer &amp; Engineer - UX, Accessibility, and Frontend Systems",
+		descriptionIncludes: "NYC-based product designer and engineer",
 		twitterCard: "summary_large_image",
 		image: "/og-image.jpg",
 	});

@@ -129,13 +129,13 @@ export type ProjectSlug =
 /** Homepage + projects index display order */
 export const SHOWCASE_PROJECT_SLUGS = [
 	"sano",
-	"ruvia",
 	"code4kidz",
 	"elite-global",
 ] as const satisfies readonly ProjectSlug[];
 
 /** Case studies that stay reachable (linked from More Work) but are not selected work. */
 export const SECONDARY_CASE_STUDY_SLUGS = [
+	"ruvia",
 	"tripcanvas",
 ] as const satisfies readonly ProjectSlug[];
 
@@ -1243,7 +1243,7 @@ const projects: Record<ProjectSlug, Project> = {
 		category: "Corporate · Client Work",
 		year: "2023",
 		status: "live",
-		role: "Full-Stack Developer",
+		role: "Frontend / Web Developer",
 		tagline:
 			"Production client site for a Queens-based environmental remediation company — built for speed, maintained through real infrastructure failures.",
 		description:
@@ -1301,7 +1301,7 @@ const projects: Record<ProjectSlug, Project> = {
 			nextSteps:
 				"Add a service request form with Netlify Forms. Build a client portal for job scheduling and status updates.",
 			atAGlance: [
-				{ label: "Role", value: "Full-Stack Developer" },
+				{ label: "Role", value: "Frontend / Web Developer" },
 				{
 					label: "Ownership",
 					value:

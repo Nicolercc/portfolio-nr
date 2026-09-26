@@ -16,7 +16,7 @@ export default function ProjectsIndex() {
 		setDocumentMeta({
 			title: `Projects — ${PROFILE.name}`,
 			description:
-				"Selected full-stack, applied AI, and public-data systems case studies by Nicole Rodriguez.",
+				"Selected UX, accessibility, and frontend case studies by Nicole Rodriguez: interaction decisions taken from design through implementation and validation.",
 			path: "/projects",
 			structuredData: {
 				"@context": "https://schema.org",
@@ -24,7 +24,7 @@ export default function ProjectsIndex() {
 				name: `Projects — ${PROFILE.name}`,
 				url: `${PROFILE.website}/projects`,
 				description:
-					"Selected full-stack, applied AI, and public-data systems case studies by Nicole Rodriguez.",
+					"Selected UX, accessibility, and frontend case studies by Nicole Rodriguez: interaction decisions taken from design through implementation and validation.",
 				hasPart: projects.map((project) => ({
 					"@type": "CreativeWork",
 					name: project.title,
@@ -49,8 +49,8 @@ export default function ProjectsIndex() {
 						Selected Projects
 					</h1>
 					<p className="mt-5 max-w-2xl text-muted-foreground font-light leading-relaxed">
-						A curated index of case studies focused on public-data systems,
-						full-stack product engineering, and evidence-backed technical decisions.
+						Case studies in accessible, trustworthy interfaces: the UX decision,
+						how I built it, and the evidence that it works.
 					</p>
 				</header>
 

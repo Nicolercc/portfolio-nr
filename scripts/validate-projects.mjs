@@ -138,7 +138,7 @@ const secondarySlugs = stringArrayValues(
 	expectArray(findVariable("SECONDARY_CASE_STUDY_SLUGS"), "SECONDARY_CASE_STUDY_SLUGS"),
 );
 
-const expectedShowcaseSlugs = ["sano", "ruvia", "code4kidz", "elite-global"];
+const expectedShowcaseSlugs = ["sano", "code4kidz", "elite-global"];
 if (showcaseSlugs.join(",") !== expectedShowcaseSlugs.join(",")) {
 	fail(
 		`Selected work should be ${expectedShowcaseSlugs.join(", ")}. Found ${showcaseSlugs.join(", ")}.`,

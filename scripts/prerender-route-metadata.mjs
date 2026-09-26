@@ -162,7 +162,7 @@ function main() {
 			path: "/projects",
 			title: `Projects — ${profile.name}`,
 			description:
-				"Selected full-stack, applied AI, and public-data systems case studies by Nicole Rodriguez.",
+				"Selected UX, accessibility, and frontend case studies by Nicole Rodriguez: interaction decisions taken from design through implementation and validation.",
 			image: DEFAULT_SOCIAL_IMAGE,
 		},
 		...projectList.map((project) => ({

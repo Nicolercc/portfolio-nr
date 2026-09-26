@@ -815,7 +815,7 @@ const projects: Record<ProjectSlug, Project> = {
 		tagline:
 			"An HTML and CSS course for kids aged 7–10 that builds a real webpage about whatever they love — prototyped fast with AI, then audited and re-engineered until it actually checked their work.",
 		description:
-			"Josh originated the concept and brought me in to build the frontend. I implemented the learning experience and structured the lesson flow with AI-assisted prototyping in Replit Agent, then audited the result like a senior reviewer: tests showed 29 of 123 answer-check cases were wrong, feedback was silent to screen readers, and the lesson screen broke on phones. I re-engineered it with pure validators, a tested lesson state machine and an accessibility pass enforced in CI.",
+			"The concept came from a collaborator who brought me in to build the frontend. I implemented the learning experience and structured the lesson flow with AI-assisted prototyping in Replit Agent, then audited the result like a senior reviewer: tests showed 29 of 123 answer-check cases were wrong, feedback was silent to screen readers, and the lesson screen broke on phones. I re-engineered it with pure validators, a tested lesson state machine and an accessibility pass enforced in CI.",
 		stack: [
 			"React 19",
 			"TypeScript",
@@ -879,7 +879,7 @@ const projects: Record<ProjectSlug, Project> = {
 				{
 					label: "Ownership",
 					value:
-						"Josh originated the Code4Kidz concept and brought me in to build the frontend. I implemented the learning experience, researched and structured the lesson flow with AI-assisted prototyping, then personally audited, tested and re-engineered the frontend for correctness, accessibility, mobile usability and production quality.",
+						"The Code4Kidz concept came from a collaborator who brought me in to build the frontend. I implemented the learning experience, researched and structured the lesson flow with AI-assisted prototyping, then personally audited, tested and re-engineered the frontend for correctness, accessibility, mobile usability and production quality.",
 				},
 					{ label: "Status", value: "Live on Vercel · evidence-scoped case study" },
 				{ label: "Audience", value: "Kids aged 7–10, first HTML and CSS" },
@@ -1019,7 +1019,7 @@ const projects: Record<ProjectSlug, Project> = {
 				},
 			],
 				highlights: [
-					"Built the frontend for Josh's concept, structured the lesson flow with AI-assisted prototyping, then audited and re-engineered it",
+					"Built the frontend for a collaborator's concept, structured the lesson flow with AI-assisted prototyping, then audited and re-engineered it",
 					"Rebuilt answer checks as pure, tested functions of the learner's code (29 failing cases → 0)",
 					"Lesson screen made usable by screen reader, keyboard and phone, with axe enforced in CI",
 					"Scoped honestly: live on Vercel, not yet tested by ear with a screen reader or real learners",

@@ -134,8 +134,11 @@ const showcaseArray = expectArray(
 	"SHOWCASE_PROJECT_SLUGS",
 );
 const showcaseSlugs = stringArrayValues(showcaseArray);
+const secondarySlugs = stringArrayValues(
+	expectArray(findVariable("SECONDARY_CASE_STUDY_SLUGS"), "SECONDARY_CASE_STUDY_SLUGS"),
+);
 
-const expectedShowcaseSlugs = ["sano", "code4kidz", "tripcanvas"];
+const expectedShowcaseSlugs = ["sano", "ruvia", "code4kidz", "elite-global"];
 if (showcaseSlugs.join(",") !== expectedShowcaseSlugs.join(",")) {
 	fail(
 		`Selected work should be ${expectedShowcaseSlugs.join(", ")}. Found ${showcaseSlugs.join(", ")}.`,
@@ -144,7 +147,7 @@ if (showcaseSlugs.join(",") !== expectedShowcaseSlugs.join(",")) {
 
 const knownBrokenLiveUrls = new Set(["https://carbonshift.onrender.com"]);
 
-for (const slug of showcaseSlugs) {
+for (const slug of [...showcaseSlugs, ...secondarySlugs]) {
 	const projectProp = getProp(projectsObject, slug);
 	const project = expectObject(projectProp?.initializer, `project ${slug}`);
 	const title = getStringProp(project, "title", `${slug}.title`);
@@ -253,6 +256,23 @@ for (const slug of showcaseSlugs) {
 	const walkthroughSteps = walkthrough ? objectArrayValues(walkthrough, `${slug}.walkthrough`) : [];
 	if (!mediaEvidence && walkthroughSteps.length < 3) {
 		fail(`${title} needs screenshots/video evidence or a three-step architecture walkthrough.`);
+	}
+
+	if (slug === "ruvia") {
+		if (liveLink) {
+			fail("Ruvia should not expose a live link until it has a real deployment.");
+		}
+		const boundaryCopy = [
+			getStringProp(project, "description"),
+			getStringProp(caseStudy, "impact"),
+		]
+			.join(" ")
+			.toLowerCase();
+		for (const requiredPhrase of ["prototype", "demo"]) {
+			if (!boundaryCopy.includes(requiredPhrase)) {
+				fail(`Ruvia needs explicit ${requiredPhrase} boundary copy.`);
+			}
+		}
 	}
 
 	if (slug === "tripcanvas") {

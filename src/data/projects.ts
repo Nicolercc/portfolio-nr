@@ -120,8 +120,8 @@ export type Project = {
 
 export type ProjectSlug =
 	| "sano"
+	| "ruvia"
 	| "impactify"
-	| "nuclear-router"
 	| "elite-global"
 	| "code4kidz"
 	| "tripcanvas";
@@ -129,7 +129,13 @@ export type ProjectSlug =
 /** Homepage + projects index display order */
 export const SHOWCASE_PROJECT_SLUGS = [
 	"sano",
+	"ruvia",
 	"code4kidz",
+	"elite-global",
+] as const satisfies readonly ProjectSlug[];
+
+/** Case studies that stay reachable (linked from More Work) but are not selected work. */
+export const SECONDARY_CASE_STUDY_SLUGS = [
 	"tripcanvas",
 ] as const satisfies readonly ProjectSlug[];
 
@@ -599,6 +605,206 @@ const projects: Record<ProjectSlug, Project> = {
 		},
 	},
 
+	ruvia: {
+		slug: "ruvia",
+		title: "Ruvia",
+		category: "Responsible AI · Decision-Support UX",
+		year: "2026",
+		status: "case-study",
+		role: "Product Designer & Full-Stack Engineer",
+		tagline:
+			"Evidence-first recruiting decision support: explicit criteria, visible uncertainty, and a human who makes every call.",
+		description:
+			"A prototype that turns a job description and up to three resumes into an auditable review queue. The model proposes; deterministic code scores against a frozen rubric, flags what needs manual review, refuses protected factors, and fails closed. The seeded demo runs without an API key and is labelled as demo output, never as live AI.",
+		stack: [
+			"React",
+			"TypeScript",
+			"Python",
+			"FastAPI",
+			"Pydantic",
+			"Anthropic Claude",
+			"Vitest",
+			"Pytest",
+		],
+		metrics: [
+			{ value: "70 / 20 / 10", label: "Required · preferred · completeness score weights" },
+			{ value: "0", label: "Automatic rejections or sent emails" },
+			{ value: "27 + 21", label: "Backend + frontend tests" },
+			{ value: "0", label: "axe violations on the seeded demo flow" },
+		],
+		links: {
+			github: "https://github.com/Nicolercc/HR-AGENT",
+			caseStudy: "/projects/ruvia",
+		},
+		media: {
+			hero: "/media/ruvia-case-study/landing.webp",
+			detail: "/media/ruvia-case-study/evidence.webp",
+			alt: "Ruvia landing page: 'Evidence you can defend.' beside an evidence docket for one criterion and a list of intentionally excluded factors",
+		},
+		caseStudy: {
+			thesis:
+				"The hard part of AI in hiring is not summarising a resume. It is designing a review a recruiter can defend: the same criteria for everyone, evidence for every claim, and uncertainty shown instead of hidden.",
+			problem:
+				"LLMs will happily rank candidates, and a confident score invites people to stop reading. In a consequential decision that is the wrong default: a ranking without evidence cannot be checked, a model can quietly weigh things it should never see, and a failed analysis that still looks successful is worse than an error.",
+			solution:
+				"Ruvia freezes a role rubric first, then compares each candidate against that same rubric. The model extracts criterion-level evidence; deterministic application code computes the score, so the model's output is never the source of truth. Every criterion shows found, partial or not found with the supporting resume text, low-confidence results are flagged for manual review, and protected factors are excluded by design. Candidate status and interview drafts stay under recruiter control, and nothing is ever sent.",
+			technicalHighlights: [
+				"Deterministic scoring from a frozen rubric: required criteria weigh 70, preferred 20, evidence completeness 10, and the breakdown is shown next to every score",
+				"Strict validation of model output with Pydantic schemas and an evidence-grounding gate: a criterion cannot be supported without resume evidence",
+				"Protected-factor exclusion stated in the interface: age, photos, school or employer prestige, culture fit and protected characteristics are never scored",
+				"Explicit live/demo separation: seeded results exist only for the bundled demo IDs and are labelled Demo fallback; uploaded resumes get a truthful error when live AI is unavailable",
+				"Privacy-conscious audit logging that keeps an allowlist of metadata fields and never logs resume text",
+			],
+			decisions:
+				"The core decision was to keep the model out of the final number. Claude proposes evidence per criterion; code validates it, rejects ungrounded claims and computes the score from fixed weights. That made scoring testable and explainable, and it means a strange model response degrades into a manual-review flag instead of a confident wrong ranking.",
+			ux: "The interface is built to slow the reader down in the right places. The candidate view leads with a 'Human review required' notice, then strong evidence, important gaps and items to verify manually, with the score explicitly labelled 'Decision support only, not a hiring verdict'. The interview draft stays disabled until the recruiter moves a candidate to Interview, and the draft is marked 'Draft only, not sent'.",
+			architecture:
+				"React and TypeScript frontend over a FastAPI backend. The backend parses PDF and DOCX resumes transiently, builds the rubric, calls Claude for criterion-level extraction, validates the output with Pydantic, and applies deterministic scoring and review flags. Stale-result protection stops an older analysis from overwriting a newer one. Recruiter status is stored locally in the browser.",
+			performance:
+				"Analysis is deliberately small-batch (up to three candidates) so every result can be read in full. The seeded demo path needs no network call to a model, which keeps the demo fast, repeatable and honest about what it is.",
+			impact:
+				"A working prototype, not a production hiring tool: it has not had legal, HR or industrial-organisational review and is not approved for real employment decisions. Verified in September 2026: 27 backend and 21 frontend tests pass, the seeded recruiter flow works at desktop and 390px mobile, and axe reports 0 violations across that flow after a contrast fix to the context chips. That is a scoped automated check, not a WCAG conformance claim.",
+			lessons: [
+				"In a consequential workflow, 'fail closed' is a UX decision as much as an engineering one: a truthful error protects the user better than a plausible-looking result.",
+				"Separating what the model extracts from what the application decides made the system easier to test, explain and trust.",
+				"Labelling demo output as demo output everywhere is cheap, and it is what makes the rest of the interface believable.",
+			],
+			nextSteps:
+				"A screen-reader pass, a review-packet export that bundles rubric, evidence and flags for audit, and structured evaluation against a larger labelled resume set before any real-world use.",
+			atAGlance: [
+				{ label: "Role", value: "Product Designer & Full-Stack Engineer" },
+				{
+					label: "Ownership",
+					value:
+						"Solo project: I designed the review workflow and interface and built the React frontend, FastAPI backend, scoring logic and tests.",
+				},
+				{
+					label: "Core stack",
+					value: "React · TypeScript · FastAPI · Pydantic · Claude",
+				},
+				{
+					label: "Evidence",
+					value: "27 backend + 21 frontend tests; 0 axe violations on the seeded demo flow (desktop and 390px); not a WCAG conformance claim",
+				},
+				{
+					label: "Status",
+					value: "Prototype. The seeded demo runs locally from the GitHub repo; not deployed and not approved for real hiring decisions",
+				},
+			],
+			featuredDecisionTitle: "The model proposes, code decides",
+			featuredDecisionSummary:
+				"Claude extracts evidence per criterion; deterministic code validates it and computes the score, so a bad model response becomes a manual-review flag rather than a confident wrong ranking.",
+			walkthrough: [
+				{
+					title: "State the rules before the results",
+					description:
+						"The landing page shows one criterion's evidence docket, how the score is weighted, and the factors Ruvia intentionally refuses to score, all in demo run mode.",
+					media: "/media/ruvia-case-study/landing.webp",
+				},
+				{
+					title: "A review queue, not a leaderboard",
+					description:
+						"Candidates are compared against one frozen rubric. The header shows the run is Demo fallback; each candidate shows an evidence score, a recommendation and recruiter status.",
+					media: "/media/ruvia-case-study/workspace.webp",
+				},
+				{
+					title: "Evidence, gaps and what to verify",
+					description:
+						"The candidate view leads with 'Human review required', explains the score breakdown, and separates strong evidence from gaps and manual-verification items.",
+					media: "/media/ruvia-case-study/evidence.webp",
+				},
+			],
+			decisionCards: [
+				{
+					title: "The model proposes, code decides",
+					context:
+						"A model-generated score is persuasive and hard to audit, and it can change between runs.",
+					tradeOff:
+						"Less flexible scoring vs. a number that is reproducible and explainable from the rubric.",
+					result:
+						"Claude extracts evidence; deterministic code validates it and applies fixed 70/20/10 weights shown in the interface.",
+				},
+				{
+					title: "Fail closed on uploads",
+					context:
+						"When live AI is unavailable, the easy path is to show seeded or cached results for any input.",
+					tradeOff:
+						"A less impressive failure state vs. never presenting fabricated analysis as real.",
+					result:
+						"Seeded results exist only for bundled demo IDs and are labelled Demo fallback; uploaded resumes get a truthful error.",
+				},
+				{
+					title: "Refuse protected factors visibly",
+					context:
+						"Hiring tools can encode bias through proxies such as school prestige or 'culture fit'.",
+					tradeOff:
+						"A narrower evaluation vs. one a recruiter can defend.",
+					result:
+						"Excluded factors are listed in the interface and kept out of the rubric and the score.",
+				},
+				{
+					title: "Human control over every action",
+					context:
+						"Status changes and outreach are the consequential steps in recruiting.",
+					tradeOff:
+						"More clicks for the recruiter vs. no automated rejections or messages.",
+					result:
+						"Status is recruiter-controlled, the draft unlocks only at Interview, and drafts are never sent.",
+				},
+			],
+			architectureLayers: [
+				{
+					title: "Review interface",
+					description:
+						"React and TypeScript: review queue, candidate evidence view, recruiter status and draft editor, with demo/live mode always visible.",
+				},
+				{
+					title: "API and parsing",
+					description:
+						"FastAPI endpoints for demo data, analysis and interview drafts; PDF and DOCX resumes parsed transiently, never persisted.",
+				},
+				{
+					title: "Model boundary",
+					description:
+						"Claude extracts criterion-level evidence; Pydantic schemas and a grounding gate reject malformed or unsupported output.",
+				},
+				{
+					title: "Deterministic decision layer",
+					description:
+						"Fixed-weight scoring, confidence and manual-review flags, protected-factor exclusion and stale-result protection.",
+				},
+				{
+					title: "Audit logging",
+					description:
+						"Allowlisted, metadata-only audit events such as model, candidate count and fallback use, with no resume text.",
+				},
+			],
+		},
+		homepage: {
+			accent: "green",
+			index: "02",
+			images: [
+				{
+					label: "Evidence-first review",
+					bg: "from-green/20 to-transparent",
+					icon: "⚖️",
+					stat: "Frozen rubric · deterministic 70/20/10 scoring",
+				},
+				{
+					label: "Human control",
+					bg: "from-zinc-800 to-transparent",
+					icon: "🧭",
+					stat: "No auto-rejections · drafts never sent",
+				},
+			],
+			highlights: [
+				"The model extracts evidence; deterministic code validates it and computes the score",
+				"Protected factors excluded by design; low confidence becomes a manual-review flag",
+				"Prototype: seeded demo clearly labelled, uploads fail closed without live AI",
+			],
+		},
+	},
+
 	code4kidz: {
 		slug: "code4kidz",
 		title: "Code4Kidz",
@@ -1029,225 +1235,6 @@ const projects: Record<ProjectSlug, Project> = {
 		},
 	},
 
-	"nuclear-router": {
-		slug: "nuclear-router",
-		title: "Nightfall",
-		shortTitle: "Nightfall",
-		category: "Hackathon · Community & Safety Response",
-		year: "2026",
-		status: "live",
-		role: "Product Lead · Full-Stack Engineer",
-		tagline:
-			"A hackathon emergency-routing prototype that compresses shelter context and escape guidance into one analyze→act flow — decision support, not operational safety guidance.",
-		description:
-			"Hackathon build deployed on Google Cloud Run + Vercel. pnpm monorepo with Google Directions polylines for road-following routes and geospatial scoring that ranks destinations away from the blast zone.",
-		stack: [
-			"React 19",
-			"TypeScript",
-			"Vite",
-			"Express 5",
-			"Node.js",
-			"Google Maps Directions API",
-			"Google Maps Geocoding API",
-			"OpenWeather API",
-			"Leaflet",
-			"Claude AI (Anthropic)",
-			"Cloud Run",
-			"Vercel",
-			"pnpm Monorepo",
-			"Docker",
-		],
-		metrics: [
-			{ value: "Analyze", label: "Single decision loop" },
-			{ value: "4", label: "API integrations" },
-			{ value: "1", label: "Session to ship" },
-			{ value: "2×", label: "Hackathon awards" },
-		],
-		links: {
-			live: "https://nuclear-escape.vercel.app/",
-			github: "https://github.com/Nicolercc/nuclear-shelter-app",
-			caseStudy: "/projects/nuclear-router",
-		},
-		media: {
-			hero: "/media/nuclear-router-hero.jpg",
-			detail: "/media/nuclear-router-detail.jpg",
-			poster: "/media/nuclear-router-hero.jpg",
-			alt: "Nightfall emergency routing app — demo preview",
-		},
-		caseStudy: {
-			thesis:
-				"Emergency tools fail when they assume calm users. Nightfall explores how shelter discovery and route guidance can be compressed into a faster, clearer decision loop.",
-			problem:
-				"Most emergency preparedness tools are static PDFs or generic government pages. I wanted a decision-support interface that takes blast location, your position, weather context, and routing data — then surfaces shelter vs evacuate guidance in plain language. The constraint was: someone under stress should understand the next action quickly, not parse a dashboard.",
-			solution:
-				"I architected a pnpm monorepo with a split deployment — React SPA on Vercel, Express 5 backend on Google Cloud Run — so API keys never touch the browser. I implemented Google's encoded polyline format to draw real road-following escape routes instead of synthetic arcs, and built a geospatial scoring algorithm that selects safe zone destinations by calculating flee-from-blast bearing weighted against upwind direction, ensuring routes never pass through the danger zone. I added a Claude-powered AI survival brief that synthesizes blast distance, zone classification, weather, and nearest shelter into a 3-sentence plain-English advisory generated server-side on every analysis.",
-			technicalHighlights: [
-				"Claude AI generates a personalized 3-sentence survival brief server-side on every analysis",
-				"Geospatial scoring algorithm selects safe city destinations by flee-from-blast bearing weighted against wind direction",
-				"Real Google Directions polyline decoded client-side — escape route follows actual roads",
-				"Shareable URLs encode full scenario; shared links auto-run analysis on load",
-				"Won Community Favorite + Best Alignment with Theme",
-			],
-			decisions:
-				"I architected a pnpm monorepo with a split deployment — React SPA on Vercel, Express 5 backend on Google Cloud Run — so API keys never touch the browser. I implemented Google's encoded polyline format to draw real road-following escape routes instead of synthetic arcs, and built a geospatial scoring algorithm that selects safe zone destinations by calculating flee-from-blast bearing weighted against upwind direction, ensuring routes never pass through the danger zone. I added a Claude-powered AI survival brief that synthesizes blast distance, zone classification, weather, and nearest shelter into a 3-sentence plain-English advisory generated server-side on every analysis.",
-			ux: "Designed for crisis conditions. The interface runs a single critical flow: identify blast location → locate yourself → analyze → act. Two address inputs mirror how people actually think in emergencies — they know where the explosion was and where they are. The result panel prioritizes decision over data: shelter-in-place vs evacuate is the first thing you see, followed by a named shelter with walk time, then an AI brief written at a reading level that works under stress. A radiation decay timer implements the real-world 7-10 rule, and shareable URLs let users send their exact scenario to family members.",
-			architecture:
-				"Split-deploy monorepo: React 19 + Vite frontend on Vercel, Express 5 API on Google Cloud Run (port 8080, 0.0.0.0 bind). Backend proxies OpenWeather, Google Geocoding, Google Directions, and Anthropic APIs — all keys server-side only. Frontend calls relative /api/* routes in production (same-origin via STATIC_DIR), or VITE_API_BASE_URL in split-deploy mode. Graceful degradation throughout: every live API has a client-side fallback so the app functions without any keys. Google's encoded polyline is decoded client-side using a pure implementation to render real road geometry on the Leaflet map.",
-			performance:
-				"Analysis is structured to surface map and shelter context quickly: geolocation via the browser API, geocoding and weather in parallel, escape route and AI brief after initial render. AbortController cancels in-flight requests on re-analysis. URL state encoding lets shared links reopen the same scenario.",
-			impact:
-				"Won Community Favorite and Best Alignment with Theme. Architected a production monorepo from scratch: pnpm workspaces, containerized Express 5 backend on Cloud Run, React SPA on Vercel, four live API integrations, Claude AI advisory layer, and shareable URL state — all designed, built, debugged, and deployed in a single session.",
-			lessons: [
-				"path-to-regexp v8 (Express 5) breaks all legacy catch-all route syntax — migration is non-negotiable before deploying.",
-				"Geospatial destination scoring requires flee-from-blast bearing as the primary signal, not wind direction alone — wind-only routing sends users through the danger zone.",
-				"API keys in environment variables require explicit process injection in containerized deployments — source .env is not enough.",
-				"A 1,086-line single component is a liability in interviews — the architecture story matters as much as the feature list.",
-				"Graceful degradation isn't optional in safety-critical tools — every live API needs a fallback that keeps the app functional.",
-			],
-			nextSteps:
-				"Wire React Query for request caching and stale-while-revalidate patterns. Add offline mode with cached shelter datasets and pre-computed blast zones for the 4 yield types. Decode Google walking directions for shelter routes instead of straight-line haversine. Add WebSocket support for live scenario collaboration. Validate language and decision flow with emergency-preparedness practitioners before treating routing output as operational guidance.",
-			atAGlance: [
-				{ label: "Role", value: "Product Lead · Full-Stack Engineer" },
-				{
-					label: "Ownership",
-					value:
-						"I owned the analyze-to-act product flow, React/Vite client, Express API integration, routing/scoring logic, AI advisory layer, deployment, and portfolio evidence.",
-				},
-				{ label: "Status", value: "Hackathon prototype" },
-				{
-					label: "Product type",
-					value: "Hackathon nuclear emergency simulation",
-				},
-				{
-					label: "Core stack",
-					value:
-						"React · Express · Leaflet · Google Maps APIs · Vercel + Cloud Run",
-				},
-				{
-					label: "Core interaction",
-					value:
-						"Blast + location inputs → analyze → evacuate or shelter guidance",
-				},
-				{
-					label: "Portfolio media",
-					value:
-						"Demo preview · static hero and walkthrough screenshots (live prototype on Vercel)",
-				},
-			],
-			featuredDecisionTitle: "Decision-first result panel",
-			featuredDecisionSummary:
-				"Designed the experience around fast route comparison and shelter context instead of a dense emergency dashboard.",
-			walkthrough: [
-				{
-					title: "Set blast and your location",
-					description:
-						"Two address inputs mirror how people think in emergencies: where the event happened and where they are now.",
-					media: "/media/nuclear-router-hero.jpg",
-				},
-				{
-					title: "Compare shelter and escape options",
-					description:
-						"Analysis surfaces shelter-in-place vs evacuate first, then nearest shelter context and scored safe destinations.",
-					media: "/media/nuclear-router-detail.jpg",
-				},
-				{
-					title: "Review route and briefing",
-					description:
-						"The map shows a road-following escape route; an AI brief and radiation decay timer support the next action.",
-				},
-			],
-			decisionCards: [
-				{
-					title: "Decision-first result panel",
-					context:
-						"Emergency interfaces often lead with dense hazard readouts before telling someone what to do.",
-					tradeOff:
-						"Less upfront telemetry vs. faster comprehension when the user is stressed.",
-					result:
-						"Shelter-in-place vs evacuate leads the panel, followed by named shelter context, walk time, then the AI brief.",
-				},
-				{
-					title: "Flee-from-blast routing signal",
-					context:
-						"Wind-only heuristics can recommend paths that still cross the danger zone.",
-					tradeOff:
-						"More geospatial scoring logic vs. simpler weather-based routing.",
-					result:
-						"Destination scoring weights flee-from-blast bearing against wind so escape routes avoid the blast zone.",
-				},
-				{
-					title: "Crisis-readable advisory copy",
-					context:
-						"Users may scan results while alarmed, not read long hazard reports.",
-					tradeOff:
-						"A short plain-English brief vs. comprehensive incident detail.",
-					result:
-						"Server-side Claude brief synthesizes distance, zone, weather, and shelter context into a few sentences.",
-				},
-				{
-					title: "Static portfolio preview",
-					context:
-						"The hackathon UI needed a clear portfolio presence without shipping a large local-only demo video to production.",
-					tradeOff:
-						"Static hero capture vs. embedded motion demo and heavier page weight.",
-					result:
-						"Case study hero uses a polished screenshot preview; the full analyze→act flow stays on the live prototype.",
-				},
-			],
-			architectureLayers: [
-				{
-					title: "Client UI",
-					description:
-						"React 19 + Vite SPA on Vercel — single analyze→act flow with a decision-led result panel.",
-				},
-				{
-					title: "Map / routing layer",
-					description:
-						"Leaflet map with Google Directions polylines decoded client-side so escape routes follow roads, not synthetic arcs.",
-				},
-				{
-					title: "Location / geospatial",
-					description:
-						"Browser geolocation, Google Geocoding API, and geospatial scoring to rank safer destinations.",
-				},
-				{
-					title: "Emergency context",
-					description:
-						"Express backend on Cloud Run proxies OpenWeather, Google Directions, Anthropic (Claude brief), and related analysis calls — API keys stay server-side.",
-				},
-				{
-					title: "Deployment / media",
-					description:
-						"Split deploy: containerized API on Cloud Run, static frontend on Vercel; portfolio case study uses static demo preview imagery with the live app linked from the page.",
-				},
-			],
-		},
-		homepage: {
-			accent: "rose",
-			index: "04",
-			images: [
-				{
-					label: "Real-Road Routing",
-					bg: "from-green/20 to-transparent",
-					icon: "🧭",
-					stat: "Google Directions API · Encoded polyline decoded client-side",
-				},
-				{
-					label: "AI Survival Brief",
-					bg: "from-rose/20 to-transparent",
-					icon: "⚡",
-					stat: "Claude AI · 3-sentence brief · server-side",
-				},
-			],
-			highlights: [
-				"Server-side Claude brief turns blast, weather, and shelter context into a short plain-English advisory",
-				"Geospatial scoring ranks escape destinations using flee-from-blast bearing weighted against wind direction",
-				"Google Directions polylines decoded client-side for road-following map geometry",
-				"Shareable URLs encode full scenario; shared links reopen the same analysis",
-				"Won Community Favorite + Best Alignment with Theme",
-			],
-		},
-	},
 
 	"elite-global": {
 		slug: "elite-global",
@@ -1276,12 +1263,12 @@ const projects: Record<ProjectSlug, Project> = {
 			{ value: "Live", label: "Client production site" },
 		],
 		links: {
-			live: "https://eliteglobalcleaningservices.netlify.app/",
+			live: "https://eliteglobalcleaningservices.com/",
 			caseStudy: "/projects/elite-global",
 		},
 		media: {
-			hero: "/media/elite-global-hero.jpg",
-			detail: "/media/elite-global-detail.jpg",
+			hero: "/media/elite-global-hero.webp",
+			detail: "/media/elite-global-detail.webp",
 			alt: "Elite Global Cleaning Services website",
 		},
 		caseStudy: {
@@ -1300,7 +1287,7 @@ const projects: Record<ProjectSlug, Project> = {
 				"Chose Astro for static-first delivery — the client's audience is facilities managers on mobile, often in high-glare environments with spotty connections. Static Site Generation keeps content routes lightweight with minimal hydration cost. Added React Islands only where interactivity was genuinely needed. Built bilingual support (English/Spanish) via Astro's i18n layer so the site serves both their external clients and internal Spanish-speaking staff.",
 			ux: "High-contrast typography and structured layout optimized for mobile readability in industrial environments — not a desk-browsing experience. Service pages structured around B2B decision-making: what you get, who it's for, how to contact. No unnecessary animations or flourishes that would slow perceived performance on a construction site Wi-Fi connection.",
 			architecture:
-				"Static site on Netlify with Porkbun nameservers. Astro keeps content pages static-first with minimal client JavaScript and React scoped to interactive islands only. i18n lives at the Astro routing layer: /en/* and /es/* parallel routes, no client-side language switching, no third-party translation service.",
+				"Static site on Netlify with Porkbun nameservers. Astro keeps content pages static-first with minimal client JavaScript and React scoped to interactive islands only. i18n lives at the Astro routing layer: English at the root and Spanish under /es/*, no client-side language switching, no third-party translation service.",
 			performance:
 				"Static-first delivery: every page pre-rendered at build time with minimal client JavaScript outside interactive islands — tuned for mobile readability on industrial connections. Resolved a live SSL certificate expiry post-launch: diagnosed Netlify webhook failure and Porkbun DNS propagation gap, restored HTTPS with zero data loss.",
 			impact:
@@ -1348,13 +1335,13 @@ const projects: Record<ProjectSlug, Project> = {
 					title: "Homepage and service overview",
 					description:
 						"English homepage hero with service positioning, primary CTAs, and navigation into core remediation offerings.",
-					media: "/media/elite-global-hero.jpg",
+					media: "/media/elite-global-hero.webp",
 				},
 				{
 					title: "Bilingual content and trust",
 					description:
 						"Spanish homepage with the same service structure — parallel language routes via Astro i18n, no third-party translation layer.",
-					media: "/media/elite-global-detail.jpg",
+					media: "/media/elite-global-detail.webp",
 				},
 				{
 					title: "Contact and conversion path",
@@ -1409,7 +1396,7 @@ const projects: Record<ProjectSlug, Project> = {
 				{
 					title: "Bilingual routing",
 					description:
-						"Astro i18n parallel routes (/en/*, /es/*) so each language has explicit URLs without runtime translation.",
+						"Astro i18n routes (English at /, Spanish under /es/*) so each language has explicit URLs without runtime translation.",
 				},
 				{
 					title: "Interactive islands",
@@ -1430,7 +1417,7 @@ const projects: Record<ProjectSlug, Project> = {
 		},
 		homepage: {
 			accent: "rose",
-			index: "06",
+			index: "04",
 			images: [
 				{
 					label: "Production Site",
@@ -1460,7 +1447,10 @@ export const projectsRegistry: Record<ProjectSlug, Project> = projects;
 /** @deprecated Prefer projectsRegistry — kept for existing imports during migration */
 export const projectsData = projectsRegistry;
 
-const PUBLIC_PROJECT_SLUG_SET = new Set<string>(SHOWCASE_PROJECT_SLUGS);
+const PUBLIC_PROJECT_SLUG_SET = new Set<string>([
+	...SHOWCASE_PROJECT_SLUGS,
+	...SECONDARY_CASE_STUDY_SLUGS,
+]);
 
 export function isProjectSlug(slug: string): slug is ProjectSlug {
 	return PUBLIC_PROJECT_SLUG_SET.has(slug);

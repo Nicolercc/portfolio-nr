@@ -52,7 +52,10 @@ function loadProjects() {
 	vm.runInNewContext(output, sandbox, { filename: "projects.ts" });
 	return {
 		registry: module.exports.projectsRegistry,
-		slugs: module.exports.SHOWCASE_PROJECT_SLUGS,
+		slugs: [
+			...module.exports.SHOWCASE_PROJECT_SLUGS,
+			...(module.exports.SECONDARY_CASE_STUDY_SLUGS ?? []),
+		],
 	};
 }
 

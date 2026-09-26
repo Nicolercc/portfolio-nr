@@ -933,11 +933,7 @@ export default function CaseStudy() {
 								steps={cs.walkthrough}
 								title={project.title}
 								fadeUp={fadeUp}
-								sectionLabel={
-									project.slug === "nuclear-router"
-										? "Emergency Flow"
-										: "Product Walkthrough"
-								}
+								sectionLabel="Product Walkthrough"
 							/>
 						)}
 

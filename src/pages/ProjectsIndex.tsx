@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
+import { MORE_WORK } from "../data/moreWork";
 import { OPEN_SOURCE_CONTRIBUTIONS } from "../data/openSource";
 import { getShowcaseProjects } from "../data/projects";
 import { useInView } from "../hooks/useInView";
@@ -92,6 +93,80 @@ export default function ProjectsIndex() {
 							</article>
 						);
 					})}
+				</section>
+
+				<section aria-labelledby="more-work-heading" className="mt-20 md:mt-24">
+					<p className="text-[10px] uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
+						/ more work
+					</p>
+					<h2
+						id="more-work-heading"
+						className="text-3xl md:text-5xl font-serif tracking-tight mb-8"
+					>
+						More Work
+					</h2>
+					<ul className="space-y-4">
+						{MORE_WORK.map((item) => (
+							<li
+								key={item.title}
+								className="glass-panel rounded-3xl border border-white/8 p-6 md:p-7 flex flex-col md:flex-row md:items-center gap-4 md:gap-8"
+							>
+								<div className="min-w-0 flex-1">
+									<div className="flex flex-wrap items-center gap-3 mb-2">
+										<h3 className="text-xl md:text-2xl font-serif tracking-tight">
+											{item.title}
+										</h3>
+										<span
+											className={`rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-widest ${
+												item.status === "Live"
+													? "border-green/40 text-green"
+													: "border-white/20 text-white/75"
+											}`}
+										>
+											{item.status}
+										</span>
+									</div>
+									<p className="text-[10px] uppercase tracking-[0.28em] font-mono text-muted-foreground mb-3">
+										{item.kind}
+									</p>
+									<p className="text-muted-foreground font-light leading-relaxed">
+										{item.summary}
+									</p>
+								</div>
+								<div className="flex shrink-0 flex-wrap gap-x-6 gap-y-1">
+									{item.links.map((link) =>
+										link.href.startsWith("/") ? (
+											<Link
+												key={link.href}
+												to={link.href}
+												className="inline-flex items-center gap-2 min-h-11 text-sm font-semibold text-foreground hover:text-rose transition-colors"
+											>
+												{link.label}
+												<span className="sr-only"> for {item.title}</span>
+												<span aria-hidden>→</span>
+											</Link>
+										) : (
+											<a
+												key={link.href}
+												href={link.href}
+												target="_blank"
+												rel="noreferrer"
+												className="group inline-flex items-center gap-2 min-h-11 text-sm font-semibold text-foreground hover:text-rose transition-colors"
+											>
+												{link.label}
+												<span className="sr-only"> for {item.title} (opens in a new tab)</span>
+												<ArrowUpRight
+													size={14}
+													aria-hidden
+													className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+												/>
+											</a>
+										),
+									)}
+								</div>
+							</li>
+						))}
+					</ul>
 				</section>
 
 				{OPEN_SOURCE_CONTRIBUTIONS.length > 0 && (

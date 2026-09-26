@@ -71,8 +71,11 @@ function expectedRoutes() {
 		/export const SHOWCASE_PROJECT_SLUGS = \[([\s\S]*?)\] as const/,
 	);
 	assert(showcaseMatch, "SHOWCASE_PROJECT_SLUGS is missing.");
-	const projectSlugs = [...showcaseMatch[1].matchAll(/"([^"]+)"/g)].map(
-		(match) => match[1],
+	const secondaryMatch = projectsSource.match(
+		/export const SECONDARY_CASE_STUDY_SLUGS = \[([\s\S]*?)\] as const/,
+	);
+	const projectSlugs = [showcaseMatch[1], secondaryMatch?.[1] ?? ""].flatMap((list) =>
+		[...list.matchAll(/"([^"]+)"/g)].map((match) => match[1]),
 	);
 	const blogSlugs = [
 		...blogSource.matchAll(/parseBlogPost\([^,]+,\s*"([^"]+)"/g),

@@ -615,7 +615,7 @@ const projects: Record<ProjectSlug, Project> = {
 		tagline:
 			"Evidence-first recruiting decision support: explicit criteria, visible uncertainty, and a human who makes every call.",
 		description:
-			"A prototype that turns a job description and up to three resumes into an auditable review queue. The model proposes; deterministic code scores against a frozen rubric, flags what needs manual review, refuses protected factors, and fails closed. The seeded demo runs without an API key and is labelled as demo output, never as live AI.",
+			"A prototype that turns a job description and up to three resumes into an auditable review queue. The model proposes; deterministic code scores against a frozen rubric, flags what needs manual review, refuses protected factors, and fails closed. The live seeded demo runs without an API key and is labelled as demo output, never as live AI.",
 		stack: [
 			"React",
 			"TypeScript",
@@ -633,6 +633,7 @@ const projects: Record<ProjectSlug, Project> = {
 			{ value: "0", label: "axe violations on the seeded demo flow" },
 		],
 		links: {
+			live: "https://ruvia.vercel.app/",
 			github: "https://github.com/Nicolercc/HR-AGENT",
 			caseStudy: "/projects/ruvia",
 		},
@@ -688,7 +689,7 @@ const projects: Record<ProjectSlug, Project> = {
 				},
 				{
 					label: "Status",
-					value: "Prototype. The seeded demo runs locally from the GitHub repo; not deployed and not approved for real hiring decisions",
+					value: "Prototype with a live seeded demo. Uploaded resumes need a live AI key and fail closed without one; not approved for real hiring decisions",
 				},
 			],
 			featuredDecisionTitle: "The model proposes, code decides",

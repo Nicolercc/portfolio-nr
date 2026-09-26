@@ -17,12 +17,13 @@ export type MoreWorkItem = {
 export const MORE_WORK: MoreWorkItem[] = [
 	{
 		title: "Ruvia",
-		status: "In progress",
+		status: "Live",
 		kind: "Responsible AI · Decision-support prototype",
 		summary:
-			"An evidence-first recruiting prototype: the model proposes criterion-level evidence, deterministic code scores it against a frozen rubric, and a recruiter makes every call. The seeded demo is labelled as demo output, there is no production deployment, and nothing is ever sent.",
+			"An evidence-first recruiting prototype: the model proposes criterion-level evidence, deterministic code scores it against a frozen rubric, and a recruiter makes every call. The live demo runs on seeded data and is labelled as demo output; uploads fail closed without a live AI key, and nothing is ever sent.",
 		links: [
 			{ label: "Case study", href: "/projects/ruvia" },
+			{ label: "Live demo", href: "https://ruvia.vercel.app/" },
 			{ label: "GitHub", href: "https://github.com/Nicolercc/HR-AGENT" },
 		],
 	},

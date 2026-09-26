@@ -259,8 +259,8 @@ for (const slug of [...showcaseSlugs, ...secondarySlugs]) {
 	}
 
 	if (slug === "ruvia") {
-		if (liveLink) {
-			fail("Ruvia should not expose a live link until it has a real deployment.");
+		if (liveLink && liveLink !== "https://ruvia.vercel.app/") {
+			fail("Ruvia's live link must point at its real seeded-demo deployment.");
 		}
 		const boundaryCopy = [
 			getStringProp(project, "description"),

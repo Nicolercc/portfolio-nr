@@ -829,7 +829,7 @@ const projects: Record<ProjectSlug, Project> = {
 		],
 		metrics: [
 			{ value: "29 → 0", label: "Failing answer-check cases" },
-			{ value: "0", label: "axe violations, every screen" },
+			{ value: "0", label: "axe violations on audited screens" },
 			{ value: "210", label: "Automated tests" },
 			{ value: "−60%", label: "First-load JavaScript" },
 		],
@@ -1276,7 +1276,7 @@ const projects: Record<ProjectSlug, Project> = {
 			thesis:
 				"A bilingual client website for a service business, designed around trust, clarity, and fast access to core services.",
 			problem:
-				"Elite Global Cleaning Services is a Queens-based environmental remediation company serving industrial B2B clients. Their existing web presence wasn't converting — slow load times, no bilingual support for their Spanish-speaking staff and clients, and zero SEO structure. I built them a production site they could rely on, then kept it running when things broke.",
+				"Elite Global Cleaning Services is a Queens-based environmental remediation company serving industrial B2B clients. They needed a site that loads quickly on phones, explains their services clearly, and works in Spanish as well as English for their staff and clients. I built them a production site they could rely on, then kept it running when things broke.",
 			solution:
 				"Chose Astro for static-first delivery — the client's audience is facilities managers on mobile, often in high-glare environments with spotty connections. Static Site Generation keeps content routes lightweight with minimal hydration cost. Added React Islands only where interactivity was genuinely needed. Built bilingual support (English/Spanish) via Astro's i18n layer so the site serves both their external clients and internal Spanish-speaking staff.",
 			technicalHighlights: [
@@ -1290,7 +1290,7 @@ const projects: Record<ProjectSlug, Project> = {
 			architecture:
 				"Static site on Netlify with Porkbun nameservers. Astro keeps content pages static-first with minimal client JavaScript and React scoped to interactive islands only. i18n lives at the Astro routing layer: English at the root and Spanish under /es/*, no client-side language switching, no third-party translation service.",
 			performance:
-				"Static-first delivery: every page pre-rendered at build time with minimal client JavaScript outside interactive islands — tuned for mobile readability on industrial connections. Resolved a live SSL certificate expiry post-launch: diagnosed Netlify webhook failure and Porkbun DNS propagation gap, restored HTTPS with zero data loss.",
+				"Static-first delivery: every page pre-rendered at build time with minimal client JavaScript outside interactive islands — tuned for mobile readability on industrial connections. Resolved a live SSL certificate expiry post-launch: diagnosed Netlify webhook failure and Porkbun DNS propagation gap, restored HTTPS.",
 			impact:
 				"Live production site for a real paying client. Diagnosed and resolved SSL expiry and DNS configuration failures post-launch. Added i18n after initial delivery based on client feedback — first time doing production bilingual routing.",
 			lessons: [

@@ -43,7 +43,7 @@ export const MORE_WORK: MoreWorkItem[] = [
 		status: "Live",
 		kind: "Full-stack developer · Civic intelligence",
 		summary:
-			"Plain-English civic issue briefings from Guardian News API data and Claude, with one curated action per issue. Rebuilt from Firebase and Vite to the Next.js App Router for a capstone demo.",
+			"Civic news with plain-English context: Guardian News API reporting summarised with Claude, built on the Next.js App Router and Supabase. A rebuild of my earlier React and Vite version.",
 		links: [
 			{ label: "Live site", href: "https://impactify2-0.vercel.app/" },
 			{ label: "GitHub", href: "https://github.com/Nicolercc/impactify2.0" },

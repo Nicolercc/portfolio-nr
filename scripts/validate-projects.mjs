@@ -299,4 +299,32 @@ for (const slug of [...showcaseSlugs, ...secondarySlugs]) {
 	}
 }
 
+// Design-section figures read alt text and dimensions from the asset manifests,
+// so every image must be on disk and in the manifest.
+const mediaManifest = readFileSync(join(root, "src/data/caseStudyMedia.generated.ts"), "utf8");
+for (const [, block] of sourceText.matchAll(/designSection: \{([\s\S]*?)\n\t\t\t\},/g)) {
+	for (const [, mediaPath] of block.matchAll(/"(\/media\/[^"]+)"/g)) {
+		if (!mediaManifest.includes(`"${mediaPath}"`)) {
+			fail(`${mediaPath} has no manifest entry. Run npm run assets:figma / assets:live.`);
+		}
+		if (!existsSync(join(root, "public", mediaPath))) {
+			fail(`${mediaPath} is referenced but missing from public/.`);
+		}
+	}
+}
+
+// Research copy may describe a plan, never results that do not exist.
+const researchResultPhrases =
+	/\b(users|participants|testers|diners) (found|showed|said|told|preferred|reported|struggled|understood)\b|\btesting (demonstrated|showed|proved|confirmed)\b|\busability (study|testing) (showed|found|confirmed)\b/i;
+const researchResultMatch = sourceText.match(researchResultPhrases);
+if (researchResultMatch) {
+	fail(`Copy reports research results ("${researchResultMatch[0]}"); only claim findings from sessions that ran.`);
+}
+
+for (const [, planUrl] of sourceText.matchAll(/planUrl: "(\/[^"]+)"/g)) {
+	if (!existsSync(join(root, "public", planUrl))) {
+		fail(`Research plan file is missing: public${planUrl}`);
+	}
+}
+
 console.log("Project story validation passed.");

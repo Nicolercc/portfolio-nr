@@ -61,6 +61,64 @@ export type CaseStudyCta = {
 	kind: "live" | "github" | "case-study";
 };
 
+/** src must have an entry in caseStudyMedia.generated.ts (alt text + dimensions). */
+export type CaseStudyFigure = {
+	src: string;
+	caption: string;
+};
+
+/**
+ * Add a designSection only once every image it references exists in public/media
+ * and in caseStudyMedia.generated.ts; verify:content and verify:projects fail otherwise.
+ * Sano's pending block and export spec: docs/sano-figma-handoff.md.
+ */
+export type CaseStudyDesignSection = {
+	heading: string;
+	intro: string;
+	lead: CaseStudyFigure;
+	pair: CaseStudyFigure[];
+	details: CaseStudyFigure[];
+	comparison?: {
+		images: string[];
+		caption: string;
+	};
+	fileUrl: string;
+	fileLabel: string;
+	credit: string;
+};
+
+export type CaseStudyResearchPlan = {
+	heading: string;
+	intro: string;
+	items: { label: string; value: string | string[] }[];
+	planUrl: string;
+	planLabel: string;
+};
+
+export type CaseStudyComprehensionDecisions = {
+	heading: string;
+	intro: string;
+	items: { title: string; description: string }[];
+};
+
+/** One row per WCAG criterion; only criteria the implementation or a measurement supports. */
+export type CaseStudyEvidenceRow = {
+	criterion: string;
+	change: string;
+	verification: string;
+};
+
+export type CaseStudyAccessibilityEvidence = {
+	heading: string;
+	intro: string;
+	rows: CaseStudyEvidenceRow[];
+	/** What kind of testing this is, and what it is not. */
+	methodNote: string;
+	recheck: string;
+	findingsUrl: string;
+	findingsLabel: string;
+};
+
 export type ProjectCaseStudy = {
 	thesis: string;
 	problem: string;
@@ -84,6 +142,10 @@ export type ProjectCaseStudy = {
 	featuredDecisionTitle?: string;
 	/** One-line scan summary for the featured decision (shown in At a Glance) */
 	featuredDecisionSummary?: string;
+	comprehensionDecisions?: CaseStudyComprehensionDecisions;
+	accessibilityEvidence?: CaseStudyAccessibilityEvidence;
+	designSection?: CaseStudyDesignSection;
+	researchPlan?: CaseStudyResearchPlan;
 };
 
 export type HomepageVisual = {
@@ -146,9 +208,9 @@ const projects: Record<ProjectSlug, Project> = {
 		category: "Public Data · Full-Stack",
 		year: "2026",
 		status: "live",
-		role: "Full-Stack Engineer · Data Systems",
+		role: "Designer & Engineer · UX and Accessibility",
 		tagline:
-			"Restaurant discovery that reads beyond the letter grade — then proves its critical journey with an accessibility audit, regression checks, and rendered evidence.",
+			"Restaurant discovery that reads beyond the letter grade, with an accessibility audit of its critical journey, regression checks, and rendered evidence.",
 		description:
 			"Sano turns public NYC DOHMH restaurant inspection records into readable context, then documents a scoped accessibility upgrade across search, results, profile, and methodology flows.",
 		stack: [
@@ -183,11 +245,11 @@ const projects: Record<ProjectSlug, Project> = {
 		},
 		caseStudy: {
 			thesis:
-				"A strong civic data product does two things at once: it makes public records easier to understand, and it proves the interface can be used by people who do not navigate like the builder.",
+				"A civic data product has two jobs: make public records easier to understand without overstating them, and keep working for people who don't use it the way its builder does: by keyboard, by screen reader, or on a small, low-contrast screen.",
 			problem:
-				"Sano already translated NYC restaurant inspection histories into plain-English context, but the critical journey still had accessibility debt: low-contrast helper text, filter controls with weak focus states, a hero search that did not hand keyboard users into the results flow, and visual-only status changes for search progress and empty states.",
+				"NYC's letter grade is one snapshot on a door. It doesn't show whether a restaurant's record is steady or swings between inspections, and the city's raw inspection data is too dense to read quickly. That gap matters most to people choosing carefully: for a child, an older relative, or someone with a weakened immune system. Sano already turned inspection history into plain English, but its critical journey had gaps that would shut some of those people out: helper text below contrast minimums, filters with weak keyboard focus, a hero search that left keyboard users behind, and results that changed without telling screen-reader users.",
 			solution:
-				"I treated the accessibility pass like production engineering, not polish. I audited the search to profile journey, converted checkable findings into regression scripts, corrected contrast through reusable tokens, added visible keyboard focus and focus handoff, introduced a debounced polite live region for search status, and preserved before/after screenshots as evidence.",
+				"I audited the search → results → profile → methodology journey and logged 12 findings, each with the users it affects and the WCAG criterion it maps to. I fixed them at the source: contrast through reusable tokens, visible focus and a focus handoff after search, one debounced status region for search updates, and real headings on the profile. The checkable fixes became regression scripts; before/after screenshots cover the rest.",
 			technicalHighlights: [
 				"Scoped accessibility audit across search, results, restaurant profile, not-found, and methodology routes",
 				"Automated contrast calculations for audited tokens plus source-level regression checks for focus, live regions, and debounce behavior",
@@ -203,20 +265,20 @@ const projects: Record<ProjectSlug, Project> = {
 			performance:
 				"The pass avoided a heavy accessibility framework and focused on fast checks that fit the app: lint/build, deterministic contrast math, targeted source assertions, and a live acceptance script. That keeps the validation loop light enough to run before publication.",
 			impact:
-				"The result is an interview-ready story with working software, specific accessibility fixes, reproducible evidence, and honest scope: validated improvements to the critical Sano journey, not a blanket certification claim.",
+				"Working software with specific, verified accessibility fixes and a clear line around what they prove: improvements to the critical journey, not a conformance certificate. Nobody outside the team has tested Sano yet; the usability test plan is the next step.",
 			lessons: [
 				"Accessibility bugs that are mechanically checkable should become tests, not recurring checklist chores.",
 				"Design tokens are the right level for recurring contrast problems; per-component fixes leave the bug class alive.",
 				"Evidence matters, but scope matters too: screenshots, scripts, and rendered checks should say exactly what they prove and what they do not.",
 			],
 			nextSteps:
-				"Run a final by-ear VoiceOver/NVDA pass, complete 400% zoom/reflow coverage, return a true 404 status for unknown restaurant IDs (the page is correct but streams with 200), refine small-screen timeline marker perception, and continue expanding automated checks only where they catch real regressions without becoming maintenance theater.",
+				"Run the five-person usability study in the test plan, do a by-ear VoiceOver pass, complete 400% zoom coverage and a formal target-spacing audit, return a true 404 status for unknown restaurant IDs (the page is correct but streams with 200), and refine how timeline markers read on small screens.",
 			atAGlance: [
-				{ label: "Role", value: "Full-Stack Engineer · Data Systems" },
+				{ label: "Role", value: "Designer & Engineer · UX and Accessibility" },
 				{
 					label: "Ownership",
 					value:
-						"I built the product audit, accessibility fixes, validation scripts, evidence captures, and case-study writeup for the critical Sano journey.",
+						"Solo designer and engineer. I designed and built Sano, then ran the accessibility audit, fixes, validation scripts and evidence captures for its critical journey. Two teammates tested the live site informally during development and reported issues, which I fixed.",
 				},
 				{ label: "Status", value: "Live" },
 				{
@@ -375,6 +437,208 @@ const projects: Record<ProjectSlug, Project> = {
 						"Acceptance checks exercise live routes and demo chips, while cleaned Git history removes leaked browser-chrome screenshots before publication.",
 				},
 			],
+			comprehensionDecisions: {
+				heading: "Comprehension decisions",
+				intro:
+					"Sano is decision support, not a verdict. These choices are in the live product; none has been tested with users yet.",
+				items: [
+					{
+						title: "The official grade leads",
+						description:
+							"The city-posted grade, cycles on file and extract date come first. Sano's derived reliability score never replaces it.",
+					},
+					{
+						title: "Derived signals say what they are",
+						description:
+							"The reliability score carries \"for comparison — not a live safety rating\" as visible text, not a tooltip.",
+					},
+					{
+						title: "A plain-language summary first",
+						description:
+							"\"The story so far\" reads the record in a few sentences and says it is not a safety verdict.",
+					},
+					{
+						title: "Limits stay visible",
+						description:
+							"Review context appears only when a source is matched; otherwise it stays blank rather than invented.",
+					},
+					{
+						title: "Empty states explain the index",
+						description:
+							"A search with no results says \"No matching restaurants in the current index\" and notes that ZIP-level records aren't included yet.",
+					},
+					{
+						title: "Errors don't blame the reader",
+						description:
+							"Error screens say \"That's on us, not the data\" and offer Try again plus a path to the methodology.",
+					},
+					{
+						title: "Motion respects reduced-motion settings",
+						description:
+							"Transitions and loading pulses stop when the device asks for reduced motion.",
+					},
+				],
+			},
+			accessibilityEvidence: {
+				heading: "Accessibility evidence",
+				intro:
+					"Each row maps a change to the WCAG 2.2 criterion it addresses and says how it was checked. This is a scoped audit of the critical journey, not a conformance claim.",
+				rows: [
+					{
+						criterion: "1.4.3 Contrast (Minimum)",
+						change:
+							"Low-opacity labels, helper text and status text moved to audited tokens. On the current palette: hero labels went from 3.60:1 to 8.22:1, and secondary text, amber status text and coral warning text are at least 5.02:1, 4.79:1 and 5.58:1 on every audited background.",
+						verification:
+							"A contrast script recalculates all 11 audited pairs against a 4.5:1 minimum and blocks the old low-contrast classes; it passed on Sept 30, 2026.",
+					},
+					{
+						criterion: "1.4.1 Use of Color",
+						change:
+							"Grades and inspection flags are carried by letters and words, such as \"2 critical\" and \"Repeat\", not by color alone.",
+						verification: "Code review of the grade and timeline components.",
+					},
+					{
+						criterion: "2.4.7 Focus Visible",
+						change:
+							"Filter inputs and selects share one focus style with an outline, offset and color change, not just a border change.",
+						verification:
+							"Regression script checks all four controls; a Chrome keyboard pass is captured in the walkthrough.",
+					},
+					{
+						criterion: "2.4.3 Focus Order",
+						change:
+							"Submitting the hero search moves focus to the results heading instead of leaving keyboard users in the hero.",
+						verification:
+							"Regression script, plus the Chrome accessibility tree showing focus on \"Search restaurants\" after submit.",
+					},
+					{
+						criterion: "2.4.11 Focus Not Obscured (Minimum)",
+						change:
+							"Search sections scroll clear of the fixed navigation when they receive focus. This covers the search flow only.",
+						verification: "Code review; not audited site-wide.",
+					},
+					{
+						criterion: "4.1.3 Status Messages",
+						change:
+							"One polite status region announces loading, result counts, empty states and errors. Typed queries wait 500ms, so each keystroke is not announced.",
+						verification:
+							"Script confirms a single live region. Measured during the audit by polling the status text while typing: one change, about 500ms after the last keystroke.",
+					},
+					{
+						criterion: "1.3.1 Info and Relationships · 2.4.6 Headings and Labels",
+						change:
+							"The reliability panel has a real heading, the not-found page's navigation has a name, and each inspection cycle is a list item.",
+						verification: "Code review and route checks.",
+					},
+					{
+						criterion: "1.1.1 Non-text Content",
+						change:
+							"The score chart has a text label, and every cycle's date, score, grade and flags are also listed as text.",
+						verification: "Code review.",
+					},
+					{
+						criterion: "2.1.1 Keyboard",
+						change:
+							"The horizontally scrolling chart can be focused and scrolled from the keyboard.",
+						verification: "Code review: a focusable, labelled scroll region.",
+					},
+					{
+						criterion: "1.4.10 Reflow",
+						change: "No page-level horizontal scroll at a 320px viewport on five routes.",
+						verification:
+							"Measured Sept 30, 2026. A narrow-viewport test, not a literal 400% zoom test.",
+					},
+					{
+						criterion: "2.5.8 Target Size (Minimum)",
+						change:
+							"Primary and recovery actions are 44px tall. Two smaller controls remain: a 16px checkbox inside a 36px clickable label, and a 20px-tall navigation search field inside a 46px bar.",
+						verification:
+							"Measured Sept 30, 2026. A formal spacing audit is still to do.",
+					},
+				],
+				methodNote:
+					"What this is: accessibility QA I ran myself, with automated checks, manual keyboard passes and browser accessibility-tree inspection. What it is not: testing with assistive-technology users or a by-ear screen-reader pass. Neither has happened yet.",
+				recheck:
+					"Re-checked on the live app, Sept 30, 2026: axe (WCAG 2.2 A/AA rules) reported 0 violations on home, search results, a restaurant profile, methodology and a missing-profile page at 320, 390 and 1440px. No page-level horizontal scroll at 320px. Every target measured at least 24px except the two controls noted above.",
+				findingsUrl:
+					"https://github.com/Nicolercc/Sano/blob/main/docs/accessibility-audit/findings.md",
+				findingsLabel: "Read the full findings log",
+			},
+			designSection: {
+				heading: "Designing it in Figma",
+				intro:
+					"I directed a Figma rebuild of Sano's key screens so the design could be handed off in a client's format: a small component set, the home, search and profile screens, and an annotated developer handoff page. Colors and type match the code's tokens (tailwind.config.ts and app/globals.css). The annotations cover focus visibility, target size, the timeline's text alternative, and the data rules: official record first, reviews only when a source is matched, limits as visible text.",
+				lead: {
+					src: "/media/sano-case-study/sano-figma-profile.webp",
+					caption:
+						"Official inspection data leads. Review context stays separate and appears only when matched.",
+				},
+				pair: [
+					{
+						src: "/media/sano-case-study/sano-figma-results.webp",
+						caption: "Every card reads in the same order: name, official grade, reliability, reviews.",
+					},
+					{
+						src: "/media/sano-case-study/sano-figma-handoff.webp",
+						caption: "Handoff notes for developers: WCAG 2.2, text alternatives, and data rules.",
+					},
+				],
+				details: [
+					{
+						src: "/media/sano-case-study/sano-figma-card.webp",
+						caption: "One component, two honest states: review matched, or not attached.",
+					},
+					{
+						src: "/media/sano-case-study/sano-figma-grades.webp",
+						caption:
+							"Grade stamps drawn from the app's MarkerGrade component. The Figma set adds a \"Not yet graded\" state that the app currently shows as Pending.",
+					},
+				],
+				comparison: {
+					images: [
+						"/media/sano-case-study/sano-figma-hero.webp",
+						"/media/sano-case-study/sano-live-home.webp",
+					],
+					caption: "Figma file vs. the live app.",
+				},
+				fileUrl:
+					"https://figma.com/design/W5RrpfAu7TSxRSoA1cz25t/Sano-%E2%80%94-Key-screens--components---handoff?node-id=0-1&p=f&t=Ksd9OKZahRvgGnPE-0",
+				fileLabel: "Open the Figma file",
+				credit: "Built with Claude in Figma from my direction. I reviewed and edited every screen.",
+			},
+			researchPlan: {
+				heading: "Research: usability test plan",
+				intro:
+					"Sano is for everyday diners and for people choosing food more carefully, like caregivers. I wrote a plan to test whether people can read the official grade quickly, understand what the inspection history adds, and tell official data apart from Google reviews.",
+				items: [
+					{
+						label: "Status",
+						value:
+							"Plan. Formal sessions not yet run. Teammates tested informally during development; that is not usability research.",
+					},
+					{
+						label: "Planned participants",
+						value:
+							"5. Two everyday diners, two cautious diners or caregivers, one keyboard or screen reader user.",
+					},
+					{
+						label: "Planned tasks",
+						value: [
+							"Find a restaurant and state its grade.",
+							"Explain the timeline.",
+							'Explain what "reliability 60" means.',
+							"Say where the star rating comes from.",
+						],
+					},
+					{
+						label: "Planned consent and privacy",
+						value:
+							"Written consent, participants are P1–P5, no health questions, recordings deleted after 30 days.",
+					},
+				],
+				planUrl: "/sano-usability-test-plan.pdf",
+				planLabel: "Read the test plan (PDF)",
+			},
 		},
 		homepage: {
 			accent: "green",

@@ -52,7 +52,7 @@ async function check(url) {
 			},
 		});
 
-		if (response.status === 405 || response.status === 403) {
+		if (response.status === 405 || response.status === 403 || response.status === 404) {
 			return await checkWithGet(url);
 		}
 

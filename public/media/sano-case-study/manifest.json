@@ -1,0 +1,92 @@
+{
+	"images": [
+		{
+			"file": "sano-figma-card.webp",
+			"width": 2000,
+			"height": 308,
+			"source": {
+				"type": "figma",
+				"fileKey": "W5RrpfAu7TSxRSoA1cz25t",
+				"nodeId": "1:159"
+			},
+			"alt": "The RestaurantCard component in two states: review matched, and review source not attached."
+		},
+		{
+			"file": "sano-figma-grades.webp",
+			"width": 804,
+			"height": 188,
+			"source": {
+				"type": "figma",
+				"fileKey": "W5RrpfAu7TSxRSoA1cz25t",
+				"nodeId": "1:45"
+			},
+			"alt": "Hand-drawn red grade stamps for A, B, C, Pending, and Not yet graded."
+		},
+		{
+			"file": "sano-figma-handoff.webp",
+			"width": 2000,
+			"height": 1992,
+			"source": {
+				"type": "figma",
+				"fileKey": "W5RrpfAu7TSxRSoA1cz25t",
+				"nodeId": "11:350"
+			},
+			"alt": "Annotated Sano profile screen with numbered developer notes covering WCAG 2.2 focus visibility, target size, the timeline's text alternative, and data rules."
+		},
+		{
+			"file": "sano-figma-hero.webp",
+			"width": 2000,
+			"height": 1389,
+			"source": {
+				"type": "figma",
+				"fileKey": "W5RrpfAu7TSxRSoA1cz25t",
+				"nodeId": "9:267"
+			},
+			"alt": "Sano home screen in Figma: the headline \"The grade is on the door. The story isn't.\" with a search bar and a preview card for Lucky Chix showing grade A, a volatile inspection timeline, and reliability 60."
+		},
+		{
+			"file": "sano-figma-profile.webp",
+			"width": 2000,
+			"height": 2646,
+			"source": {
+				"type": "figma",
+				"fileKey": "W5RrpfAu7TSxRSoA1cz25t",
+				"nodeId": "11:131"
+			},
+			"alt": "Sano restaurant profile for Lucky Chix in Figma: official inspection data first with grade A, then consumer review context kept separate, a plain-language summary, reliability 60, and the inspection timeline."
+		},
+		{
+			"file": "sano-figma-results.webp",
+			"width": 2000,
+			"height": 2321,
+			"source": {
+				"type": "figma",
+				"fileKey": "W5RrpfAu7TSxRSoA1cz25t",
+				"nodeId": "10:5"
+			},
+			"alt": "Sano search results in Figma: a borough coverage snapshot, then restaurant cards showing each official grade, a reliability score, and Google review context only when a source is matched."
+		},
+		{
+			"file": "sano-live-home.webp",
+			"width": 2000,
+			"height": 1250,
+			"source": {
+				"type": "live",
+				"url": "https://sano-nine.vercel.app/",
+				"viewport": "1440x900@2x"
+			},
+			"alt": "The live Sano home page with the hero headline, search bar, and a product preview for Lucky Chix."
+		},
+		{
+			"file": "sano-live-profile.webp",
+			"width": 2000,
+			"height": 1250,
+			"source": {
+				"type": "live",
+				"url": "https://sano-nine.vercel.app/restaurants/50169790",
+				"viewport": "1440x900@2x"
+			},
+			"alt": "The live Lucky Chix profile: official inspection data with grade A beside separate Google review context."
+		}
+	]
+}

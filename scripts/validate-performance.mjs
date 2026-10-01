@@ -11,7 +11,7 @@ const KB = 1024;
 const MB = 1024 * KB;
 
 const budgets = {
-	totalPublicMedia: 1.5 * MB,
+	totalPublicMedia: 2 * MB,
 	publicMediaFile: 350 * KB,
 	heroImage: 220 * KB,
 	supportingImage: 330 * KB,

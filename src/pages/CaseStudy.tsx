@@ -11,7 +11,12 @@ import {
 	type CaseStudyDecisionCard,
 	type CaseStudyArchitectureLayer,
 	type CaseStudyPersona,
+	type CaseStudyDesignSection,
+	type CaseStudyResearchPlan,
+	type CaseStudyComprehensionDecisions,
+	type CaseStudyAccessibilityEvidence,
 } from "../data/projects";
+import { CASE_STUDY_MEDIA } from "../data/caseStudyMedia.generated";
 import { PROFILE } from "../data/profile";
 import { setDocumentMeta } from "../lib/documentMeta";
 import { ArrowUpRight, GitBranch, Play } from "lucide-react";
@@ -433,6 +438,290 @@ function ArchitectureLayersSection({
 	);
 }
 
+const PILL_LINK_CLASS =
+	"inline-flex min-h-[44px] items-center justify-center gap-3 rounded-full border border-rose/30 bg-rose/5 px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-rose transition-colors hover:border-rose/60 hover:bg-rose/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green";
+
+/** Framed, full-colour image with intrinsic size from the asset manifest. */
+function ManifestImage({ src }: { src: string }) {
+	const entry = CASE_STUDY_MEDIA[src];
+
+	if (!entry) {
+		if (import.meta.env.DEV) {
+			console.warn(`No manifest entry for ${src}; run the asset scripts.`);
+		}
+		return null;
+	}
+
+	return (
+		<div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-black">
+			<img
+				src={src}
+				alt={entry.alt}
+				width={entry.width}
+				height={entry.height}
+				className="block h-auto w-full"
+				loading="lazy"
+				decoding="async"
+			/>
+		</div>
+	);
+}
+
+function CaptionedFigure({ src, caption }: { src: string; caption: string }) {
+	return (
+		<figure className="space-y-3 min-w-0">
+			<ManifestImage src={src} />
+			<figcaption className="font-light text-muted-foreground leading-relaxed text-sm break-words">
+				{caption}
+			</figcaption>
+		</figure>
+	);
+}
+
+function DesignSection({
+	section,
+	fadeUp,
+}: {
+	section: CaseStudyDesignSection;
+	fadeUp: FadeUpProps;
+}) {
+	return (
+		<motion.div {...fadeUp} className="space-y-10 border-t border-white/5 pt-16 min-w-0">
+			<div className="space-y-6">
+				<SectionLabel>{section.heading}</SectionLabel>
+				<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+					{section.intro}
+				</p>
+			</div>
+
+			<CaptionedFigure {...section.lead} />
+
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+				{section.pair.map((figure) => (
+					<CaptionedFigure key={figure.src} {...figure} />
+				))}
+			</div>
+
+			<div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl">
+				{section.details.map((figure) => (
+					<CaptionedFigure key={figure.src} {...figure} />
+				))}
+			</div>
+
+			{section.comparison && (
+				<figure className="space-y-3 min-w-0">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						{section.comparison.images.map((src) => (
+							<ManifestImage key={src} src={src} />
+						))}
+					</div>
+					<figcaption className="font-light text-muted-foreground leading-relaxed text-sm">
+						{section.comparison.caption}
+					</figcaption>
+				</figure>
+			)}
+
+			<div className="space-y-4">
+				<a
+					href={section.fileUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					className={PILL_LINK_CLASS}
+				>
+					{section.fileLabel}
+					<span className="sr-only"> (opens in a new tab)</span>
+					<ArrowUpRight size={12} aria-hidden="true" />
+				</a>
+				<p className="text-xs font-light text-muted-foreground leading-relaxed">
+					{section.credit}
+				</p>
+			</div>
+		</motion.div>
+	);
+}
+
+function ResearchPlanSection({
+	plan,
+	fadeUp,
+}: {
+	plan: CaseStudyResearchPlan;
+	fadeUp: FadeUpProps;
+}) {
+	return (
+		<motion.div {...fadeUp} className="space-y-8 border-t border-white/5 pt-16 min-w-0">
+			<div className="space-y-6">
+				<SectionLabel>{plan.heading}</SectionLabel>
+				<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+					{plan.intro}
+				</p>
+			</div>
+
+			{/* Status stays a plan until real session notes exist; never describe planned sessions as findings. */}
+			<dl className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-5 text-sm">
+				{plan.items.map((item) => (
+					<div key={item.label} className="space-y-1">
+						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/90">
+							{item.label}
+						</dt>
+						<dd className="font-light text-muted-foreground leading-relaxed break-words">
+							{Array.isArray(item.value) ? (
+								<ul className="list-disc space-y-1 pl-5">
+									{item.value.map((line) => (
+										<li key={line}>{line}</li>
+									))}
+								</ul>
+							) : (
+								item.value
+							)}
+						</dd>
+					</div>
+				))}
+			</dl>
+
+			<a href={plan.planUrl} className={PILL_LINK_CLASS}>
+				{plan.planLabel}
+				<ArrowUpRight size={12} aria-hidden="true" />
+			</a>
+		</motion.div>
+	);
+}
+
+function ComprehensionDecisionsSection({
+	block,
+	fadeUp,
+}: {
+	block: CaseStudyComprehensionDecisions;
+	fadeUp: FadeUpProps;
+}) {
+	return (
+		<motion.div {...fadeUp} className="space-y-8 border-t border-white/5 pt-16 min-w-0">
+			<div className="space-y-6">
+				<SectionLabel>{block.heading}</SectionLabel>
+				<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+					{block.intro}
+				</p>
+			</div>
+			<ol className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+				{block.items.map((item, index) => (
+					<li
+						key={item.title}
+						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-2 min-w-0"
+					>
+						<h3 className="font-serif text-lg italic text-white/85 break-words">
+							<span className="font-mono text-[10px] not-italic text-rose/90 mr-3" aria-hidden="true">
+								{String(index + 1).padStart(2, "0")}
+							</span>
+							{item.title}
+						</h3>
+						<p className="font-light text-muted-foreground leading-relaxed text-sm break-words">
+							{item.description}
+						</p>
+					</li>
+				))}
+			</ol>
+		</motion.div>
+	);
+}
+
+/**
+ * A real table from md up; stacked cards below md. Only one is ever displayed,
+ * so assistive technology never reads the rows twice.
+ */
+function AccessibilityEvidenceSection({
+	evidence,
+	fadeUp,
+}: {
+	evidence: CaseStudyAccessibilityEvidence;
+	fadeUp: FadeUpProps;
+}) {
+	return (
+		<motion.div {...fadeUp} className="space-y-8 border-t border-white/5 pt-16 min-w-0">
+			<div className="space-y-6">
+				<SectionLabel accent="green">{evidence.heading}</SectionLabel>
+				<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+					{evidence.intro}
+				</p>
+			</div>
+
+			<table className="hidden md:table w-full table-fixed border-collapse text-left text-sm">
+				<caption className="sr-only">
+					WCAG 2.2 criteria addressed in Sano's critical journey, with the change made and how it was verified
+				</caption>
+				<colgroup>
+					<col className="w-[24%]" />
+					<col className="w-[42%]" />
+					<col className="w-[34%]" />
+				</colgroup>
+				<thead>
+					<tr className="border-b border-white/10">
+						<th scope="col" className="py-3 pr-4 font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-rose/90">
+							Criterion
+						</th>
+						<th scope="col" className="py-3 pr-4 font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-rose/90">
+							What changed
+						</th>
+						<th scope="col" className="py-3 font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-rose/90">
+							How it was checked
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{evidence.rows.map((row) => (
+						<tr key={row.criterion} className="border-b border-white/5 align-top">
+							<th scope="row" className="py-4 pr-4 font-normal text-white/85 break-words">
+								{row.criterion}
+							</th>
+							<td className="py-4 pr-4 font-light text-muted-foreground leading-relaxed break-words">
+								{row.change}
+							</td>
+							<td className="py-4 font-light text-muted-foreground leading-relaxed break-words">
+								{row.verification}
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+
+			<ul className="md:hidden space-y-4">
+				{evidence.rows.map((row) => (
+					<li
+						key={row.criterion}
+						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3 min-w-0"
+					>
+						<h3 className="text-sm text-white/85 break-words">{row.criterion}</h3>
+						<dl className="space-y-3 text-sm">
+							<div className="space-y-1">
+								<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/90">What changed</dt>
+								<dd className="font-light text-muted-foreground leading-relaxed break-words">{row.change}</dd>
+							</div>
+							<div className="space-y-1">
+								<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/90">How it was checked</dt>
+								<dd className="font-light text-muted-foreground leading-relaxed break-words">{row.verification}</dd>
+							</div>
+						</dl>
+					</li>
+				))}
+			</ul>
+
+			<div className="space-y-4 max-w-xl">
+				<p className="font-light text-muted-foreground leading-relaxed text-sm">{evidence.methodNote}</p>
+				<p className="font-light text-muted-foreground leading-relaxed text-sm">{evidence.recheck}</p>
+			</div>
+
+			<a
+				href={evidence.findingsUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				className={PILL_LINK_CLASS}
+			>
+				{evidence.findingsLabel}
+				<span className="sr-only"> (opens in a new tab)</span>
+				<ArrowUpRight size={12} aria-hidden="true" />
+			</a>
+		</motion.div>
+	);
+}
+
 function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 	if (!hasDecisionCardFields(card)) {
 		return (
@@ -735,7 +1024,7 @@ export default function CaseStudy() {
 				className="bg-background text-foreground min-h-screen overflow-x-hidden selection:bg-rose/30 pb-20"
 			>
 				{/* ── GHOST NAV ── */}
-				<nav className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start mix-blend-difference pointer-events-none">
+				<nav className="absolute md:fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start mix-blend-difference pointer-events-none">
 					<Link
 						to="/#work"
 						className="pointer-events-auto group flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
@@ -808,7 +1097,7 @@ export default function CaseStudy() {
 				)}
 
 				{/* ── NARRATIVE GRID ── */}
-				<section className="px-6 md:px-20 py-20 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 max-w-full">
+				<section className="px-6 md:px-20 py-20 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-x-8 xl:gap-x-20 max-w-full">
 					{/* Metadata Sidebar */}
 					<aside className="md:col-span-4 space-y-16 min-w-0">
 						<div className="space-y-4">
@@ -928,6 +1217,13 @@ export default function CaseStudy() {
 							<ImpactifyIssueLoopCard liveHref={links.live} />
 						)}
 
+						{cs.comprehensionDecisions && (
+							<ComprehensionDecisionsSection
+								block={cs.comprehensionDecisions}
+								fadeUp={fadeUp}
+							/>
+						)}
+
 						{cs.walkthrough && cs.walkthrough.length > 0 && (
 							<WalkthroughSection
 								steps={cs.walkthrough}
@@ -935,6 +1231,21 @@ export default function CaseStudy() {
 								fadeUp={fadeUp}
 								sectionLabel="Product Walkthrough"
 							/>
+						)}
+
+						{cs.accessibilityEvidence && (
+							<AccessibilityEvidenceSection
+								evidence={cs.accessibilityEvidence}
+								fadeUp={fadeUp}
+							/>
+						)}
+
+						{cs.designSection && (
+							<DesignSection section={cs.designSection} fadeUp={fadeUp} />
+						)}
+
+						{cs.researchPlan && (
+							<ResearchPlanSection plan={cs.researchPlan} fadeUp={fadeUp} />
 						)}
 
 						{/* 3. DOUBLE SPREAD: MOBILE/DESKTOP OR TWO SCREENS // UNCOMMENT WHEN IMAGES ARE READY */}
@@ -1031,7 +1342,7 @@ export default function CaseStudy() {
 
 				{cs.lessons && cs.lessons.length > 0 && (
 				<section className="px-6 md:px-20 py-14 border-t border-white/5 max-w-screen-xl mx-auto">
-					<div className="grid grid-cols-1 md:grid-cols-12 gap-20">
+					<div className="grid grid-cols-1 md:grid-cols-12 gap-20 md:gap-x-8 xl:gap-x-20">
 						<div className="md:col-span-4 space-y-4 min-w-0">
 							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-green italic opacity-80">
 								Impact

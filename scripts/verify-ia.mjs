@@ -103,7 +103,12 @@ async function main() {
 		await expectVisibleText(desktop, "Sano");
 		await expectVisibleText(
 			desktop,
-			"I built the product audit, accessibility fixes, validation scripts, evidence captures, and case-study writeup for the critical Sano journey.",
+			"Solo designer and engineer. I designed and built Sano, then ran the accessibility audit, fixes, validation scripts and evidence captures for its critical journey. Two teammates tested the live site informally during development and reported issues, which I fixed.",
+		);
+		// The planned study must never read as completed research.
+		await expectVisibleText(
+			desktop,
+			"Plan. Formal sessions not yet run. Teammates tested informally during development; that is not usability research.",
 		);
 		const sanoLive = await desktop.locator('a[href="https://sano-nine.vercel.app/"]').count();
 		assert(sanoLive > 0, "Sano case study should expose the live site link.");

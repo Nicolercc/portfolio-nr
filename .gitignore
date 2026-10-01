@@ -28,3 +28,6 @@ dist-ssr
 
 # Local only — exceeds GitHub 100MB file limit
 public/media/nuclear-router-demo.mov
+
+# Secrets (Figma token, etc.)
+.env*

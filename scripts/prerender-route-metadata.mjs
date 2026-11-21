@@ -94,6 +94,7 @@ function loadBlogPosts() {
 
 function routeFile(route) {
 	if (route === "/") return join(distDir, "index.html");
+	if (route === "/404") return join(distDir, "404.html");
 	return join(distDir, route.replace(/^\/+|\/+$/g, ""), "index.html");
 }
 
@@ -121,6 +122,10 @@ function buildHeadTags(meta) {
 		`<meta name="twitter:title" content="${escapeHtml(meta.title)}" />`,
 		`<meta name="twitter:description" content="${escapeHtml(meta.description)}" />`,
 	];
+
+	if (meta.noindex) {
+		tags.push(`<meta name="robots" content="noindex" />`);
+	}
 
 	if (image) {
 		tags.push(`<meta property="og:image" content="${escapeHtml(image)}" />`);
@@ -185,6 +190,16 @@ function main() {
 			image: DEFAULT_SOCIAL_IMAGE,
 		})),
 	];
+
+	// Vercel serves dist/404.html with a real 404 status for any path that has no file,
+	// so unknown URLs stop returning 200. The SPA still renders the NotFound page.
+	routeMetas.push({
+		path: "/404",
+		title: `Page not found — ${profile.name}`,
+		description: profile.summary,
+		image: DEFAULT_SOCIAL_IMAGE,
+		noindex: true,
+	});
 
 	for (const meta of routeMetas) {
 		writeRouteShell(baseHtml, meta);

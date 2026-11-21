@@ -235,12 +235,12 @@ async function main() {
 		);
 		assert(hiddenProjects === 0, "Selected work cards fade back out after scrolling past them.");
 
-		// Primary navigation keeps About and Contact on phones once it appears.
+		// Primary navigation keeps Work, Resume and Contact on phones (About joins from 640px).
 		const phoneNav = await browser.newPage({ viewport: { width: 390, height: 844 } });
 		await phoneNav.goto(baseUrl, { waitUntil: "networkidle" });
 		await phoneNav.evaluate(() => window.scrollTo(0, window.innerHeight));
 		await phoneNav.waitForTimeout(800);
-		for (const name of ["Work", "About", "Resume", "Contact"]) {
+		for (const name of ["Work", "Resume", "Contact"]) {
 			const visible = await phoneNav.locator("nav").getByText(name, { exact: true }).first().isVisible();
 			assert(visible, `Mobile navigation should show ${name}.`);
 		}

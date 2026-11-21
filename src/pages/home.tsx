@@ -1,4 +1,3 @@
-import { Navbar } from "../components/layouts/Navbar";
 import { useEffect } from "react";
 import Landing from "../components/sections/landing";
 import { Projects } from "../components/sections/projects";
@@ -57,14 +56,8 @@ export default function Home() {
            our custom #F5F0E8 (Off-white) to take the lead 
         */
 		<div className="relative min-h-screen selection:bg-rose/30">
-			<a href="#main-content" className="skip-link">
-				Skip to content
-			</a>
 			{/* 1. THE FOUNDATION: Handles Gradients, Grid, and Noise */}
 			<GlobalCanvas />
-
-			{/* 2. THE NAVIGATION */}
-			<Navbar />
 
 			{/* 3. THE CONTENT: Ensure 'relative z-10' so it sits on top of the canvas */}
 			<main id="main-content" tabIndex={-1} className="relative z-10 focus:outline-none">

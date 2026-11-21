@@ -35,7 +35,7 @@ export default function ProjectsIndex() {
 	}, [projects]);
 
 	return (
-		<main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-foreground px-6 md:px-12 py-16 md:py-20 focus:outline-none">
+		<main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-foreground px-6 md:px-12 pt-28 pb-16 md:pt-32 md:pb-20 focus:outline-none">
 			<div className="max-w-7xl mx-auto">
 				<header className="mb-14 md:mb-16">
 					<p className="text-caption uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">

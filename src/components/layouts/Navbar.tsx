@@ -1,36 +1,15 @@
-import { useEffect, useState } from "react";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PROFILE } from "../../data/profile";
 
 const linkClass =
 	"px-2 sm:px-3 md:px-4 py-1.5 text-xs sm:text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200 whitespace-nowrap";
 
+// Always visible on every page: Resume and Contact are one click away from the first
+// screen, and case studies get their way back to the work here instead of a floating link.
 export function Navbar() {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const isHome = location.pathname === "/";
-	const { scrollY } = useScroll();
-	const [homeScrolled, setHomeScrolled] = useState(false);
-	const scrolled = isHome ? homeScrolled : true;
-
-	useEffect(() => {
-		if (!isHome) return;
-
-		const frame = requestAnimationFrame(() => {
-			const threshold = window.innerHeight * 0.45;
-			const latest = scrollY.get();
-			setHomeScrolled(latest > threshold);
-		});
-
-		return () => cancelAnimationFrame(frame);
-	}, [isHome, scrollY]);
-
-	useMotionValueEvent(scrollY, "change", (latest) => {
-		if (!isHome) return;
-		const threshold = window.innerHeight * 0.45;
-		setHomeScrolled(latest > threshold);
-	});
 
 	const scrollTo = (id: string) => {
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -40,19 +19,11 @@ export function Navbar() {
 	};
 
 	return (
-		<motion.nav
-			key="navbar"
-			initial={false}
-			animate={scrolled ? { y: 0, opacity: 1 } : { y: -16, opacity: 0 }}
-			transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-			aria-hidden={isHome && !scrolled}
-			className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
-				scrolled
-					? "visible pointer-events-auto py-3 bg-[#0d0d0d]/85 backdrop-blur-md border-b border-white/[0.06]"
-					: "invisible pointer-events-none py-5"
-			}`}
+		<nav
+			aria-label="Primary"
+			className="fixed top-0 left-0 right-0 z-40 py-3 bg-[#0d0d0d]/90 backdrop-blur-md border-b border-white/[0.06]"
 		>
-			<div className="max-w-7xl mx-auto px-4 md:px-12 flex items-center justify-between gap-3">
+		<div className="max-w-7xl mx-auto px-4 md:px-12 flex items-center justify-between gap-3">
 				<button
 					type="button"
 					className="w-9 h-9 rounded-lg bg-foreground text-background flex items-center justify-center font-sans font-bold text-xs cursor-pointer select-none tracking-tight shrink-0"
@@ -68,7 +39,7 @@ export function Navbar() {
 							<button onClick={() => scrollTo("work")} className={linkClass}>
 								Work
 							</button>
-							<button onClick={() => scrollTo("about")} className={linkClass}>
+							<button onClick={() => scrollTo("about")} className={`${linkClass} hidden sm:inline-flex`}>
 								About
 							</button>
 							<a href={PROFILE.resumePath} download className={linkClass}>
@@ -92,13 +63,10 @@ export function Navbar() {
 						</>
 					) : (
 						<>
-							<Link to="/" className={linkClass}>
-								Home
-							</Link>
 							<Link to="/projects" className={linkClass}>
 								Work
 							</Link>
-							<Link to="/#about" className={linkClass}>
+							<Link to="/#about" className={`${linkClass} hidden sm:inline-flex`}>
 								About
 							</Link>
 							<a href={PROFILE.resumePath} download className={linkClass}>
@@ -135,6 +103,6 @@ export function Navbar() {
 					</Link>
 				)}
 			</div>
-		</motion.nav>
+		</nav>
 	);
 }

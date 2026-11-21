@@ -1023,16 +1023,6 @@ export default function CaseStudy() {
 				exit={{ opacity: 0 }}
 				className="bg-background text-foreground min-h-screen overflow-x-hidden selection:bg-rose/30 pb-20"
 			>
-				{/* ── GHOST NAV ── */}
-				<nav className="absolute md:fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start mix-blend-difference pointer-events-none">
-					<Link
-						to="/#work"
-						className="pointer-events-auto group flex items-center gap-4 font-mono text-caption uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
-					>
-						<span className="h-[1px] w-8 bg-rose/30 group-hover:w-12 group-hover:bg-rose transition-all" />
-						Back to Work
-					</Link>
-				</nav>
 
 				{/* ── HERO SECTION ── */}
 				<header className="relative pt-40 md:pt-60 px-6 md:px-20 mb-20 max-w-full">

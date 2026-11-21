@@ -1,10 +1,9 @@
 export const PROFILE = {
 	name: "Nicole Rodriguez",
-	displayName: "Nicole R.",
-	title: "Product Designer & Engineer",
-	specialties: ["UX", "Accessibility", "Frontend Systems"],
-	positioning: "Product Designer & Engineer - UX, Accessibility, and Frontend Systems",
-	eyebrow: "Product Designer & Engineer · UX · Accessibility · Frontend Systems",
+	title: "Full-Stack Product Engineer",
+	specialties: ["Full-Stack Development", "Product Design", "Accessibility", "Applied AI", "Data Systems"],
+	positioning: "Full-Stack Product Engineer - Product Design and Accessibility",
+	eyebrow: "Full-Stack Engineer · Product Design · Accessibility",
 	email: "nicolerodriguezcab@gmail.com",
 	github: "https://github.com/Nicolercc",
 	linkedin: "https://www.linkedin.com/in/nicolerodriguezz/",
@@ -15,7 +14,9 @@ export const PROFILE = {
 	resumePath: "/Nicole_Rodriguez_Resume.pdf",
 	pursuitPeriod: "2026 — Present",
 	summary:
-		"NYC-based product designer and engineer building accessible interfaces and public-data products from interaction decisions through implementation and validation.",
+		"NYC-based full-stack product engineer. I build products end to end, from data pipelines and AI features to accessible, carefully designed interfaces.",
+	tagline:
+		"I build products end to end, from the data pipeline to the last pixel, and design them for people who don't use them the way I do.",
 } as const;
 
 export const mailtoHref = `mailto:${PROFILE.email}`;

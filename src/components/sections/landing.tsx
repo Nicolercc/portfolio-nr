@@ -538,10 +538,10 @@ export default function Landing() {
 					{PROFILE.eyebrow}
 				</span>
 				<h1 data-route-heading tabIndex={-1} className="landing__name">
-					{PROFILE.displayName}
+					{PROFILE.name}
 				</h1>
 				<p className="landing__tagline">
-					<em>I can tell the story and ship the product.</em>
+					{PROFILE.tagline}
 				</p>
 
 				<div className="landing__meta">

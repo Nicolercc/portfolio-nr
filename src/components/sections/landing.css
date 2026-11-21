@@ -144,14 +144,24 @@
 	letter-spacing: 0.22em;
 	text-transform: uppercase;
 	color: var(--color-rose);
+	display: block;
+	max-width: 100%;
+	text-wrap: balance;
 	margin-bottom: 18px;
 	opacity: 0.85;
+}
+
+@media (max-width: 480px) {
+	.landing__eyebrow {
+		letter-spacing: 0.14em;
+		font-size: 0.65rem;
+	}
 }
 
 /* ── Name ────────────────────────────────────────────────────*/
 .landing__name {
 	font-family: var(--font-serif);
-	font-size: clamp(4.5rem, 12vw, 9rem);
+	font-size: clamp(3.25rem, 9vw, 8rem);
 	font-weight: 400;
 	line-height: 1;
 	letter-spacing: -0.01em;
@@ -180,6 +190,9 @@
 	font-size: clamp(1.1rem, 2.5vw, 1.5rem);
 	font-style: italic;
 	color: var(--color-text-secondary);
+	max-width: 34ch;
+	margin-inline: auto;
+	text-wrap: balance;
 	margin-top: 14px;
 	margin-bottom: 0;
 }

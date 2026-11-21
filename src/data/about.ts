@@ -5,7 +5,7 @@ import { PROFILE } from "./profile";
 export const BENTO_BIO = {
 	eyebrow: "About me",
 	name: "I'm Nicole,",
-	role: "software engineer",
+	role: "full-stack product engineer",
 	paragraphs: [
 		"NYC-based, Dominican Republic-raised. I build web products that are as thoughtful as they look — clean architecture, intentional UI, real performance.",
 		"I care about technology that actually does something. When I'm not writing code I'm filming, hiking somewhere with no signal, or island hopping back to my roots.",

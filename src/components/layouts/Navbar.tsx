@@ -48,7 +48,7 @@ export function Navbar() {
 			aria-hidden={isHome && !scrolled}
 			className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
 				scrolled
-					? "visible pointer-events-auto py-3"
+					? "visible pointer-events-auto py-3 bg-[#0d0d0d]/85 backdrop-blur-md border-b border-white/[0.06]"
 					: "invisible pointer-events-none py-5"
 			}`}
 		>

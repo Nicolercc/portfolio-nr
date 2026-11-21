@@ -17,6 +17,10 @@
 	--color-rose: #d4849a;
 	--color-green: #4ade80;
 
+	/* Color roles: rose = action and brand, green = verified status only. */
+	--color-action: #d4849a;
+	--color-verified: #4ade80;
+
 	/* Type scale: six steps, nothing readable below 14px. */
 	--text-caption: 0.875rem;
 	--text-caption--line-height: 1.45;
@@ -87,7 +91,7 @@
 
 	--color-text-primary: #f5f0e8;
 	--color-text-secondary: #b8b0a8;
-	--color-text-muted: #7a736f;
+	--color-text-muted: #8a837e;
 
 	--color-success: #4ade80;
 

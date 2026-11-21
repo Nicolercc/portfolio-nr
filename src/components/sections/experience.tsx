@@ -77,7 +77,7 @@ export function Experience() {
 						</motion.p>
 						<h2 className="text-4xl md:text-5xl font-serif text-white leading-tight">
 							Built end to end, <br />
-							<span className="italic text-transparent bg-clip-text bg-gradient-to-r from-rose to-green">
+							<span className="italic text-rose">
 								designed with care.
 							</span>
 						</h2>
@@ -93,7 +93,7 @@ export function Experience() {
 						<div className="absolute left-0 md:left-8 top-0 bottom-0 w-[1px] bg-white/10">
 							<motion.div
 								style={{ scaleY, transformOrigin: "top" }}
-								className="absolute inset-0 w-full bg-gradient-to-b from-rose via-purple-400 to-green"
+								className="absolute inset-0 w-full bg-rose"
 							/>
 						</div>
 

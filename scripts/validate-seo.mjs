@@ -207,6 +207,18 @@ async function main() {
 		readFileSync(notFoundShell, "utf8").includes('<meta name="robots" content="noindex" />'),
 		"dist/404.html must be noindex.",
 	);
+	// Every case study the app can render needs a built page, or Vercel returns 404 for it.
+	const projectSlugs = [...readFileSync(join(root, "src", "data", "projects.ts"), "utf8").matchAll(/^\t\tslug: "([^"]+)",$/gm)].map(
+		(match) => match[1],
+	);
+	assert(projectSlugs.length > 0, "No project slugs found in src/data/projects.ts.");
+	for (const slug of projectSlugs) {
+		assert(
+			existsSync(join(root, "dist", "projects", slug, "index.html")),
+			`Case study /projects/${slug} has no built page and would return 404.`,
+		);
+	}
+
 	const vercelConfig = JSON.parse(readFileSync(join(root, "vercel.json"), "utf8"));
 	assert(
 		!(vercelConfig.rewrites ?? []).some((rule) => rule.destination === "/index.html"),

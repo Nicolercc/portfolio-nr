@@ -50,12 +50,16 @@ function loadProjects() {
 	};
 
 	vm.runInNewContext(output, sandbox, { filename: "projects.ts" });
+	const registry = module.exports.projectsRegistry;
+	const listed = [
+		...module.exports.SHOWCASE_PROJECT_SLUGS,
+		...(module.exports.SECONDARY_CASE_STUDY_SLUGS ?? []),
+	];
+	// Every project in the registry renders a case study, so every one needs a built page.
+	// Unlisted ones (e.g. impactify) stay out of the sitemap but must not 404 for old links.
 	return {
-		registry: module.exports.projectsRegistry,
-		slugs: [
-			...module.exports.SHOWCASE_PROJECT_SLUGS,
-			...(module.exports.SECONDARY_CASE_STUDY_SLUGS ?? []),
-		],
+		registry,
+		slugs: [...listed, ...Object.keys(registry).filter((slug) => !listed.includes(slug))],
 	};
 }
 

@@ -521,10 +521,10 @@ export default function Landing() {
 	}, []);
 
 	const handleScroll = () => {
-		const capabilities = document.getElementById("hero");
+		const work = document.getElementById("work");
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-		if (capabilities) {
-			capabilities.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+		if (work) {
+			work.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
 		}
 	};
 
@@ -568,7 +568,7 @@ export default function Landing() {
 			<button
 				className="landing__scroll-cue"
 				onClick={handleScroll}
-				aria-label="Scroll to capabilities"
+				aria-label="Scroll to selected work"
 			>
 				<span className="landing__scroll-label">scroll</span>
 				<span className="landing__scroll-arrow">↓</span>

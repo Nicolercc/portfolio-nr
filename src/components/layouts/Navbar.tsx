@@ -122,14 +122,14 @@ export function Navbar() {
 				{isHome ? (
 					<button
 						onClick={() => scrollTo("contact")}
-						className="hidden md:flex items-center gap-2 px-5 py-2 rounded-full bg-green text-[#0d0d0d] text-sm font-medium hover:bg-green/85 transition-colors duration-200"
+						className="hidden md:flex items-center gap-2 px-5 py-2 rounded-full bg-action text-[#0d0d0d] text-sm font-medium hover:bg-action/85 transition-colors duration-200"
 					>
 						Contact
 					</button>
 				) : (
 					<Link
 						to="/#contact"
-						className="hidden md:flex items-center gap-2 px-5 py-2 rounded-full bg-green text-[#0d0d0d] text-sm font-medium hover:bg-green/85 transition-colors duration-200"
+						className="hidden md:flex items-center gap-2 px-5 py-2 rounded-full bg-action text-[#0d0d0d] text-sm font-medium hover:bg-action/85 transition-colors duration-200"
 					>
 						Contact
 					</Link>

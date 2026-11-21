@@ -57,8 +57,7 @@ function CaseStudyCard({ project, position }: { project: Project; position: numb
 	const opacity = useTransform(scrollYProgress, [0, 0.2, 1], [0, 1, 1]);
 
 	const { homepage } = project;
-	const isRose = homepage.accent === "rose";
-	const accentClass = isRose ? "text-rose" : "text-green";
+	const accentClass = "text-rose";
 
 	return (
 		<motion.article
@@ -127,7 +126,7 @@ function CaseStudyCard({ project, position }: { project: Project; position: numb
 								{homepage.highlights.map((h) => (
 									<li key={h} className="flex gap-2">
 										<span
-											className={`w-1 h-1 rounded-full mt-2 shrink-0 ${isRose ? "bg-rose" : "bg-green"}`}
+											className={`w-1 h-1 rounded-full mt-2 shrink-0 bg-rose`}
 										/>
 										{h}
 									</li>
@@ -185,7 +184,7 @@ export function Projects() {
 							</motion.span>
 						))}
 						<br />
-						<span className="italic text-transparent bg-clip-text bg-gradient-to-r from-rose via-purple-400 to-green">
+						<span className="italic text-rose">
 							{"Intention.".split("").map((char, i) => (
 								<motion.span
 									key={i}

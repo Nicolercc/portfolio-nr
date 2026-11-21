@@ -296,26 +296,24 @@
 
 .landing__primary-btn {
 	color: #0d0d0d;
-	border: 1px solid var(--color-green);
-	background: var(--color-green);
+	border: 1px solid var(--color-action);
+	background: var(--color-action);
 }
 
 .landing__primary-btn:hover {
-	background: rgba(74, 222, 128, 0.86);
-	box-shadow: 0 0 24px rgba(74, 222, 128, 0.28);
+	background: #e8a8b8;
+	border-color: #e8a8b8;
 }
 
 .landing__cv-btn {
-	color: var(--color-rose);
-	border: 1px solid var(--color-rose);
+	color: var(--color-text-primary);
+	border: 1px solid rgba(245, 240, 232, 0.35);
 	background: transparent;
 }
 
 .landing__cv-btn:hover {
-	background: var(--color-rose);
-	color: #0d0d0d;
-	/* Bloom on hover — echoes the star glow */
-	box-shadow: 0 0 24px rgba(212, 132, 154, 0.35);
+	border-color: var(--color-action);
+	color: var(--color-action);
 }
 
 .landing__secondary-btn {

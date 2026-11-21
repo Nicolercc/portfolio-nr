@@ -165,15 +165,6 @@ export default function BlogPost() {
 
 	return (
 		<main id="main-content" tabIndex={-1} className="bg-background text-foreground min-h-screen selection:bg-rose/30 pb-24 isolate focus:outline-none">
-			<nav className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start pointer-events-none">
-				<Link
-					to="/blog"
-					className="pointer-events-auto group flex items-center gap-4 font-mono text-caption uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
-				>
-						<span className="h-px w-8 bg-rose/30 group-hover:w-12 group-hover:bg-rose transition-all" />
-						Back to Writing
-					</Link>
-				</nav>
 
 				<header className="relative pt-40 md:pt-52 px-6 md:px-20">
 					<motion.div {...fadeUp} className="max-w-[65ch] mx-auto">

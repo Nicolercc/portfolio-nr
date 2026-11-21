@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import { Navbar } from "./components/layouts/Navbar";
 import Home from "./pages/home";
 import NotFound from "./pages/NotFound";
 
@@ -37,7 +38,11 @@ function RouteFocusManager() {
 export default function App() {
 	return (
 		<Suspense fallback={<div className="bg-[#0d0d0d] min-h-screen" />}>
+			<a href="#main-content" className="skip-link">
+				Skip to content
+			</a>
 			<RouteFocusManager />
+			<Navbar />
 			<Routes>
 				<Route path="/" element={<Home />} />
 				<Route path="/projects" element={<ProjectsIndex />} />

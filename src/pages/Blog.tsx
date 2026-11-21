@@ -95,16 +95,7 @@ export default function Blog() {
 	}, []);
 
 	return (
-		<main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-foreground px-6 md:px-12 py-16 md:py-24 selection:bg-rose/30 focus:outline-none">
-			<nav className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start pointer-events-none">
-				<Link
-					to="/"
-					className="pointer-events-auto group flex items-center gap-4 font-mono text-caption uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
-				>
-					<span className="h-px w-8 bg-rose/30 group-hover:w-12 group-hover:bg-rose transition-all" />
-					Back to Home
-				</Link>
-			</nav>
+		<main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-foreground px-6 md:px-12 pt-28 pb-16 md:pt-32 md:pb-24 selection:bg-rose/30 focus:outline-none">
 			<div className="max-w-7xl mx-auto">
 				<header className="mb-16 overflow-hidden border-t border-white/[0.05] pt-16">
 					<motion.div

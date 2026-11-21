@@ -67,11 +67,9 @@ async function main() {
 		});
 		await desktop.goto(baseUrl, { waitUntil: "networkidle" });
 
-		const navAtTopVisible = await desktop.locator("nav").isVisible();
-		assert(!navAtTopVisible, "Homepage nav should stay hidden until the user scrolls.");
-
-		await desktop.evaluate(() => window.scrollTo(0, window.innerHeight * 0.6));
-		await desktop.locator("nav").waitFor({ state: "visible", timeout: 5000 });
+		// Navigation never depends on scrolling: Resume and Contact are reachable from the first screen.
+		const navAtTopVisible = await desktop.locator('nav[aria-label="Primary"]').isVisible();
+		assert(navAtTopVisible, "Primary nav must be visible at the top of the homepage.");
 		for (const label of ["Work", "Resume", "GitHub", "Contact"]) {
 			await expectVisibleText(desktop, label);
 		}
@@ -141,6 +139,19 @@ async function main() {
 		assert(navBox.x >= -1 && navBox.x + navBox.width <= viewportWidth + 1, "Mobile nav overflows the viewport.");
 		for (const label of ["Work", "Resume", "GitHub"]) {
 			await expectVisibleText(mobile, label);
+		}
+
+		// The nav fits on the smallest phones without scrolling inside itself.
+		for (const width of [320, 390]) {
+			const small = await browser.newPage({ viewport: { width, height: 700 } });
+			for (const route of ["/", "/projects/sano"]) {
+				await small.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
+				const clipped = await small.evaluate(() =>
+					[...document.querySelectorAll('nav[aria-label="Primary"] *')].some((el) => el.scrollWidth > el.clientWidth + 1),
+				);
+				assert(!clipped, `${route} nav overflows at ${width}px.`);
+			}
+			await small.close();
 		}
 
 		console.log("Information architecture verification passed.");

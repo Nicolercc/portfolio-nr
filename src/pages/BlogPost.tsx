@@ -168,7 +168,7 @@ export default function BlogPost() {
 			<nav className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start pointer-events-none">
 				<Link
 					to="/blog"
-					className="pointer-events-auto group flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
+					className="pointer-events-auto group flex items-center gap-4 font-mono text-caption uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
 				>
 						<span className="h-px w-8 bg-rose/30 group-hover:w-12 group-hover:bg-rose transition-all" />
 						Back to Writing
@@ -188,7 +188,7 @@ export default function BlogPost() {
 							{post.title}
 						</h1>
 						{post.tags.length > 0 && (
-							<p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+							<p className="font-mono text-caption uppercase tracking-[0.2em] text-muted-foreground">
 								{post.tags.join(" · ")}
 							</p>
 						)}
@@ -205,7 +205,7 @@ export default function BlogPost() {
 					<div className="max-w-[65ch] mx-auto flex flex-col sm:flex-row items-center justify-center gap-4">
 						<Link
 							to="/blog"
-							className="group inline-flex items-center gap-3 px-5 py-3 rounded-full border border-rose/30 bg-rose/5 hover:bg-rose/10 hover:border-rose/60 text-rose font-mono text-[11px] uppercase tracking-widest transition-all duration-300"
+							className="group inline-flex items-center gap-3 px-5 py-3 rounded-full border border-rose/30 bg-rose/5 hover:bg-rose/10 hover:border-rose/60 text-rose font-mono text-caption uppercase tracking-widest transition-all duration-300"
 						>
 							<span className="w-1.5 h-1.5 rounded-full bg-rose motion-safe:animate-pulse" />
 							More Writing

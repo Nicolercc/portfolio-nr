@@ -89,7 +89,7 @@ function SocialPill({ label, href }: { label: string; href: string }) {
 			href={href}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="group inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-transparent px-[15px] py-1.5 text-[0.78rem] font-medium tracking-wide no-underline transition-all duration-[220ms] hover:border-[#D4849A] hover:bg-[rgba(212,132,154,0.08)] hover:text-[#D4849A]"
+			className="group inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-transparent px-[15px] py-1.5 text-caption font-medium tracking-wide no-underline transition-all duration-[220ms] hover:border-[#D4849A] hover:bg-[rgba(212,132,154,0.08)] hover:text-[#D4849A]"
 			style={{
 				fontFamily: "'Inter', sans-serif",
 				color: "rgba(245,240,232,0.62)",
@@ -152,7 +152,7 @@ function StrategyCard() {
 						className="h-1.5 w-1.5 rounded-full bg-[#D4849A]"
 						style={{ boxShadow: "0 0 8px #D4849A" }}
 					/>
-					<span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#D4849A]">
+					<span className="font-mono text-caption uppercase tracking-[0.2em] text-[#D4849A]">
 						Background
 					</span>
 				</div>
@@ -183,14 +183,14 @@ function StrategyCard() {
 			</div>
 
 			<div className="mt-8 flex items-center justify-between border-t border-white/5 pt-6">
-				<span className="font-mono text-[9px] uppercase tracking-widest text-white/60">
+				<span className="font-mono text-caption uppercase tracking-widest text-white/60">
 					Engineer × Writer
 				</span>
 				<div className="flex -space-x-2">
-					<div className="flex h-6 w-6 items-center justify-center rounded-full border border-[rgba(212,132,154,0.4)] bg-[rgba(212,132,154,0.2)] text-[10px]">
+					<div className="flex h-6 w-6 items-center justify-center rounded-full border border-[rgba(212,132,154,0.4)] bg-[rgba(212,132,154,0.2)] text-caption">
 						📰
 					</div>
-					<div className="flex h-6 w-6 items-center justify-center rounded-full border border-[rgba(74,222,128,0.4)] bg-[rgba(74,222,128,0.2)] text-[10px]">
+					<div className="flex h-6 w-6 items-center justify-center rounded-full border border-[rgba(74,222,128,0.4)] bg-[rgba(74,222,128,0.2)] text-caption">
 						💻
 					</div>
 				</div>
@@ -346,7 +346,7 @@ function DraggableCard({
 						}}
 					/>
 					<span
-						className="font-mono text-[0.63rem] uppercase tracking-[0.1em]"
+						className="font-mono text-caption uppercase tracking-[0.1em]"
 						style={{ color: hobby.accent }}
 					>
 						{hobby.tag}
@@ -354,13 +354,13 @@ function DraggableCard({
 				</div>
 
 				{/* Icon */}
-				<div className="mb-3.5 text-[34px] leading-none" aria-hidden="true">
+				<div className="mb-3.5 text-section leading-none" aria-hidden="true">
 					{hobby.icon}
 				</div>
 
 				{/* Title */}
 				<p
-					className="mb-2 text-[1.3rem] font-semibold leading-tight tracking-tight"
+					className="mb-2 text-lead font-semibold leading-tight tracking-tight"
 					style={{
 						fontFamily: "'Cormorant Garamond', serif",
 						color: T.fg,
@@ -371,7 +371,7 @@ function DraggableCard({
 
 				{/* Description */}
 				<p
-					className="m-0 text-[0.81rem] leading-[1.65]"
+					className="m-0 text-caption leading-[1.65]"
 					style={{
 						fontFamily: "'Inter', sans-serif",
 						color: T.muted,
@@ -382,7 +382,7 @@ function DraggableCard({
 
 				{/* Counter */}
 				<div
-					className="absolute bottom-4 right-[18px] font-mono text-[0.6rem] tracking-[0.07em]"
+					className="absolute bottom-4 right-[18px] font-mono text-caption tracking-[0.07em]"
 					style={{ color: T.mutedLo }}
 					aria-label={`Card ${currentIndex + 1} of ${total}`}
 				>

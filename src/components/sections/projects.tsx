@@ -28,7 +28,7 @@ function ProjectVisuals({ project }: { project: Project }) {
 			<figcaption className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
 				{homepage.images.map((img) => (
 					<div key={img.label} className="border-t border-white/10 pt-3">
-						<p className="text-[10px] uppercase tracking-[0.25em] font-mono text-white/60">
+						<p className="text-caption uppercase tracking-[0.25em] font-mono text-white/60">
 							{img.label}
 						</p>
 						{img.stat ? (
@@ -73,7 +73,7 @@ function CaseStudyCard({ project, position }: { project: Project; position: numb
 						<span className={`text-xs font-mono ${accentClass}`}>
 							{String(position).padStart(2, "0")}
 						</span>
-						<span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+						<span className="text-caption uppercase tracking-[0.3em] text-muted-foreground">
 							{project.category}
 						</span>
 					</div>
@@ -90,7 +90,7 @@ function CaseStudyCard({ project, position }: { project: Project; position: numb
 						{project.stack.map((tech) => (
 							<span
 								key={tech}
-								className="px-3 py-1 rounded-full border border-white/10 bg-white/[0.02] text-[10px] font-mono text-white/60"
+								className="px-3 py-1 rounded-full border border-white/10 bg-white/[0.02] text-caption font-mono text-white/60"
 							>
 								{tech}
 							</span>
@@ -114,13 +114,13 @@ function CaseStudyCard({ project, position }: { project: Project; position: numb
 					<ProjectVisuals project={project} />
 					<div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-muted-foreground font-light">
 						<div>
-							<h4 className="text-[10px] uppercase tracking-widest text-white/60 mb-3">
+							<h4 className="text-caption uppercase tracking-widest text-white/60 mb-3">
 								Objective
 							</h4>
 							{project.description}
 						</div>
 						<div>
-							<h4 className="text-[10px] uppercase tracking-widest text-white/60 mb-3">
+							<h4 className="text-caption uppercase tracking-widest text-white/60 mb-3">
 								Key Solutions
 							</h4>
 							<ul className="space-y-2">
@@ -160,7 +160,7 @@ export function Projects() {
 						initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
-						className="text-[10px] uppercase tracking-[0.4em] mb-8 font-mono font-bold text-rose"
+						className="text-caption uppercase tracking-[0.4em] mb-8 font-mono font-bold text-rose"
 					>
 						Selected Works
 					</motion.div>

@@ -199,6 +199,20 @@ async function main() {
 		twitterCard: "summary_large_image",
 		image: "/og-image.jpg",
 	});
+	// Unknown URLs must get a real 404 status: Vercel serves dist/404.html for paths with no file,
+	// which only works while vercel.json has no catch-all rewrite to index.html.
+	const notFoundShell = join(root, "dist", "404.html");
+	assert(existsSync(notFoundShell), "dist/404.html missing: unknown routes would not return a 404 status.");
+	assert(
+		readFileSync(notFoundShell, "utf8").includes('<meta name="robots" content="noindex" />'),
+		"dist/404.html must be noindex.",
+	);
+	const vercelConfig = JSON.parse(readFileSync(join(root, "vercel.json"), "utf8"));
+	assert(
+		!(vercelConfig.rewrites ?? []).some((rule) => rule.destination === "/index.html"),
+		"vercel.json must not rewrite every path to /index.html; that turns 404s into 200s.",
+	);
+
 	validateBuiltRouteShell("/", {
 		title: "Nicole Rodriguez — Full-Stack Product Engineer - Product Design and Accessibility",
 		descriptionIncludes: "NYC-based full-stack product engineer",

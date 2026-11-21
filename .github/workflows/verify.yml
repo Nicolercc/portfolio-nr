@@ -62,5 +62,8 @@ jobs:
       - name: Verify accessibility and motion
         run: npm run verify:a11y
 
+      - name: Verify type floor, contrast and reflow
+        run: npm run verify:design
+
       - name: Validate release checklist
         run: npm run verify:release

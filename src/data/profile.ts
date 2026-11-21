@@ -13,6 +13,8 @@ export const PROFILE = {
 	background: "Dominican Republic-raised",
 	resumePath: "/Nicole_Rodriguez_Resume.pdf",
 	pursuitPeriod: "2026 — Present",
+	/** Roles and locations Nicole wants, shown in the closing section. Empty hides the line. */
+	lookingFor: "" as string,
 	summary:
 		"NYC-based full-stack product engineer. I build products end to end, from data pipelines and AI features to accessible, carefully designed interfaces.",
 	tagline:

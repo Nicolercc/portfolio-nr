@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import { Footer } from "./components/layouts/Footer";
 import { Navbar } from "./components/layouts/Navbar";
 import Home from "./pages/home";
 import NotFound from "./pages/NotFound";
@@ -55,6 +56,7 @@ export default function App() {
 
 				<Route path="*" element={<NotFound />} />
 			</Routes>
+			<Footer />
 		</Suspense>
 	);
 }

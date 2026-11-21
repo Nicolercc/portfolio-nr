@@ -1160,19 +1160,19 @@ export default function CaseStudy() {
 						{hasStructuredContent && (
 							<motion.div {...fadeUp} className="space-y-6">
 								<SectionLabel>Product Thesis</SectionLabel>
-								<p className="text-2xl md:text-3xl font-serif italic leading-relaxed text-white/90">
+								<p className="max-w-[48ch] text-xl md:text-2xl font-serif italic leading-snug text-white/90">
 									{cs.thesis}
 								</p>
 							</motion.div>
 						)}
 
 						{/* 2. THE FEATURE SPLIT: TEXT + VISUAL */}
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+						<div className="grid grid-cols-1 xl:grid-cols-2 gap-12 items-center">
 							<motion.div {...fadeUp} className="space-y-6">
 								<SectionLabel>
 									{hasStructuredContent ? "The Problem" : "The Vision"}
 								</SectionLabel>
-								<p className="text-2xl md:text-3xl font-serif italic leading-relaxed">
+								<p className="max-w-[65ch] text-lg md:text-xl font-light leading-relaxed text-white/85">
 									{hasStructuredContent
 										? cs.problem
 										: `${cs.problem.split(".")[0]}.`}
@@ -1347,7 +1347,7 @@ export default function CaseStudy() {
 							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-green italic opacity-80">
 								Impact
 							</h2>
-							<p className="font-serif text-xl italic leading-relaxed text-muted-foreground break-words">
+							<p className="text-base md:text-lg font-light leading-relaxed text-white/80 break-words">
 								{cs.impact}
 							</p>
 						</div>
@@ -1387,7 +1387,7 @@ export default function CaseStudy() {
 								</p>
 							</div>
 							<div className="md:col-span-8">
-								<p className="font-light text-muted-foreground leading-relaxed text-sm border-l border-white/10 pl-8 break-words">
+								<p className="max-w-[70ch] font-light text-white/75 leading-relaxed text-base border-l border-white/10 pl-8 break-words">
 									{cs.nextSteps}
 								</p>
 							</div>

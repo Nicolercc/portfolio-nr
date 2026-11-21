@@ -200,8 +200,8 @@ async function main() {
 		image: "/og-image.jpg",
 	});
 	validateBuiltRouteShell("/", {
-		title: "Nicole Rodriguez — Product Designer &amp; Engineer - UX, Accessibility, and Frontend Systems",
-		descriptionIncludes: "NYC-based product designer and engineer",
+		title: "Nicole Rodriguez — Full-Stack Product Engineer - Product Design and Accessibility",
+		descriptionIncludes: "NYC-based full-stack product engineer",
 		twitterCard: "summary_large_image",
 		image: "/og-image.jpg",
 	});

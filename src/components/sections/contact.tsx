@@ -1,6 +1,7 @@
 import { useInView } from "../../hooks/useInView";
 import { ArrowRight } from "lucide-react";
 import { mailtoHref, PROFILE } from "../../data/profile";
+import { CopyEmailButton } from "../ui/CopyEmailButton";
 
 export function Contact() {
 	const { ref, inView } = useInView();
@@ -25,6 +26,9 @@ export function Contact() {
 				<h2 className="text-5xl md:text-8xl font-serif italic mb-12">
 					Let's build <br /> something real.
 				</h2>
+				{PROFILE.lookingFor ? (
+					<p className="mx-auto mb-8 max-w-xl text-lg text-muted-foreground">{PROFILE.lookingFor}</p>
+				) : null}
 				<a
 					href={mailtoHref}
 					className="inline-flex items-center gap-4 text-xl md:text-2xl font-light hover:text-rose transition-colors duration-300 group"
@@ -32,6 +36,32 @@ export function Contact() {
 					{PROFILE.email}
 					<ArrowRight className="group-hover:translate-x-2 transition-transform" />
 				</a>
+				<div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+					<CopyEmailButton />
+					<a
+						href={PROFILE.resumePath}
+						download
+						className="inline-flex min-h-[44px] items-center rounded-full bg-action px-5 text-sm font-medium text-[#0d0d0d] transition-colors duration-150 hover:bg-action/85"
+					>
+						Download resume
+					</a>
+					<a
+						href={PROFILE.linkedin}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="inline-flex min-h-[44px] items-center px-3 text-sm text-muted-foreground hover:text-rose"
+					>
+						LinkedIn
+					</a>
+					<a
+						href={PROFILE.github}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="inline-flex min-h-[44px] items-center px-3 text-sm text-muted-foreground hover:text-rose"
+					>
+						GitHub
+					</a>
+				</div>
 			</div>
 		</section>
 	);

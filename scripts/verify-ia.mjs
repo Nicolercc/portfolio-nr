@@ -154,6 +154,29 @@ async function main() {
 			await small.close();
 		}
 
+		// Every page ends with a way to reach out: the shared footer with email, resume and profiles.
+		for (const route of ["/", "/projects", "/projects/sano", "/blog/i-was-taught-to-build", "/does-not-exist"]) {
+			await desktop.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
+			const footer = desktop.locator("body > #root footer").last();
+			assert((await footer.count()) > 0, `${route} is missing the shared footer.`);
+			for (const name of ["Resume (PDF)", "LinkedIn", "GitHub", "Copy email"]) {
+				const count = await footer.getByRole(name === "Copy email" ? "button" : "link", { name }).count();
+				assert(count > 0, `${route} footer is missing "${name}".`);
+			}
+			assert((await desktop.locator('nav[aria-label="Primary"]').count()) === 1, `${route} should have exactly one primary nav.`);
+		}
+
+		// Copy email confirms visibly and through the live region.
+		const copyContext = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+		await copyContext.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
+		const copyPage = await copyContext.newPage();
+		await copyPage.goto(baseUrl, { waitUntil: "networkidle" });
+		await copyPage.locator("#contact").getByRole("button", { name: "Copy email" }).click();
+		await copyPage.locator("#contact").getByRole("button", { name: "Copied" }).waitFor({ timeout: 3000 });
+		const announced = await copyPage.locator("#contact [role=status]").textContent();
+		assert(announced?.includes("copied to clipboard"), "Copy email did not announce through the live region.");
+		await copyContext.close();
+
 		console.log("Information architecture verification passed.");
 	} finally {
 		await browser.close();

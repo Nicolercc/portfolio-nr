@@ -402,7 +402,8 @@ export default function Landing() {
 		function tick() {
 			context.clearRect(0, 0, W, H);
 
-			if (nebula) context.drawImage(nebula, 0, 0, W, H);
+			// A hidden or not-yet-laid-out tab reports a 0×0 window; drawing a 0-size canvas throws.
+			if (nebula && nebula.width > 0 && nebula.height > 0) context.drawImage(nebula, 0, 0, W, H);
 
 			if (!reducedMotion && !isMobile()) {
 				mouseX += (targetMouseX - mouseX) * 0.04;

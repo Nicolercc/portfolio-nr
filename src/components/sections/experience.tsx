@@ -71,7 +71,7 @@ export function Experience() {
 							initial={reduceMotion ? false : { opacity: 0 }}
 							whileInView={{ opacity: 1 }}
 							viewport={{ once: true }}
-							className="font-mono text-[10px] tracking-[0.5em] text-rose uppercase"
+							className="font-mono text-caption tracking-[0.5em] text-rose uppercase"
 						>
 							Experience
 						</motion.p>
@@ -124,13 +124,13 @@ export function Experience() {
 											<h3 className="text-3xl font-serif text-white group-hover:text-rose transition-colors duration-500">
 												{exp.company}
 											</h3>
-											<span className="font-mono text-[10px] text-white/60 tracking-widest uppercase italic">
+											<span className="font-mono text-caption text-white/60 tracking-widest uppercase italic">
 												{exp.period}
 											</span>
 										</div>
 
 										<div className="flex items-center gap-3">
-											<span className="text-[10px] font-mono text-rose/90 border border-rose/30 px-2 py-0.5 rounded tracking-tighter uppercase">
+											<span className="text-caption font-mono text-rose/90 border border-rose/30 px-2 py-0.5 rounded tracking-tighter uppercase">
 												{exp.type}
 											</span>
 											<span className="text-sm text-white/65 font-mono tracking-tight">
@@ -146,7 +146,7 @@ export function Experience() {
 											{exp.skills.map((skill) => (
 												<span
 													key={skill}
-													className="px-2 py-1 bg-white/[0.03] border border-white/10 rounded text-[9px] font-mono text-white/60 uppercase tracking-tighter"
+													className="px-2 py-1 bg-white/[0.03] border border-white/10 rounded text-caption font-mono text-white/60 uppercase tracking-tighter"
 												>
 													{skill}
 												</span>

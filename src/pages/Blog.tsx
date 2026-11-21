@@ -99,7 +99,7 @@ export default function Blog() {
 			<nav className="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start pointer-events-none">
 				<Link
 					to="/"
-					className="pointer-events-auto group flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
+					className="pointer-events-auto group flex items-center gap-4 font-mono text-caption uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
 				>
 					<span className="h-px w-8 bg-rose/30 group-hover:w-12 group-hover:bg-rose transition-all" />
 					Back to Home
@@ -112,7 +112,7 @@ export default function Blog() {
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
 						transition={{ duration: 0.6, ease }}
-						className="text-[10px] uppercase tracking-[0.3em] mb-8 font-mono font-bold text-rose"
+						className="text-caption uppercase tracking-[0.3em] mb-8 font-mono font-bold text-rose"
 					>
 						Writing
 					</motion.div>
@@ -135,11 +135,11 @@ export default function Blog() {
 								<h2 className="text-3xl md:text-4xl font-serif italic mb-4 tracking-tight group-hover:text-rose transition-colors duration-300">
 									{post.title}
 								</h2>
-								<p className="text-[10px] uppercase tracking-[0.2em] font-mono text-muted-foreground mb-3">
+								<p className="text-caption uppercase tracking-[0.2em] font-mono text-muted-foreground mb-3">
 									{formatBlogDate(post.date)} · {post.readTime}
 								</p>
 								{post.tags.length > 0 && (
-									<p className="text-[10px] uppercase tracking-[0.15em] font-mono text-rose/90 mb-5">
+									<p className="text-caption uppercase tracking-[0.15em] font-mono text-rose/90 mb-5">
 										{post.tags.join(" · ")}
 									</p>
 								)}

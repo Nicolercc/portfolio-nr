@@ -38,7 +38,7 @@ export default function ProjectsIndex() {
 		<main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-foreground px-6 md:px-12 py-16 md:py-20 focus:outline-none">
 			<div className="max-w-7xl mx-auto">
 				<header className="mb-14 md:mb-16">
-					<p className="text-[10px] uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
+					<p className="text-caption uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
 						/ work
 					</p>
 					<h1
@@ -76,7 +76,7 @@ export default function ProjectsIndex() {
 									<h2 className="text-3xl md:text-4xl font-serif mb-3 tracking-tight">
 										{project.title}
 									</h2>
-									<p className="text-[10px] uppercase tracking-[0.28em] font-mono text-muted-foreground mb-5">
+									<p className="text-caption uppercase tracking-[0.28em] font-mono text-muted-foreground mb-5">
 										{project.year} · {project.category}
 									</p>
 									<p className="text-muted-foreground font-light leading-relaxed mb-7">
@@ -96,7 +96,7 @@ export default function ProjectsIndex() {
 				</section>
 
 				<section aria-labelledby="more-work-heading" className="mt-20 md:mt-24">
-					<p className="text-[10px] uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
+					<p className="text-caption uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
 						/ more work
 					</p>
 					<h2
@@ -117,7 +117,7 @@ export default function ProjectsIndex() {
 											{item.title}
 										</h3>
 										<span
-											className={`rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-widest ${
+											className={`rounded-full border px-3 py-1 font-mono text-caption uppercase tracking-widest ${
 												item.status === "Live"
 													? "border-green/40 text-green"
 													: "border-white/20 text-white/75"
@@ -126,7 +126,7 @@ export default function ProjectsIndex() {
 											{item.status}
 										</span>
 									</div>
-									<p className="text-[10px] uppercase tracking-[0.28em] font-mono text-muted-foreground mb-3">
+									<p className="text-caption uppercase tracking-[0.28em] font-mono text-muted-foreground mb-3">
 										{item.kind}
 									</p>
 									<p className="text-muted-foreground font-light leading-relaxed">
@@ -171,7 +171,7 @@ export default function ProjectsIndex() {
 
 				{OPEN_SOURCE_CONTRIBUTIONS.length > 0 && (
 					<section aria-labelledby="open-source-heading" className="mt-20 md:mt-24">
-						<p className="text-[10px] uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
+						<p className="text-caption uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
 							/ open source
 						</p>
 						<h2
@@ -192,7 +192,7 @@ export default function ProjectsIndex() {
 												{contribution.repository}
 											</h3>
 											<span
-												className={`rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-widest ${
+												className={`rounded-full border px-3 py-1 font-mono text-caption uppercase tracking-widest ${
 													contribution.status === "Merged"
 														? "border-green/40 text-green"
 														: "border-white/20 text-white/75"

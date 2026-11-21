@@ -115,7 +115,7 @@ function SectionLabel({
 }) {
 	return (
 		<h2
-			className={`font-mono text-[10px] uppercase tracking-[0.3em] italic opacity-80 ${
+			className={`font-mono text-caption uppercase tracking-[0.3em] italic opacity-80 ${
 				accent === "green" ? "text-green" : "text-rose"
 			}`}
 		>
@@ -158,7 +158,7 @@ function AtAGlanceSection({
 						{...fadeUp}
 						className="rounded-sm border border-green/20 bg-green/[0.03] p-5 md:p-6 space-y-2 min-w-0"
 					>
-						<p className="font-mono text-[10px] uppercase tracking-[0.25em] text-green/90">
+						<p className="font-mono text-caption uppercase tracking-[0.25em] text-green/90">
 							Key Decision
 						</p>
 						<p className="text-sm leading-relaxed text-green/90 font-light break-words">
@@ -174,13 +174,13 @@ function AtAGlanceSection({
 							{...fadeUp}
 							className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-2 min-w-0"
 						>
-							<p className="font-mono text-[10px] uppercase tracking-[0.25em] text-rose/80">
+							<p className="font-mono text-caption uppercase tracking-[0.25em] text-rose/80">
 								{item.label}
 							</p>
 							<p
 								className={`text-sm leading-relaxed break-words ${
 									GLANCE_PROOF_LABELS.has(item.label)
-										? "text-green/90 font-mono text-[11px] uppercase tracking-wider"
+										? "text-green/90 font-mono text-caption uppercase tracking-wider"
 										: "text-muted-foreground font-light"
 								}`}
 							>
@@ -205,7 +205,7 @@ function PersonaSection({
 		<motion.div {...fadeUp} className="space-y-6 border-t border-white/5 pt-16">
 			<div className="space-y-2">
 				<SectionLabel>Design Persona</SectionLabel>
-				<p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
+				<p className="font-mono text-caption uppercase tracking-[0.2em] text-muted-foreground/70">
 					Not validated user research — a scenario for product decisions
 				</p>
 			</div>
@@ -218,13 +218,13 @@ function PersonaSection({
 					{persona.issueAreas.map((area) => (
 						<span
 							key={area}
-							className="px-3 py-1 border border-green/20 rounded-full font-mono text-[9px] uppercase tracking-wider text-green/80"
+							className="px-3 py-1 border border-green/20 rounded-full font-mono text-caption uppercase tracking-wider text-green/80"
 						>
 							{area}
 						</span>
 					))}
 				</div>
-				<p className="font-mono text-[10px] uppercase tracking-[0.2em] text-rose/90">
+				<p className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90">
 					Time budget · {persona.timeConstraint}
 				</p>
 			</div>
@@ -275,7 +275,7 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 								aria-pressed={selected}
 								aria-controls={contentId}
 								onClick={() => setSelectedIssueId(issue.id)}
-								className={`min-h-[44px] rounded-full border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green ${
+								className={`min-h-[44px] rounded-full border px-4 py-2 font-mono text-caption uppercase tracking-[0.18em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green ${
 									selected
 										? "border-green/60 bg-green/15 text-green"
 										: "border-white/10 bg-black/20 text-muted-foreground hover:border-rose/40 hover:text-white"
@@ -303,14 +303,14 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 						>
 							<div className="flex items-start justify-between gap-4">
 								<div className="space-y-2">
-									<p className="font-mono text-[9px] uppercase tracking-[0.24em] text-rose/90">
+									<p className="font-mono text-caption uppercase tracking-[0.24em] text-rose/90">
 										Selected Issue
 									</p>
 									<h3 className="font-serif text-2xl italic text-white/90">
 										{selectedIssue.label}
 									</h3>
 								</div>
-								<span className="shrink-0 rounded-full border border-green/20 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-green/80">
+								<span className="shrink-0 rounded-full border border-green/20 px-3 py-1 font-mono text-caption uppercase tracking-[0.18em] text-green/80">
 									One action
 								</span>
 							</div>
@@ -318,7 +318,7 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 							<p className="font-light text-muted-foreground leading-relaxed text-sm md:text-base break-words">
 								{selectedIssue.briefing}
 							</p>
-							<p className="border-l border-white/10 pl-4 font-mono text-[10px] normal-case tracking-normal leading-relaxed text-white/60 break-words">
+							<p className="border-l border-white/10 pl-4 font-mono text-caption normal-case tracking-normal leading-relaxed text-white/60 break-words">
 								<span className="uppercase tracking-[0.14em] text-white/55">
 									Source note ·{" "}
 								</span>
@@ -329,7 +329,7 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 									href={actionHref}
 									target="_blank"
 									rel="noreferrer"
-									className="inline-flex min-h-[44px] items-center justify-center gap-3 rounded-full border border-rose/30 bg-rose/5 px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-rose transition-colors hover:border-rose/60 hover:bg-rose/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green"
+									className="inline-flex min-h-[44px] items-center justify-center gap-3 rounded-full border border-rose/30 bg-rose/5 px-5 py-3 font-mono text-caption uppercase tracking-widest text-rose transition-colors hover:border-rose/60 hover:bg-rose/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green"
 								>
 									{selectedIssue.actionLabel}
 									<ArrowUpRight size={12} aria-hidden="true" />
@@ -371,7 +371,7 @@ function WalkthroughSection({
 							}
 						>
 							<div className={visual ? "md:col-span-5 space-y-4 min-w-0" : "space-y-4 min-w-0"}>
-								<span className="font-mono text-[10px] text-rose/90">
+								<span className="font-mono text-caption text-rose/90">
 									/0{index + 1}
 								</span>
 								<h3 className="font-serif text-xl italic text-white/85 break-words">
@@ -421,10 +421,10 @@ function ArchitectureLayersSection({
 						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3 min-w-0"
 					>
 						<div className="flex items-center gap-3">
-							<span className="font-mono text-[10px] text-green/80">
+							<span className="font-mono text-caption text-green/80">
 								{String(index + 1).padStart(2, "0")}
 							</span>
-							<h3 className="font-mono text-[10px] uppercase tracking-[0.2em] text-green/90">
+							<h3 className="font-mono text-caption uppercase tracking-[0.2em] text-green/90">
 								{layer.title}
 							</h3>
 						</div>
@@ -439,7 +439,7 @@ function ArchitectureLayersSection({
 }
 
 const PILL_LINK_CLASS =
-	"inline-flex min-h-[44px] items-center justify-center gap-3 rounded-full border border-rose/30 bg-rose/5 px-5 py-3 font-mono text-[10px] uppercase tracking-widest text-rose transition-colors hover:border-rose/60 hover:bg-rose/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green";
+	"inline-flex min-h-[44px] items-center justify-center gap-3 rounded-full border border-rose/30 bg-rose/5 px-5 py-3 font-mono text-caption uppercase tracking-widest text-rose transition-colors hover:border-rose/60 hover:bg-rose/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green";
 
 /** Framed, full-colour image with intrinsic size from the asset manifest. */
 function ManifestImage({ src }: { src: string }) {
@@ -560,7 +560,7 @@ function ResearchPlanSection({
 			<dl className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-5 text-sm">
 				{plan.items.map((item) => (
 					<div key={item.label} className="space-y-1">
-						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/90">
+						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90">
 							{item.label}
 						</dt>
 						<dd className="font-light text-muted-foreground leading-relaxed break-words">
@@ -608,7 +608,7 @@ function ComprehensionDecisionsSection({
 						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-2 min-w-0"
 					>
 						<h3 className="font-serif text-lg italic text-white/85 break-words">
-							<span className="font-mono text-[10px] not-italic text-rose/90 mr-3" aria-hidden="true">
+							<span className="font-mono text-caption not-italic text-rose/90 mr-3" aria-hidden="true">
 								{String(index + 1).padStart(2, "0")}
 							</span>
 							{item.title}
@@ -654,13 +654,13 @@ function AccessibilityEvidenceSection({
 				</colgroup>
 				<thead>
 					<tr className="border-b border-white/10">
-						<th scope="col" className="py-3 pr-4 font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-rose/90">
+						<th scope="col" className="py-3 pr-4 font-mono text-caption font-normal uppercase tracking-[0.2em] text-rose/90">
 							Criterion
 						</th>
-						<th scope="col" className="py-3 pr-4 font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-rose/90">
+						<th scope="col" className="py-3 pr-4 font-mono text-caption font-normal uppercase tracking-[0.2em] text-rose/90">
 							What changed
 						</th>
-						<th scope="col" className="py-3 font-mono text-[9px] font-normal uppercase tracking-[0.2em] text-rose/90">
+						<th scope="col" className="py-3 font-mono text-caption font-normal uppercase tracking-[0.2em] text-rose/90">
 							How it was checked
 						</th>
 					</tr>
@@ -691,11 +691,11 @@ function AccessibilityEvidenceSection({
 						<h3 className="text-sm text-white/85 break-words">{row.criterion}</h3>
 						<dl className="space-y-3 text-sm">
 							<div className="space-y-1">
-								<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/90">What changed</dt>
+								<dt className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90">What changed</dt>
 								<dd className="font-light text-muted-foreground leading-relaxed break-words">{row.change}</dd>
 							</div>
 							<div className="space-y-1">
-								<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/90">How it was checked</dt>
+								<dt className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90">How it was checked</dt>
 								<dd className="font-light text-muted-foreground leading-relaxed break-words">{row.verification}</dd>
 							</div>
 						</dl>
@@ -735,14 +735,14 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 		<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-4 min-w-0">
 			<dl className="space-y-3 text-sm">
 				<div>
-					<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/90 mb-1">
+					<dt className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90 mb-1">
 						Decision
 					</dt>
 					<dd className="font-serif text-lg italic text-white/85 break-words">{card.title}</dd>
 				</div>
 				{card.context && (
 					<div>
-						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-rose/90 mb-1">
+						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90 mb-1">
 							Context
 						</dt>
 						<dd className="font-light text-muted-foreground leading-relaxed break-words">
@@ -752,7 +752,7 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 				)}
 				{card.tradeOff && (
 					<div className="border-l-2 border-amber-500/40 pl-4">
-						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-amber-200/80 mb-1">
+						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-amber-200/80 mb-1">
 							Trade-off
 						</dt>
 						<dd className="font-light text-muted-foreground leading-relaxed break-words">
@@ -762,7 +762,7 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 				)}
 				{card.result && (
 					<div>
-						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-green/70 mb-1">
+						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-green/70 mb-1">
 							Result
 						</dt>
 						<dd className="font-light text-muted-foreground leading-relaxed break-words">
@@ -772,7 +772,7 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 				)}
 				{card.body && (
 					<div>
-						<dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">
+						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">
 							Notes
 						</dt>
 						<dd className="font-light text-muted-foreground leading-relaxed">
@@ -810,7 +810,7 @@ function CaseStudyMediaPlaceholder({ label }: { label: string }) {
 			<div className="absolute inset-0 bg-rose/5 mix-blend-multiply" />
 			<div className="absolute inset-0 opacity-[0.18] bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:28px_28px]" />
 			<div className="relative flex h-full w-full items-center justify-center">
-				<p className="text-[10px] uppercase tracking-[0.28em] font-mono text-muted-foreground">
+				<p className="text-caption uppercase tracking-[0.28em] font-mono text-muted-foreground">
 					{label}
 				</p>
 			</div>
@@ -832,7 +832,7 @@ function ArchitectureEvidencePanel({
 	return (
 		<div className="absolute inset-0 flex flex-col justify-between border border-green/20 bg-[#0f1713] p-4 md:p-5 shadow-[inset_0_0_0_1px_rgba(74,222,128,0.06)]">
 			<div className="space-y-1">
-				<p className="font-mono text-[9px] uppercase tracking-[0.22em] text-green">
+				<p className="font-mono text-caption uppercase tracking-[0.22em] text-green">
 					Architecture Evidence
 				</p>
 				<p className="font-serif text-lg italic leading-tight text-white">
@@ -845,11 +845,11 @@ function ArchitectureEvidencePanel({
 						key={layer.title}
 						className="grid grid-cols-[2rem_1fr] gap-3 rounded-sm border border-green/15 bg-black/25 p-2.5"
 					>
-						<span className="font-mono text-[10px] text-green">
+						<span className="font-mono text-caption text-green">
 							{String(index + 1).padStart(2, "0")}
 						</span>
 						<div className="min-w-0">
-							<p className="font-mono text-[9px] uppercase tracking-[0.16em] text-white">
+							<p className="font-mono text-caption uppercase tracking-[0.16em] text-white">
 								{layer.title}
 							</p>
 							<p className="line-clamp-2 text-xs leading-relaxed text-white/70">
@@ -916,7 +916,7 @@ function CaseStudyHeroMedia({
 						<div className="rounded-full border border-white/10 bg-black/35 p-4 backdrop-blur-sm">
 							<Play size={22} className="text-rose/80" fill="currentColor" />
 						</div>
-						<p className="font-mono text-[10px] uppercase tracking-[0.28em] text-white/45">
+						<p className="font-mono text-caption uppercase tracking-[0.28em] text-white/45">
 							Product demo · press play
 						</p>
 					</div>
@@ -1027,7 +1027,7 @@ export default function CaseStudy() {
 				<nav className="absolute md:fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex justify-between items-start mix-blend-difference pointer-events-none">
 					<Link
 						to="/#work"
-						className="pointer-events-auto group flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
+						className="pointer-events-auto group flex items-center gap-4 font-mono text-caption uppercase tracking-[0.4em] text-rose/90 hover:text-rose transition-all duration-500"
 					>
 						<span className="h-[1px] w-8 bg-rose/30 group-hover:w-12 group-hover:bg-rose transition-all" />
 						Back to Work
@@ -1043,7 +1043,7 @@ export default function CaseStudy() {
 						<h1
 							data-route-heading
 							tabIndex={-1}
-							className="max-w-full text-[11vw] sm:text-[10vw] md:text-[9vw] font-serif italic leading-[0.85] mb-12 tracking-tighter break-words focus:outline-none"
+							className="max-w-full text-title md:text-hero font-serif italic leading-[0.85] mb-12 tracking-tighter break-words focus:outline-none"
 						>
 							{project.title}
 						</h1>
@@ -1079,7 +1079,7 @@ export default function CaseStudy() {
 									<p className="font-mono text-3xl md:text-4xl font-bold text-white tracking-tighter">
 										{m.value}
 									</p>
-									<p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50 mt-1">
+									<p className="font-mono text-caption uppercase tracking-[0.2em] text-white/50 mt-1">
 										{m.label}
 									</p>
 								</div>
@@ -1101,14 +1101,14 @@ export default function CaseStudy() {
 					{/* Metadata Sidebar */}
 					<aside className="md:col-span-4 space-y-16 min-w-0">
 						<div className="space-y-4">
-							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
+							<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-rose italic opacity-80">
 								Tech Stack
 							</h2>
 							<div className="flex flex-wrap gap-2">
 								{project.stack.map((tech) => (
 									<span
 										key={tech}
-										className="px-3 py-1 border border-white/10 rounded-full font-mono text-[9px] uppercase tracking-wider text-muted-foreground"
+										className="px-3 py-1 border border-white/10 rounded-full font-mono text-caption uppercase tracking-wider text-muted-foreground"
 									>
 										{tech}
 									</span>
@@ -1116,7 +1116,7 @@ export default function CaseStudy() {
 							</div>
 						</div>
 						<div className="space-y-4">
-							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
+							<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-rose italic opacity-80">
 								Role
 							</h2>
 							<p className="font-serif text-lg italic opacity-70 leading-relaxed">
@@ -1129,7 +1129,7 @@ export default function CaseStudy() {
 									href={links.live}
 									target="_blank"
 									rel="noreferrer"
-									className="group inline-flex items-center gap-3 px-5 py-3 rounded-full border border-rose/30 bg-rose/5 hover:bg-rose/10 hover:border-rose/60 w-full justify-center text-rose font-mono text-[11px] uppercase tracking-widest transition-all duration-300"
+									className="group inline-flex items-center gap-3 px-5 py-3 rounded-full border border-rose/30 bg-rose/5 hover:bg-rose/10 hover:border-rose/60 w-full justify-center text-rose font-mono text-caption uppercase tracking-widest transition-all duration-300"
 								>
 									<span
 										className={`w-1.5 h-1.5 rounded-full bg-rose ${reduceMotion ? "" : "animate-pulse"}`}
@@ -1146,7 +1146,7 @@ export default function CaseStudy() {
 									href={links.github}
 									target="_blank"
 									rel="noreferrer"
-									className="inline-flex items-center justify-center gap-2 w-full font-mono text-[10px] uppercase tracking-widest text-white/60 hover:text-white/85 transition-colors py-2"
+									className="inline-flex items-center justify-center gap-2 w-full font-mono text-caption uppercase tracking-widest text-white/60 hover:text-white/85 transition-colors py-2"
 								>
 									<GitBranch size={10} />
 									Source Code
@@ -1250,7 +1250,7 @@ export default function CaseStudy() {
 
 						{/* 3. DOUBLE SPREAD: MOBILE/DESKTOP OR TWO SCREENS // UNCOMMENT WHEN IMAGES ARE READY */}
 						{/* <div className="space-y-12">
-							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80 text-center">
+							<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-rose italic opacity-80 text-center">
 								Interface Dynamics
 							</h2>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1259,7 +1259,7 @@ export default function CaseStudy() {
 									className="aspect-[4/5] bg-card rounded-md border border-white/5 overflow-hidden"
 								>
 									<div className="relative h-full w-full flex items-center justify-center bg-white/[0.02]">
-										<p className="text-[10px] uppercase tracking-[0.28em] font-mono text-muted-foreground">
+										<p className="text-caption uppercase tracking-[0.28em] font-mono text-muted-foreground">
 											Mobile screenshot soon
 										</p>
 									</div>
@@ -1269,7 +1269,7 @@ export default function CaseStudy() {
 									className="aspect-[4/5] bg-card rounded-md border border-white/5 overflow-hidden"
 								>
 									<div className="relative h-full w-full flex items-center justify-center bg-white/[0.02]">
-										<p className="text-[10px] uppercase tracking-[0.28em] font-mono text-muted-foreground">
+										<p className="text-caption uppercase tracking-[0.28em] font-mono text-muted-foreground">
 											Desktop screenshot soon
 										</p>
 									</div>
@@ -1344,7 +1344,7 @@ export default function CaseStudy() {
 				<section className="px-6 md:px-20 py-14 border-t border-white/5 max-w-screen-xl mx-auto">
 					<div className="grid grid-cols-1 md:grid-cols-12 gap-20 md:gap-x-8 xl:gap-x-20">
 						<div className="md:col-span-4 space-y-4 min-w-0">
-							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-green italic opacity-80">
+							<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-green italic opacity-80">
 								Impact
 							</h2>
 							<p className="text-base md:text-lg font-light leading-relaxed text-white/80 break-words">
@@ -1352,7 +1352,7 @@ export default function CaseStudy() {
 							</p>
 						</div>
 						<div className="md:col-span-8 space-y-8 min-w-0">
-							<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose italic opacity-80">
+							<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-rose italic opacity-80">
 								Retrospective
 							</h2>
 							<ul className="space-y-6">
@@ -1361,7 +1361,7 @@ export default function CaseStudy() {
 										key={i}
 										className="flex gap-6 items-start border-b border-white/5 pb-6 last:border-0 min-w-0"
 									>
-										<span className="font-mono text-[10px] text-rose/90 mt-1 shrink-0">
+										<span className="font-mono text-caption text-rose/90 mt-1 shrink-0">
 											/0{i + 1}
 										</span>
 										<p className="text-sm font-light text-muted-foreground leading-relaxed break-words">
@@ -1379,7 +1379,7 @@ export default function CaseStudy() {
 					<section className="px-6 md:px-20 py-16 border-t border-white/5">
 						<div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
 							<div className="md:col-span-4">
-								<h2 className="font-mono text-[10px] uppercase tracking-[0.3em] text-rose/90 italic mb-4">
+								<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-rose/90 italic mb-4">
 									If I Had More Time
 								</h2>
 								<p className="font-serif text-2xl italic text-white/70 leading-relaxed">
@@ -1409,12 +1409,12 @@ export default function CaseStudy() {
 							to={`/projects/${nextProjectKey}`}
 							className="group relative inline-block"
 						>
-							<h2 className="text-7xl md:text-[9vw] font-serif italic leading-none transition-all duration-700 group-hover:text-rose">
+							<h2 className="text-title md:text-hero font-serif italic leading-none transition-all duration-700 group-hover:text-rose">
 								{nextProject.title}
 							</h2>
 							<div className="mt-10 flex flex-col items-center">
 								<div className="h-[1px] w-12 bg-rose transition-all duration-700 group-hover:w-48" />
-								<div className="mt-6 font-mono text-[10px] uppercase tracking-[0.6em] opacity-70 group-hover:opacity-100 group-hover:translate-y-2 transition-all">
+								<div className="mt-6 font-mono text-caption uppercase tracking-[0.6em] opacity-70 group-hover:opacity-100 group-hover:translate-y-2 transition-all">
 									Discover More
 								</div>
 							</div>

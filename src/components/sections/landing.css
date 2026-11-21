@@ -139,7 +139,7 @@
 /* ── Eyebrow ─────────────────────────────────────────────────*/
 .landing__eyebrow {
 	font-family: var(--font-sans);
-	font-size: 0.7rem;
+	font-size: var(--text-caption);
 	font-weight: 500;
 	letter-spacing: 0.22em;
 	text-transform: uppercase;
@@ -154,14 +154,14 @@
 @media (max-width: 480px) {
 	.landing__eyebrow {
 		letter-spacing: 0.14em;
-		font-size: 0.65rem;
+		font-size: var(--text-caption);
 	}
 }
 
 /* ── Name ────────────────────────────────────────────────────*/
 .landing__name {
 	font-family: var(--font-serif);
-	font-size: clamp(3.25rem, 9vw, 8rem);
+	font-size: clamp(var(--text-title), 7vw, var(--text-hero));
 	font-weight: 400;
 	line-height: 1;
 	letter-spacing: -0.01em;
@@ -187,7 +187,7 @@
 /* ── Tagline ─────────────────────────────────────────────────*/
 .landing__tagline {
 	font-family: var(--font-serif);
-	font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+	font-size: var(--text-lead);
 	font-style: italic;
 	color: var(--color-text-secondary);
 	max-width: 34ch;
@@ -204,7 +204,7 @@
 
 .landing__location {
 	font-family: var(--font-mono);
-	font-size: 0.72rem;
+	font-size: var(--text-caption);
 	letter-spacing: 0.14em;
 	color: var(--color-text-muted);
 	text-transform: uppercase;
@@ -227,7 +227,7 @@
 	align-items: center;
 	gap: 8px;
 	font-family: var(--font-mono);
-	font-size: 0.72rem;
+	font-size: var(--text-caption);
 	letter-spacing: 0.08em;
 	color: var(--color-text-secondary);
 	background: rgba(212, 132, 154, 0.08);
@@ -264,7 +264,7 @@
 .landing__cv-btn,
 .landing__secondary-btn {
 	font-family: var(--font-mono);
-	font-size: 0.72rem;
+	font-size: var(--text-caption);
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
 	border-radius: 100px;
@@ -289,7 +289,7 @@
 	.landing__cv-btn,
 	.landing__secondary-btn,
 	.landing__status {
-		font-size: 0.68rem;
+		font-size: var(--text-caption);
 		padding: 7px 16px;
 	}
 }
@@ -360,13 +360,13 @@
 
 .landing__scroll-label {
 	font-family: var(--font-mono);
-	font-size: 0.6rem;
+	font-size: var(--text-caption);
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
 	color: var(--color-text-muted);
 }
 
 .landing__scroll-arrow {
-	font-size: 0.85rem;
+	font-size: var(--text-caption);
 	color: var(--color-text-muted);
 }

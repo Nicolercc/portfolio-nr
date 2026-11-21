@@ -17,6 +17,48 @@
 	--color-rose: #d4849a;
 	--color-green: #4ade80;
 
+	/* Type scale: six steps, nothing readable below 14px. */
+	--text-caption: 0.875rem;
+	--text-caption--line-height: 1.45;
+	--text-body: 1.0625rem;
+	--text-body--line-height: 1.6;
+	--text-lead: 1.25rem;
+	--text-lead--line-height: 1.5;
+	--text-section: 1.75rem;
+	--text-section--line-height: 1.25;
+	--text-title: 2.75rem;
+	--text-title--line-height: 1.1;
+	--text-hero: 4.5rem;
+	--text-hero--line-height: 1;
+
+	/* Tailwind's default steps collapse onto the six above. */
+	--text-xs: 0.875rem;
+	--text-xs--line-height: 1.45;
+	--text-sm: 0.875rem;
+	--text-sm--line-height: 1.45;
+	--text-base: 1.0625rem;
+	--text-base--line-height: 1.6;
+	--text-lg: 1.25rem;
+	--text-lg--line-height: 1.5;
+	--text-xl: 1.25rem;
+	--text-xl--line-height: 1.5;
+	--text-2xl: 1.75rem;
+	--text-2xl--line-height: 1.25;
+	--text-3xl: 1.75rem;
+	--text-3xl--line-height: 1.25;
+	--text-4xl: 2.75rem;
+	--text-4xl--line-height: 1.1;
+	--text-5xl: 2.75rem;
+	--text-5xl--line-height: 1.1;
+	--text-6xl: 4.5rem;
+	--text-6xl--line-height: 1;
+	--text-7xl: 4.5rem;
+	--text-7xl--line-height: 1;
+	--text-8xl: 4.5rem;
+	--text-8xl--line-height: 1;
+	--text-9xl: 4.5rem;
+	--text-9xl--line-height: 1;
+
 	/* Animations */
 	--animate-float: float 6s ease-in-out infinite;
 
@@ -65,6 +107,8 @@
 
 	body {
 		@apply bg-background text-foreground antialiased font-sans overflow-x-hidden;
+		font-size: var(--text-body);
+		line-height: var(--text-body--line-height);
 	}
 
 	h1,
@@ -110,7 +154,7 @@
 		background: var(--color-text-primary);
 		color: var(--color-bg);
 		padding: 0.65rem 1rem;
-		font-size: 0.875rem;
+		font-size: var(--text-caption);
 		font-weight: 700;
 		text-decoration: none;
 		transition: transform 0.18s ease;
@@ -209,7 +253,7 @@
 
 	.section-label {
 		font-family: var(--font-mono);
-		font-size: 0.68rem;
+		font-size: var(--text-caption);
 		letter-spacing: 0.22em;
 		text-transform: uppercase;
 		color: var(--color-rose);

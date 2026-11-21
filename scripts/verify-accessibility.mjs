@@ -220,6 +220,21 @@ async function main() {
 		);
 		assert(hiddenEntries === 0, "Experience entries fade back out after leaving the viewport.");
 
+		// Scroll past every project card, then confirm none has faded back out.
+		await desktop.evaluate(() => document.getElementById("contact")?.scrollIntoView());
+		await desktop.waitForTimeout(600);
+		const hiddenProjects = await desktop.evaluate(() =>
+			[...document.querySelectorAll("#work article")].filter((article) => {
+				let node = article;
+				while (node) {
+					if (Number(getComputedStyle(node).opacity) < 0.5) return true;
+					node = node.parentElement;
+				}
+				return false;
+			}).length,
+		);
+		assert(hiddenProjects === 0, "Selected work cards fade back out after scrolling past them.");
+
 		// Primary navigation keeps About and Contact on phones once it appears.
 		const phoneNav = await browser.newPage({ viewport: { width: 390, height: 844 } });
 		await phoneNav.goto(baseUrl, { waitUntil: "networkidle" });

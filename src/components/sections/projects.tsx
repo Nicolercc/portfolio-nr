@@ -53,7 +53,8 @@ function CaseStudyCard({ project, position }: { project: Project; position: numb
 	});
 
 	const yTranslate = useTransform(scrollYProgress, [0, 1], [50, -50]);
-	const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+	// Fade in once; never hide a project again after it has been read.
+	const opacity = useTransform(scrollYProgress, [0, 0.2, 1], [0, 1, 1]);
 
 	const { homepage } = project;
 	const isRose = homepage.accent === "rose";

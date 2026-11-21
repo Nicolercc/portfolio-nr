@@ -161,7 +161,7 @@ function StrategyCard() {
 					className="mb-4 text-2xl leading-tight"
 					style={{ fontFamily: "'Cormorant Garamond', serif" }}
 				>
-					BA in Media &amp; Politics —{" "}
+					BA in Journalism &amp; Politics —{" "}
 					<span className="italic" style={{ color: "#D4849A" }}>
 						the other half
 					</span>{" "}
@@ -184,7 +184,7 @@ function StrategyCard() {
 
 			<div className="mt-8 flex items-center justify-between border-t border-white/5 pt-6">
 				<span className="font-mono text-[9px] uppercase tracking-widest text-white/60">
-					Engineer × Media Specialist
+					Engineer × Writer
 				</span>
 				<div className="flex -space-x-2">
 					<div className="flex h-6 w-6 items-center justify-center rounded-full border border-[rgba(212,132,154,0.4)] bg-[rgba(212,132,154,0.2)] text-[10px]">

@@ -213,7 +213,8 @@ async function main() {
 		await desktop.waitForTimeout(1200);
 		const hiddenEntries = await desktop.evaluate(() =>
 			[...document.querySelectorAll("h3")]
-				.filter((heading) => /POPSUGAR|Pursuit|Independent Developer/.test(heading.textContent ?? ""))
+				.filter((heading) => !heading.closest("#work"))
+				.filter((heading) => /POPSUGAR|Pursuit|Van Alen|Elite Global/.test(heading.textContent ?? ""))
 				.filter((heading) => {
 					let node = heading;
 					while (node) {

@@ -22,39 +22,39 @@ export function Experience() {
 	const experiences = [
 		{
 			type: "Fellowship",
-			company: "Pursuit × AI Native Fellowship",
-			role: "Full-Stack Engineer Fellow",
+			company: "Pursuit",
+			role: "AI-Native Software Engineering Fellow",
 			period: PROFILE.pursuitPeriod,
 			description:
-				"Training as a full-stack engineer with an AI-native development focus. Built and shipped applications with LLM integrations, cloud deployment workflows, and production-minded architecture. Rebuilt Impactify from Firebase/Vite to Next.js App Router under deadline for a capstone presentation.",
-			skills: ["React", "Next.js", "TypeScript", "Node.js", "PostgreSQL", "Claude AI", "Cloud Run", "Docker", "Vercel"],
+				"Built a drift-proof evaluation harness for an AI customer-inbox triage tool: one shared inference path, an automated CI gate, a serverless proxy layer, and PII redaction before any message reaches the model, reaching 8/8 accuracy on urgency and category classification. Also rebuilt Impactify from React/Vite to the Next.js App Router.",
+			skills: ["TypeScript", "Next.js", "Node.js", "Python", "PostgreSQL", "Claude API", "Cloud Run", "Docker", "Vercel"],
+		},
+		{
+			type: "Capstone",
+			company: "Van Alen Institute",
+			role: "Data Model & Migration Specialist · Pursuit capstone team",
+			period: "Oct — Nov 2026",
+			description:
+				"Built the institute's Airtable data model (12 linked tables) as one source of truth for programs, partners, projects, and funding; the staff dashboard reads from it. Migrated and verified 590+ records from spreadsheets, visitor logs, and event systems, set up permissions and staff entry forms, and wrote the 27-page staff guide.",
+			skills: ["Data Modeling", "Airtable", "Data Migration", "Permissions", "Documentation"],
 		},
 		{
 			type: "Freelance",
-			company: "Independent Developer",
-			role: "Full-Stack Developer · Consultant",
-			period: "2023 — Present",
-			description:
-				"Building and shipping production web applications for clients across Queens and NYC. Resolved infrastructure incidents end-to-end: SSL certificate expiry, DNS propagation failures, Netlify webhook misconfiguration — all post-launch, all live production. Specializing in performance-first architecture and bilingual (EN/ES) implementations for immigrant-owned businesses.",
-			skills: ["Astro", "React", "TypeScript", "Tailwind", "Netlify", "i18n", "Client Delivery"],
-		},
-		{
-			type: "Engineering",
 			company: "Elite Global Cleaning Services",
-			role: "Full-Stack Developer",
-			period: "2023 — 2024",
+			role: "Freelance Full-Stack Developer",
+			period: "Nov 2024 — May 2025",
 			description:
-				"Built and shipped a production site for a Queens-based environmental remediation company. Static-first Astro architecture with minimal client JavaScript. Resolved a production SSL certificate expiry post-launch — diagnosed Netlify webhook and Porkbun DNS propagation failure, restored HTTPS. Added English/Spanish i18n via Astro routing layer after initial delivery.",
-			skills: ["Astro", "TypeScript", "Tailwind", "Netlify", "Porkbun DNS", "i18n"],
+				"Sole technical point of contact for a Queens-based environmental remediation company. Shipped a static-first Astro and TypeScript site with React integrations, customer contact flows, SEO, and English/Spanish i18n. After launch, diagnosed a Netlify webhook and Porkbun DNS failure behind an expired SSL certificate and restored HTTPS. Still provide occasional maintenance.",
+			skills: ["Astro", "TypeScript", "React", "Tailwind", "Netlify", "Porkbun DNS", "i18n"],
 		},
 		{
 			type: "Editorial",
 			company: "POPSUGAR",
-			role: "Contributing Writer",
-			period: "Pre-Tech",
+			role: "Freelance Writer",
+			period: "2022 — 2023",
 			description:
-				"Published narratives for a global audience of millions. Built fluency in digital engagement, SEO, and the speed of modern media — the same principles I now apply to product copy, onboarding flows, and technical documentation. The writing background is not a detour; it is why I understand the people using what I build.",
-			skills: ["Content Strategy", "SEO", "Narrative Design", "Audience Research"],
+				"Published a plain-language article for a national digital audience on an editorial deadline. Writing for readers I'll never meet is why I care about clear product copy, onboarding, and documentation.",
+			skills: ["Plain-Language Writing", "Editing", "Editorial Deadlines"],
 		},
 	];
 
@@ -73,17 +73,17 @@ export function Experience() {
 							viewport={{ once: true }}
 							className="font-mono text-[10px] tracking-[0.5em] text-rose uppercase"
 						>
-							Evolution
+							Experience
 						</motion.p>
 						<h2 className="text-4xl md:text-5xl font-serif text-white leading-tight">
-							The journey from <br />
+							Built end to end, <br />
 							<span className="italic text-transparent bg-clip-text bg-gradient-to-r from-rose to-green">
-								words to wires.
+								designed with care.
 							</span>
 						</h2>
 						<p className="text-sm text-white/60 font-light max-w-xs leading-relaxed">
-							A non-linear path into engineering, fueled by narrative precision
-							and technical curiosity.
+							Full-stack training, a designer's eye, and the habit of checking my
+							own work before anyone else has to.
 						</p>
 					</div>
 

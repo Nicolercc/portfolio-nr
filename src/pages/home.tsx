@@ -1,5 +1,8 @@
 import { useEffect } from "react";
-import SpaceHero from "../components/space/SpaceHero";
+import Landing from "../components/sections/landing";
+import StarMapSection from "../components/space/StarMapSection";
+import { Capabilities } from "../components/sections/Capabilities";
+import { Marquee } from "../components/sections/Marquee";
 import { Projects } from "../components/sections/projects";
 import { Bento } from "../components/sections/bento";
 import { Experience } from "../components/sections/experience";
@@ -61,10 +64,13 @@ export default function Home() {
 
 			{/* 3. THE CONTENT: Ensure 'relative z-10' so it sits on top of the canvas */}
 			<main id="main-content" tabIndex={-1} className="relative z-10 focus:outline-none">
-				<SpaceHero />
+				<Landing />
+				<StarMapSection />
 				<Projects />
+				<Capabilities />
 				<Experience />
 				<Bento />
+				<Marquee />
 				<Contact />
 			</main>
 		</div>

@@ -91,7 +91,8 @@ async function main() {
 				.slice(0, 6),
 		);
 		assert(sectionOrder[0] === "landing", `Expected landing first, got ${sectionOrder[0]}.`);
-		assert(sectionOrder[1] === "work", `Expected work directly after the landing, got ${sectionOrder[1]}.`);
+		assert(sectionOrder[1] === "universe", `Expected the star map after the landing, got ${sectionOrder[1]}.`);
+		assert(sectionOrder[2] === "work", `Expected work directly after the star map, got ${sectionOrder[2]}.`);
 
 		const firstProject = await desktop.locator("#work article h3").first().textContent();
 		assert(firstProject?.trim() === "Sano", `Expected Sano as first work item, got ${firstProject}.`);

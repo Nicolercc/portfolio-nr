@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { PROFILE } from "../../data/profile";
 import { getProject, type Project, type ProjectSlug } from "../../data/projects";
 import { RECEIPTS } from "../../data/proofs";
 import type { StarMap } from "./StarMap";
@@ -30,7 +29,7 @@ function prefersReducedMotion() {
 	return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-export default function SpaceHero() {
+export default function StarMapSection() {
 	const systems = useMemo(
 		() => SYSTEM_SLUGS.map((slug) => getProject(slug)).filter((p): p is Project => Boolean(p)),
 		[],
@@ -93,12 +92,12 @@ export default function SpaceHero() {
 		};
 	}, [systems, select]);
 
-	// Leaving the hero tilts the galaxy away.
+	// Scrolling past the section tilts the galaxy away.
 	useEffect(() => {
 		const onScroll = () => {
 			const el = sectionRef.current;
 			if (!el || !engineRef.current) return;
-			engineRef.current.setScroll(window.scrollY / Math.max(el.offsetHeight, 1));
+			engineRef.current.setScroll((window.scrollY - el.offsetTop) / Math.max(el.offsetHeight, 1));
 		};
 		window.addEventListener("scroll", onScroll, { passive: true });
 		return () => window.removeEventListener("scroll", onScroll);
@@ -130,23 +129,18 @@ export default function SpaceHero() {
 	};
 
 	return (
-		<section ref={sectionRef} className="space-hero" id="landing" data-mode={mode} data-open={Boolean(active)} aria-label="Introduction">
+		<section ref={sectionRef} className="space-hero" id="universe" data-mode={mode} data-open={Boolean(active)} aria-labelledby="universe-heading">
 			<div className="space-hero__nebula" aria-hidden />
 
 			<div className="space-hero__intro">
-				<p className="space-hero__eyebrow">{PROFILE.eyebrow}</p>
-				<h1 data-route-heading tabIndex={-1} className="space-hero__name">
-					{PROFILE.name}
-				</h1>
-				<p className="space-hero__tagline">{PROFILE.tagline}</p>
-				<div className="space-hero__actions landing__actions">
-					<a href="#work" className="space-btn space-btn--primary">
-						View selected work
-					</a>
-					<a href={PROFILE.resumePath} download className="space-btn space-btn--ghost">
-						Download resume ↓
-					</a>
-				</div>
+				<h2 id="universe-heading" className="space-hero__heading">
+					Every star is
+					<br />
+					something I shipped.
+				</h2>
+				<p className="space-hero__tagline">
+					Fly into a system to see the product. Open a receipt to see how I know it works.
+				</p>
 
 				<div className="proof-log">
 					<h2 className="proof-log__title">

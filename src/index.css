@@ -64,6 +64,8 @@
 	--text-9xl--line-height: 1;
 
 	/* Animations */
+	--animate-marquee: marquee 40s linear infinite;
+	--animate-marquee-reverse: marquee-reverse 35s linear infinite;
 	--animate-float: float 6s ease-in-out infinite;
 
 	/* Easing */
@@ -280,6 +282,22 @@
 }
 
 /* ── Keyframes ──────────────────────────────────────────────────────────────── */
+@keyframes marquee {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-50%);
+	}
+}
+@keyframes marquee-reverse {
+	0% {
+		transform: translateX(-50%);
+	}
+	100% {
+		transform: translateX(0);
+	}
+}
 @keyframes float {
 	0%,
 	100% {

@@ -7,7 +7,7 @@
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
 	align-items: center;
-	padding: 112px 24px 56px;
+	padding: 96px 24px 56px;
 	background:
 		radial-gradient(ellipse 120% 70% at 70% 115%, rgba(45, 18, 30, 0.9) 0%, transparent 55%),
 		var(--color-bg);
@@ -55,29 +55,15 @@
 	}
 }
 
-.space-hero__eyebrow {
-	font-family: var(--font-mono);
-	font-size: var(--text-caption);
-	letter-spacing: 0.18em;
-	text-transform: uppercase;
-	color: var(--color-rose-light);
-	margin: 0 0 18px;
-}
-
-.space-hero__name {
+.space-hero__heading {
 	font-family: var(--font-serif);
 	font-weight: 400;
-	font-size: clamp(3rem, 7vw, 5.5rem);
-	line-height: 0.95;
+	font-size: clamp(2.5rem, 5vw, 4rem);
+	line-height: 1;
 	letter-spacing: -0.015em;
 	color: var(--color-text-primary);
 	margin: 0;
-	text-shadow:
-		0 0 80px rgba(212, 132, 154, 0.3),
-		0 0 160px rgba(212, 132, 154, 0.12);
-}
-.space-hero__name:focus-visible {
-	outline: none;
+	text-shadow: 0 0 80px rgba(212, 132, 154, 0.25);
 }
 
 .space-hero__tagline {
@@ -88,50 +74,6 @@
 	color: var(--color-text-secondary);
 	max-width: 36ch;
 	margin: 16px 0 0;
-}
-
-.space-hero__actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12px;
-	margin-top: 28px;
-}
-
-.space-btn {
-	display: inline-flex;
-	align-items: center;
-	min-height: 44px;
-	padding: 0 20px;
-	border-radius: 999px;
-	font-family: var(--font-mono);
-	font-size: var(--text-caption);
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	text-decoration: none;
-	transition:
-		background 0.2s ease,
-		color 0.2s ease,
-		border-color 0.2s ease;
-}
-.space-btn--primary {
-	background: var(--color-action);
-	border: 1px solid var(--color-action);
-	color: #0d0d0d;
-}
-.space-btn--primary:hover {
-	background: var(--color-rose-light);
-	border-color: var(--color-rose-light);
-}
-.space-btn--ghost {
-	background: rgba(13, 13, 13, 0.55);
-	border: 1px solid rgba(245, 240, 232, 0.35);
-	color: var(--color-text-primary);
-	backdrop-filter: blur(8px);
-	-webkit-backdrop-filter: blur(8px);
-}
-.space-btn--ghost:hover {
-	border-color: var(--color-action);
-	color: var(--color-rose-light);
 }
 
 /* ── Proof log ────────────────────────────────────────────── */
@@ -565,7 +507,7 @@
 
 @media (min-width: 1024px) {
 	.space-hero {
-		padding: 120px 48px 72px;
+		padding: 96px 48px 72px;
 		min-height: max(100svh, 760px);
 	}
 	.space-hero__intro {

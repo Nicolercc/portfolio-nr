@@ -203,11 +203,23 @@
 }
 
 .landing__location {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	max-width: min(560px, calc(100vw - 32px));
 	font-family: var(--font-mono);
 	font-size: var(--text-caption);
-	letter-spacing: 0.14em;
-	color: var(--color-text-muted);
-	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--color-text-secondary);
+	text-wrap: balance;
+}
+.landing__roles-dot {
+	width: 7px;
+	height: 7px;
+	flex-shrink: 0;
+	border-radius: 50%;
+	background: var(--color-green);
 }
 
 /* ── Actions row ─────────────────────────────────────────────*/

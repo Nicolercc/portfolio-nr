@@ -23,12 +23,16 @@ export function Contact() {
 				}}
 				className="max-w-3xl mx-auto"
 			>
-				<h2 className="text-5xl md:text-8xl font-serif italic mb-12">
-					Let's build <br /> something real.
-				</h2>
 				{PROFILE.lookingFor ? (
-					<p className="mx-auto mb-8 max-w-xl text-lg text-muted-foreground">{PROFILE.lookingFor}</p>
+					<p className="mx-auto mb-6 inline-flex max-w-xl items-center gap-2 font-mono text-caption text-muted-foreground">
+						<span className="h-[7px] w-[7px] shrink-0 rounded-full bg-green" aria-hidden />
+						{PROFILE.lookingFor}
+					</p>
 				) : null}
+				<h2 className="section-label">Contact</h2>
+				<p className="text-5xl md:text-8xl font-serif italic mb-12">
+					Let's build <br /> something real.
+				</p>
 				<a
 					href={mailtoHref}
 					className="inline-flex items-center gap-4 text-xl md:text-2xl font-light hover:text-rose transition-colors duration-300 group"

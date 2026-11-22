@@ -229,21 +229,7 @@ export function Capabilities() {
 			/>
 
 			<div className="max-w-7xl mx-auto w-full relative z-10">
-				<h2 className="sr-only">Skills and capabilities</h2>
-				{/* Intro */}
-				<motion.div
-					initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={reduceMotion ? { duration: 0 } : { duration: 0.8 }}
-					className="mb-8"
-				>
-					<p className="landing__tagline mx-auto max-w-xl text-center mt-2">
-						<em>
-							Full-stack engineer who rebuilds stacks under deadline and writes code that 
-							reads like it was meant to last.
-						</em>
-					</p>
-				</motion.div>
+				<h2 className="section-label">Stack</h2>
 
 				{/* Bento Grid Layout */}
 				<div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 auto-rows-[minmax(200px,auto)]">

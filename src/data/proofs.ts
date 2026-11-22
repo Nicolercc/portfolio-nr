@@ -19,7 +19,7 @@ export type Receipt = {
 export const RECEIPTS: Receipt[] = [
 	{
 		id: "sano-axe",
-		claim: "0 accessibility violations on the live app",
+		claim: "0 axe violations on 5 tested routes · Sept 2026",
 		project: "Sano",
 		slug: "sano",
 		rows: [
@@ -51,7 +51,7 @@ export const RECEIPTS: Receipt[] = [
 	},
 	{
 		id: "tripcanvas-tests",
-		claim: "313 tests guarding one trip planner",
+		claim: "313 tests guarding a trip-planner prototype",
 		project: "TripCanvas",
 		slug: "tripcanvas",
 		rows: [

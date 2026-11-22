@@ -142,11 +142,14 @@ export default function StarMapSection() {
 			<div className="space-hero__nebula" aria-hidden />
 
 			<div className="space-hero__intro" inert={Boolean(active)}>
-				<h2 id="universe-heading" className="space-hero__heading">
+				<h2 id="universe-heading" className="section-label">
+					Projects
+				</h2>
+				<p className="space-hero__heading">
 					Every star is
 					<br />
-					something I shipped.
-				</h2>
+					something I've built.
+				</p>
 				<p className="space-hero__tagline">Pick a star. Open a receipt.</p>
 
 				<div className="proof-log">

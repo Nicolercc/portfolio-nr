@@ -172,6 +172,10 @@ export type Project = {
 	role: string;
 	tagline: string;
 	description: string;
+	/** One outcome line for the homepage case-study row. Falls back to tagline. */
+	outcome?: string;
+	/** The (at most) four tools that carried the work, shown on the homepage. Falls back to stack. */
+	keyStack?: string[];
 	stack: string[];
 	metrics?: ProjectMetric[];
 	links: ProjectLinks;
@@ -213,6 +217,8 @@ const projects: Record<ProjectSlug, Project> = {
 			"Restaurant discovery that reads beyond the letter grade, with an accessibility audit of its critical journey, regression checks, and rendered evidence.",
 		description:
 			"Sano turns public NYC DOHMH restaurant inspection records into readable context, then documents a scoped accessibility upgrade across search, results, profile, and methodology flows.",
+		outcome: "Makes NYC restaurant inspection histories readable, with the official grade first.",
+		keyStack: ["Next.js", "PostGIS", "Python", "axe-core"],
 		stack: [
 			"Next.js",
 			"TypeScript",
@@ -1081,6 +1087,8 @@ const projects: Record<ProjectSlug, Project> = {
 			"An HTML and CSS course for kids aged 7–10 that builds a real webpage about whatever they love — prototyped fast with AI, then audited and re-engineered until it actually checked their work.",
 		description:
 			"The concept came from a collaborator who brought me in to build the frontend. I implemented the learning experience and structured the lesson flow with AI-assisted prototyping in Replit Agent, then audited the result like a senior reviewer: tests showed 29 of 123 answer-check cases were wrong, feedback was silent to screen readers, and the lesson screen broke on phones. I re-engineered it with pure validators, a tested lesson state machine and an accessibility pass enforced in CI.",
+		outcome: "Answer checks kids can trust: 29 broken checks fixed and enforced in CI.",
+		keyStack: ["React 19", "TypeScript", "CodeMirror 6", "Playwright"],
 		stack: [
 			"React 19",
 			"TypeScript",
@@ -1513,6 +1521,8 @@ const projects: Record<ProjectSlug, Project> = {
 			"Production client site for a Queens-based environmental remediation company — built for speed, maintained through real infrastructure failures.",
 		description:
 			"Astro-powered static site for a Queens-based environmental remediation company. Resolved a production SSL certificate expiry post-launch — diagnosed Netlify webhook and Porkbun DNS propagation failure, restored HTTPS. Added English/Spanish i18n via Astro routing after initial delivery.",
+		outcome: "A bilingual client site, shipped and kept running through real outages.",
+		keyStack: ["Astro", "TypeScript", "i18n", "Netlify"],
 		stack: [
 			"Astro",
 			"TypeScript",

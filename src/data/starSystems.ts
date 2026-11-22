@@ -24,7 +24,7 @@ export type MapSystem = {
 };
 
 const PROJECT_STARS: { slug: ProjectSlug; line: string; color: ThemeColor; title?: string }[] = [
-	{ slug: "sano", line: "0 axe violations, live", color: "star-sano" },
+	{ slug: "sano", line: "0 axe violations · 5 routes", color: "star-sano" },
 	{ slug: "code4kidz", line: "29 → 0 failing checks", color: "star-code4kidz" },
 	{ slug: "tripcanvas", line: "313 tests in CI", color: "star-tripcanvas" },
 	{ slug: "ruvia", line: "27 + 21 tests", color: "star-ruvia" },

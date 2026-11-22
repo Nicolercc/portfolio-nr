@@ -1,4 +1,5 @@
 import { getProject, type ProjectSlug } from "./projects";
+import type { ThemeColor } from "../lib/themeColors";
 
 /**
  * Everything the star map shows. Case-study projects come from projects.ts;
@@ -14,19 +15,20 @@ export type MapSystem = {
 	line: string;
 	role: string;
 	tagline: string;
-	color: string;
+	/** Star color token (see src/index.css). */
+	color: ThemeColor;
 	metrics: { value: string; label: string }[];
 	image?: { src: string; alt: string };
 	primary: MapLink;
 	secondary?: MapLink;
 };
 
-const PROJECT_STARS: { slug: ProjectSlug; line: string; color: string; title?: string }[] = [
-	{ slug: "sano", line: "0 axe violations, live", color: "#4ade80" },
-	{ slug: "code4kidz", line: "29 → 0 failing checks", color: "#ffb86b" },
-	{ slug: "tripcanvas", line: "313 tests in CI", color: "#7cc7ff" },
-	{ slug: "ruvia", line: "27 + 21 tests", color: "#c3a0e1" },
-	{ slug: "elite-global", line: "EN/ES client site", color: "#d4849a", title: "Elite Global" },
+const PROJECT_STARS: { slug: ProjectSlug; line: string; color: ThemeColor; title?: string }[] = [
+	{ slug: "sano", line: "0 axe violations, live", color: "star-sano" },
+	{ slug: "code4kidz", line: "29 → 0 failing checks", color: "star-code4kidz" },
+	{ slug: "tripcanvas", line: "313 tests in CI", color: "star-tripcanvas" },
+	{ slug: "ruvia", line: "27 + 21 tests", color: "star-ruvia" },
+	{ slug: "elite-global", line: "EN/ES client site", color: "star-elite-global", title: "Elite Global" },
 ];
 
 const EXTRA_STARS: MapSystem[] = [
@@ -37,7 +39,7 @@ const EXTRA_STARS: MapSystem[] = [
 		role: "Data model & migration · Pursuit capstone",
 		tagline:
 			"One Airtable source of truth for the institute's programs, partners, projects and funding, with staff entry forms, permissions and a guide.",
-		color: "#f5c97a",
+		color: "star-van-alen",
 		metrics: [
 			{ value: "590+", label: "Records migrated and verified" },
 			{ value: "12", label: "Linked tables" },
@@ -52,7 +54,7 @@ const EXTRA_STARS: MapSystem[] = [
 		role: "Solo builder · open source",
 		tagline:
 			"A local-first job tracker. Gmail is the reconciliation path, an LLM proposes events, and nothing is committed without you.",
-		color: "#7ee0d0",
+		color: "star-jt",
 		metrics: [
 			{ value: "~2,800", label: "Lines of Python" },
 			{ value: "1", label: "SQLite file, no server" },
@@ -61,6 +63,11 @@ const EXTRA_STARS: MapSystem[] = [
 		primary: { label: "View on GitHub", href: "https://github.com/Nicolercc/jt" },
 	},
 ];
+
+/** CSS color for a star token, for inline styles. */
+export function starCss(color: ThemeColor): string {
+	return `var(--color-${color})`;
+}
 
 export function getStarSystems(): MapSystem[] {
 	const fromProjects = PROJECT_STARS.flatMap(({ slug, line, color, title }) => {

@@ -23,6 +23,7 @@ import {
 	Vector3,
 	WebGLRenderer,
 } from "three";
+import { themeAlpha, themeColor, type ThemeColor } from "../../lib/themeColors";
 
 /**
  * The homepage star map: a spiral galaxy, a drifting nebula and one star system
@@ -33,7 +34,8 @@ import {
 
 export type SystemSpec = {
 	slug: string;
-	color: string;
+	/** Star color token from src/index.css. */
+	color: ThemeColor;
 	/** Number of orbiting moons, one per published metric. */
 	moons: number;
 	/** Draw this system a little larger. */
@@ -150,10 +152,10 @@ function glowTexture() {
 	const ctx = canvas.getContext("2d");
 	if (ctx) {
 		const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-		g.addColorStop(0, "rgba(255,255,255,1)");
-		g.addColorStop(0.18, "rgba(255,255,255,0.55)");
-		g.addColorStop(0.45, "rgba(255,255,255,0.12)");
-		g.addColorStop(1, "rgba(255,255,255,0)");
+		g.addColorStop(0, themeAlpha("glow", 1));
+		g.addColorStop(0.18, themeAlpha("glow", 0.55));
+		g.addColorStop(0.45, themeAlpha("glow", 0.12));
+		g.addColorStop(1, themeAlpha("glow", 0));
 		ctx.fillStyle = g;
 		ctx.fillRect(0, 0, size, size);
 	}
@@ -217,7 +219,7 @@ export class StarMap {
 		const { container } = opts;
 		this.renderer = new WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" });
 		this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-		this.renderer.setClearColor(0x000000, 0);
+		this.renderer.setClearColor(new Color(themeColor("background")), 0);
 		const canvas = this.renderer.domElement;
 		canvas.setAttribute("aria-hidden", "true");
 		canvas.className = "starmap__canvas";
@@ -277,7 +279,7 @@ export class StarMap {
 		const col = new Float32Array(count * 3);
 		const size = new Float32Array(count);
 		const phase = new Float32Array(count);
-		const palette = [new Color("#fffaf6"), new Color("#ffd9e3"), new Color("#c9b6ff"), new Color("#b8dcff")];
+		const palette = (["starlight", "starlight-rose", "starlight-lilac", "starlight-ice"] as const).map((n) => new Color(themeColor(n)));
 		for (let i = 0; i < count; i++) {
 			const r = 260 + rand() * 520;
 			const th = rand() * Math.PI * 2;
@@ -306,9 +308,9 @@ export class StarMap {
 		const col = new Float32Array(count * 3);
 		const size = new Float32Array(count);
 		const phase = new Float32Array(count);
-		const inner = new Color("#f2b8c8");
-		const mid = new Color("#d4849a");
-		const outer = new Color("#7b6cff");
+		const inner = new Color(themeColor("galaxy-inner"));
+		const mid = new Color(themeColor("rose"));
+		const outer = new Color(themeColor("galaxy-outer"));
 		const tmp = new Color();
 		for (let i = 0; i < count; i++) {
 			const r = Math.pow(rand(), 1.6) * radius;
@@ -347,9 +349,9 @@ export class StarMap {
 			blending: AdditiveBlending,
 			uniforms: {
 				uTime: { value: 0 },
-				uRose: { value: new Color("#d4849a") },
-				uLilac: { value: new Color("#5b3f9e") },
-				uTeal: { value: new Color("#2fae7a") },
+				uRose: { value: new Color(themeColor("nebula-rose")) },
+				uLilac: { value: new Color(themeColor("nebula-lilac")) },
+				uTeal: { value: new Color(themeColor("nebula-teal")) },
 			},
 		});
 		const mesh = new Mesh(new PlaneGeometry(900, 520), mat);
@@ -368,10 +370,10 @@ export class StarMap {
 			const home = new Vector3(Math.sin(a) * spread, (i % 2 === 0 ? 1 : -1) * (5 + rand() * 7), 18 - Math.cos(a) * 22);
 			const group = new Group();
 			group.position.copy(home);
-			const color = new Color(spec.color);
+			const color = new Color(themeColor(spec.color));
 			const baseScale = spec.emphasis ? 1.35 : 1;
 
-			const core = new Mesh(new SphereGeometry(1.25, 24, 16), new MeshBasicMaterial({ color: color.clone().lerp(new Color("#ffffff"), 0.55) }));
+			const core = new Mesh(new SphereGeometry(1.25, 24, 16), new MeshBasicMaterial({ color: color.clone().lerp(new Color(themeColor("glow")), 0.55) }));
 			core.scale.setScalar(baseScale);
 			const hit = new Mesh(new SphereGeometry(6, 8, 6), new MeshBasicMaterial({ visible: false }));
 			hit.userData.slug = spec.slug;
@@ -395,7 +397,7 @@ export class StarMap {
 				ring.rotation.x = 1.2 + tilt;
 				ring.rotation.z = tilt * 0.6;
 				rings.push(ring);
-				const moon = new Mesh(new SphereGeometry(0.32, 12, 8), new MeshBasicMaterial({ color: "#fff6f8" }));
+				const moon = new Mesh(new SphereGeometry(0.32, 12, 8), new MeshBasicMaterial({ color: themeColor("moon") }));
 				moons.push({ mesh: moon, radius, speed: 0.35 + rand() * 0.5, phase: rand() * Math.PI * 2, tilt });
 				ring.add(moon);
 				group.add(ring);
@@ -410,7 +412,7 @@ export class StarMap {
 		});
 
 		const geo = new BufferGeometry().setFromPoints(linkPts);
-		return new Line(geo, new LineBasicMaterial({ color: "#d4849a", transparent: true, opacity: 0.22, blending: AdditiveBlending, depthWrite: false }));
+		return new Line(geo, new LineBasicMaterial({ color: themeColor("rose"), transparent: true, opacity: 0.22, blending: AdditiveBlending, depthWrite: false }));
 	}
 
 	// ── Camera ──────────────────────────────────────────────────────────────

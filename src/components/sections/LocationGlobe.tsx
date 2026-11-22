@@ -1,5 +1,6 @@
 import createGlobe from "cobe";
 import { useEffect, useRef } from "react";
+import { themeUnit } from "../../lib/themeColors";
 
 type LocationGlobeProps = {
 	className?: string;
@@ -7,13 +8,15 @@ type LocationGlobeProps = {
 	size?: number;
 };
 
-/** NYC — colors aligned with Midnight Rose / green accents (COBE uses RGB 0–1). */
-const THEME = {
-	baseColor: [0.14, 0.09, 0.1] as [number, number, number],
-	markerColor: [0.22, 0.38, 0.26] as [number, number, number],
-	glowColor: [0.36, 0.2, 0.24] as [number, number, number],
-	nycPin: [0.26, 0.48, 0.34] as [number, number, number],
-};
+/** NYC globe colors come from src/index.css (cobe wants RGB 0–1). */
+function globeTheme() {
+	return {
+		baseColor: themeUnit("globe-base"),
+		markerColor: themeUnit("globe-marker"),
+		glowColor: themeUnit("globe-glow"),
+		nycPin: themeUnit("globe-pin"),
+	};
+}
 
 const NYC: [number, number] = [40.7128, -74.006];
 
@@ -43,6 +46,7 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 			/* ignore */
 		}
 
+		const THEME = globeTheme();
 		const globe = createGlobe(canvas, {
 			devicePixelRatio: dpr,
 			width: size * 2,
@@ -154,7 +158,7 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 	return (
 		<div className={className}>
 			<div
-				className="relative mx-auto overflow-hidden rounded-full ring-1 ring-white/10 shadow-[0_0_36px_-10px_rgba(212,132,154,0.35)]"
+				className="relative mx-auto overflow-hidden rounded-full ring-1 ring-white/10 shadow-[0_0_36px_-10px_color-mix(in_srgb,var(--color-rose)_35%,transparent)]"
 				style={{ width: size, height: size }}
 			>
 				<canvas

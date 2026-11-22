@@ -1,10 +1,32 @@
 import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PROFILE } from "../../data/profile";
 
 export function Experience() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const reduceMotion = useReducedMotion();
+	const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+	// Highest entry index that has reached the viewport. Based on position, not on
+	// an intersection event, so a fast jump past an entry still reveals it.
+	const [revealed, setRevealed] = useState(-1);
+
+	useEffect(() => {
+		const update = () => {
+			const limit = window.innerHeight * 0.9;
+			let max = -1;
+			itemRefs.current.forEach((el, i) => {
+				if (el && el.getBoundingClientRect().top < limit) max = i;
+			});
+			setRevealed((cur) => Math.max(cur, max));
+		};
+		update();
+		window.addEventListener("scroll", update, { passive: true });
+		window.addEventListener("resize", update);
+		return () => {
+			window.removeEventListener("scroll", update);
+			window.removeEventListener("resize", update);
+		};
+	}, []);
 
 	// Track scroll progress through the entire section
 	const { scrollYProgress } = useScroll({
@@ -103,10 +125,12 @@ export function Experience() {
 							{experiences.map((exp, i) => (
 								<motion.div
 									key={i}
+									ref={(el) => {
+										itemRefs.current[i] = el;
+									}}
 									// Reveal once; never hide content again after it has been read.
 									initial={reduceMotion ? false : { opacity: 0, x: 20 }}
-									whileInView={{ opacity: 1, x: 0 }}
-									viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+									animate={reduceMotion || i <= revealed ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
 									transition={reduceMotion ? { duration: 0 } : { duration: 0.8, delay: i * 0.1 }}
 									className="relative group"
 								>

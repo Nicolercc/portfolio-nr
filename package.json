@@ -26,8 +26,9 @@
     "verify:ia": "node scripts/verify-ia.mjs",
     "verify:a11y": "node scripts/verify-accessibility.mjs",
     "verify:design": "node scripts/verify-design-tokens.mjs",
+    "verify:starmap": "node scripts/verify-starmap.mjs",
     "verify:release": "node scripts/validate-release.mjs",
-    "verify": "npm run verify:content && npm run verify:repo && npm run verify:projects && npm run verify:security && npm run verify:audit && npm run verify:links && npm run lint && npm run build && npm run verify:performance && npm run verify:seo && npm run verify:ia && npm run verify:a11y && npm run verify:design && npm run verify:release"
+    "verify": "npm run verify:content && npm run verify:repo && npm run verify:projects && npm run verify:security && npm run verify:audit && npm run verify:links && npm run lint && npm run build && npm run verify:performance && npm run verify:seo && npm run verify:ia && npm run verify:a11y && npm run verify:design && npm run verify:starmap && npm run verify:release"
   },
   "dependencies": {
     "cobe": "^2.0.1",

@@ -65,5 +65,8 @@ jobs:
       - name: Verify type floor, contrast and reflow
         run: npm run verify:design
 
+      - name: Verify star map behavior
+        run: npm run verify:starmap
+
       - name: Validate release checklist
         run: npm run verify:release

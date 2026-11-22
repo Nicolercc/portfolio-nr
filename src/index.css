@@ -317,6 +317,18 @@
 	}
 }
 
+/* Plain section label (Projects, Case studies, Stack, Experience, About, Contact).
+   Each section names itself here; the serif line under it carries the voice. */
+.section-label {
+	font-family: var(--font-sans);
+	font-size: var(--text-caption);
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--color-rose-light);
+	margin: 0 0 12px;
+}
+
 /* ── Keyframes ──────────────────────────────────────────────────────────────── */
 @keyframes marquee {
 	0% {

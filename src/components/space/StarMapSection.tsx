@@ -1,27 +1,31 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { getProject, type Project, type ProjectSlug } from "../../data/projects";
 import { RECEIPTS } from "../../data/proofs";
+import { getStarSystems, type MapLink } from "../../data/starSystems";
 import type { StarMap } from "./StarMap";
 import "./space-hero.css";
 
-/** One star system per project, brightest first. */
-const SYSTEM_SLUGS: ProjectSlug[] = ["sano", "code4kidz", "tripcanvas", "ruvia", "elite-global"];
-/** Short, checkable line under each star; full numbers live in the case study. */
-const SYSTEM_LINES: Record<string, string> = {
-	sano: "0 axe violations, live",
-	code4kidz: "29 → 0 failing checks",
-	tripcanvas: "313 tests in CI",
-	ruvia: "27 + 21 tests",
-	"elite-global": "EN/ES client site",
-};
-const SYSTEM_COLORS: Record<string, string> = {
-	sano: "#4ade80",
-	code4kidz: "#ffb86b",
-	tripcanvas: "#7cc7ff",
-	ruvia: "#c3a0e1",
-	"elite-global": "#d4849a",
-};
+function PanelLink({ link, variant, onNavigate }: { link: MapLink; variant: "primary" | "ghost"; onNavigate?: () => void }) {
+	const className = `space-btn space-btn--${variant}`;
+	if (link.to) {
+		return (
+			<Link to={link.to} className={className}>
+				{link.label}
+			</Link>
+		);
+	}
+	const external = Boolean(link.href?.startsWith("http"));
+	return (
+		<a
+			href={link.href}
+			className={className}
+			onClick={onNavigate}
+			{...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+		>
+			{link.label}
+		</a>
+	);
+}
 
 type Mode = "loading" | "webgl" | "static";
 
@@ -30,10 +34,7 @@ function prefersReducedMotion() {
 }
 
 export default function StarMapSection() {
-	const systems = useMemo(
-		() => SYSTEM_SLUGS.map((slug) => getProject(slug)).filter((p): p is Project => Boolean(p)),
-		[],
-	);
+	const systems = useMemo(() => getStarSystems(), []);
 	const mapRef = useRef<HTMLDivElement>(null);
 	const sectionRef = useRef<HTMLElement>(null);
 	const labelRefs = useRef(new Map<string, HTMLElement>());
@@ -71,8 +72,9 @@ export default function StarMapSection() {
 					reducedMotion: prefersReducedMotion(),
 					systems: systems.map((p) => ({
 						slug: p.slug,
-						color: SYSTEM_COLORS[p.slug] ?? "#d4849a",
-						moons: p.metrics?.length ?? 1,
+						color: p.color,
+						moons: p.metrics.length || 1,
+						emphasis: p.slug === "sano",
 					})),
 					onHover: setHovered,
 					onSelect: (slug) => select(slug),
@@ -96,7 +98,14 @@ export default function StarMapSection() {
 	useEffect(() => {
 		const onScroll = () => {
 			const el = sectionRef.current;
-			if (!el || !engineRef.current) return;
+			if (!el) return;
+			// Leaving the map closes an open system, so the phone sheet never follows you down the page.
+			const rect = el.getBoundingClientRect();
+			if (rect.bottom < window.innerHeight * 0.25 || rect.top > window.innerHeight * 0.75) setSelected((cur) => {
+				if (cur) engineRef.current?.focus(null);
+				return null;
+			});
+			if (!engineRef.current) return;
 			engineRef.current.setScroll((window.scrollY - el.offsetTop) / Math.max(el.offsetHeight, 1));
 		};
 		window.addEventListener("scroll", onScroll, { passive: true });
@@ -132,15 +141,13 @@ export default function StarMapSection() {
 		<section ref={sectionRef} className="space-hero" id="universe" data-mode={mode} data-open={Boolean(active)} aria-labelledby="universe-heading">
 			<div className="space-hero__nebula" aria-hidden />
 
-			<div className="space-hero__intro">
+			<div className="space-hero__intro" inert={Boolean(active)}>
 				<h2 id="universe-heading" className="space-hero__heading">
 					Every star is
 					<br />
 					something I shipped.
 				</h2>
-				<p className="space-hero__tagline">
-					Fly into a system to see the product. Open a receipt to see how I know it works.
-				</p>
+				<p className="space-hero__tagline">Pick a star. Open a receipt.</p>
 
 				<div className="proof-log">
 					<h2 className="proof-log__title">
@@ -199,7 +206,7 @@ export default function StarMapSection() {
 			<div ref={mapRef} className="starmap" data-has-selection={Boolean(active)}>
 				<div className="starmap__labels" role="group" aria-label="Star map: one system per project">
 					<p className="starmap__hint" aria-hidden={mode === "static"}>
-						{mode === "static" ? "Projects" : "Each star is a project. Pick one to fly in."}
+						{mode === "static" ? "Projects" : "Pick a star to fly in."}
 					</p>
 					{systems.map((p) => (
 						<button
@@ -211,7 +218,7 @@ export default function StarMapSection() {
 							}}
 							className="star-label"
 							data-lit={hovered === p.slug || selected === p.slug}
-							style={{ "--star": SYSTEM_COLORS[p.slug] } as React.CSSProperties}
+							style={{ "--star": p.color } as React.CSSProperties}
 							aria-pressed={selected === p.slug}
 							onPointerEnter={() => setHovered(p.slug)}
 							onPointerLeave={() => setHovered(null)}
@@ -220,10 +227,8 @@ export default function StarMapSection() {
 							onClick={() => select(selected === p.slug ? null : p.slug)}
 						>
 							<span className="star-label__dot" aria-hidden />
-							<span className="star-label__name">{p.slug === "elite-global" ? "Elite Global" : p.title}</span>
-							{SYSTEM_LINES[p.slug] ? (
-								<span className="star-label__metric">{SYSTEM_LINES[p.slug]}</span>
-							) : null}
+							<span className="star-label__name">{p.title}</span>
+							<span className="star-label__metric">{p.line}</span>
 						</button>
 					))}
 				</div>
@@ -235,7 +240,7 @@ export default function StarMapSection() {
 						className="system-panel"
 						role="region"
 						aria-label={`${active.title} system`}
-						style={{ "--star": SYSTEM_COLORS[active.slug] } as React.CSSProperties}
+						style={{ "--star": active.color } as React.CSSProperties}
 					>
 						<div className="system-panel__head">
 							<p className="system-panel__kicker">System · {active.role}</p>
@@ -245,10 +250,10 @@ export default function StarMapSection() {
 						</div>
 						<h2 className="system-panel__title">{active.title}</h2>
 						<p className="system-panel__tagline">{active.tagline}</p>
-						{active.media.hero ? (
+						{active.image ? (
 							<img
-								src={active.media.hero}
-								alt={active.media.alt ?? `${active.title} interface`}
+								src={active.image.src}
+								alt={active.image.alt}
 								width={1440}
 								height={900}
 								loading="lazy"
@@ -256,7 +261,7 @@ export default function StarMapSection() {
 								className="system-panel__shot"
 							/>
 						) : null}
-						{active.metrics?.length ? (
+						{active.metrics.length ? (
 							<dl className="system-panel__metrics">
 								{active.metrics.slice(0, 3).map((m) => (
 									<div key={m.label}>
@@ -267,14 +272,8 @@ export default function StarMapSection() {
 							</dl>
 						) : null}
 						<div className="system-panel__actions">
-							<Link to={`/projects/${active.slug}`} className="space-btn space-btn--primary">
-								Open case study
-							</Link>
-							{active.links.live ? (
-								<a href={active.links.live} target="_blank" rel="noreferrer" className="space-btn space-btn--ghost">
-									Live site ↗
-								</a>
-							) : null}
+							<PanelLink link={active.primary} variant="primary" onNavigate={() => select(null)} />
+							{active.secondary ? <PanelLink link={active.secondary} variant="ghost" /> : null}
 						</div>
 					</div>
 				) : null}

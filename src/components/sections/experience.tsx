@@ -60,6 +60,7 @@ export function Experience() {
 
 	return (
 		<section
+			id="experience"
 			ref={containerRef}
 			className="py-32 px-6 md:px-12 bg-transparent relative"
 		>

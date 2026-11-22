@@ -17,6 +17,8 @@ const budgets = {
 	supportingImage: 330 * KB,
 	video: 5 * MB,
 	totalJsGzip: 220 * KB,
+	/** The three.js star map loads after first paint, so it has its own budget. */
+	starMapJsGzip: 140 * KB,
 	entryJsRaw: 500 * KB,
 	cssGzip: 22 * KB,
 };
@@ -113,10 +115,13 @@ if (existsSync(distAssetsDir)) {
 	const distFiles = listFiles(distAssetsDir);
 	const jsFiles = distFiles.filter((file) => file.endsWith(".js"));
 	const cssFiles = distFiles.filter((file) => file.endsWith(".css"));
-	const totalJsGzip = jsFiles.reduce(
-		(sum, file) => sum + gzipSync(readFileSync(file)).length,
-		0,
-	);
+	const gz = (file) => gzipSync(readFileSync(file)).length;
+	const isStarMap = (file) => /\/StarMap-[^/]+\.js$/.test(file);
+	const totalJsGzip = jsFiles.filter((file) => !isStarMap(file)).reduce((sum, file) => sum + gz(file), 0);
+	const starMapJsGzip = jsFiles.filter(isStarMap).reduce((sum, file) => sum + gz(file), 0);
+	if (starMapJsGzip > budgets.starMapJsGzip) {
+		fail(`Star map JS gzip budget exceeded: ${formatSize(starMapJsGzip)} > ${formatSize(budgets.starMapJsGzip)}.`);
+	}
 	const largestEntryJs = Math.max(
 		0,
 		...jsFiles

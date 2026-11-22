@@ -44,7 +44,8 @@ if (
 const externalLinkPattern = /target="_blank"([\s\S]*?)>/g;
 const allSource = [
 	"src/components/layouts/Navbar.tsx",
-	"src/components/space/SpaceHero.tsx",
+	"src/components/sections/landing.tsx",
+	"src/components/space/StarMapSection.tsx",
 	"src/components/sections/bento.tsx",
 	"src/pages/CaseStudy.tsx",
 	"src/pages/BlogPost.tsx",

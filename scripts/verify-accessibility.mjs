@@ -161,7 +161,7 @@ async function main() {
 		});
 		await reduced.goto(baseUrl, { waitUntil: "networkidle" });
 		const reducedMotionState = await reduced.evaluate(() => {
-			const nebula = document.querySelector(".space-hero__intro");
+			const nebula = document.querySelector(".landing__nebula");
 			return {
 				matches: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
 				nebulaAnimation: nebula ? getComputedStyle(nebula).animationName : "",
@@ -170,7 +170,7 @@ async function main() {
 		assert(reducedMotionState.matches, "Reduced-motion media query should be emulated.");
 		assert(
 			reducedMotionState.nebulaAnimation === "none",
-			"Hero entrance animation should be disabled for reduced motion.",
+			"Landing nebula animation should be disabled for reduced motion.",
 		);
 
 		const forcedColors = await browser.newPage({

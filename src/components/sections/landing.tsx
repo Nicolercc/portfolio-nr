@@ -557,15 +557,16 @@ export default function Landing() {
 					{PROFILE.tagline}
 				</p>
 
-				<div className="landing__meta">
-					<span className="landing__location">
-						{PROFILE.locationShort} · {PROFILE.background}
-					</span>
-				</div>
+				{PROFILE.lookingFor ? (
+					<p className="landing__meta landing__location">
+						<span className="landing__roles-dot" aria-hidden />
+						{PROFILE.lookingFor}
+					</p>
+				) : null}
 
 				<div className="landing__actions">
-					<a href="#work" className="landing__primary-btn">
-						View selected work
+					<a href="#universe" className="landing__primary-btn">
+						See the work
 					</a>
 					<a
 						href={PROFILE.resumePath}

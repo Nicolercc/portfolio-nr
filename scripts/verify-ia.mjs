@@ -81,7 +81,7 @@ async function main() {
 				href: link.getAttribute("href"),
 			})),
 		);
-		assert(ctas.some((link) => link.text === "View selected work" && link.href === "#work"), "Missing View selected work CTA.");
+		assert(ctas.some((link) => link.text === "See the work" && link.href === "#universe"), "Missing See the work CTA pointing at the star map.");
 		assert(ctas.some((link) => link.text?.startsWith("Download resume") && link.href === "/Nicole_Rodriguez_Resume.pdf"), "Missing resume CTA.");
 		assert(ctas.length === 2, `Hero should expose exactly two primary actions, found ${ctas.length}.`);
 

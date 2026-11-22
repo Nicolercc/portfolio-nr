@@ -18,7 +18,7 @@ export const PROFILE = {
 	summary:
 		"NYC-based full-stack product engineer. I build products end to end, from data pipelines and AI features to accessible, carefully designed interfaces.",
 	tagline:
-		"I build products end to end, from the data pipeline to the last pixel, and design them for people who don't use them the way I do.",
+		"I build products end to end, for people who don't use them the way I do.",
 } as const;
 
 export const mailtoHref = `mailto:${PROFILE.email}`;

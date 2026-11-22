@@ -1,3 +1,5 @@
+import { BriefArtifactCard } from "../BriefArtifactCard";
+import { ProjectStatusPill } from "../ProjectStatusPill";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { RECEIPTS } from "../../data/proofs";
@@ -27,7 +29,7 @@ function PanelLink({ link, variant, onNavigate }: { link: MapLink; variant: "pri
 	);
 }
 
-function ProjectReceipt({ receipt }: { receipt: (typeof RECEIPTS)[number] }) {
+function PanelReceipt({ receipt }: { receipt: (typeof RECEIPTS)[number] }) {
 	const [open, setOpen] = useState(false);
 	const slipId = `receipt-${receipt.id}`;
 
@@ -296,6 +298,7 @@ export default function StarMapSection() {
 						>
 							<span className="star-label__dot" aria-hidden />
 							<span className="star-label__name">{p.title}</span>
+							<ProjectStatusPill status={p.status} />
 							<span className="star-label__metric">{p.line}</span>
 						</button>
 					))}
@@ -317,8 +320,9 @@ export default function StarMapSection() {
 							</button>
 						</div>
 						<h2 className="system-panel__title">{active.title}</h2>
+						<ProjectStatusPill status={active.status} />
 						<p className="system-panel__tagline">{active.tagline}</p>
-						{active.image ? (
+						{active.kind === "brief" ? <BriefArtifactCard artifact={active.artifact} /> : active.image ? (
 							<img
 								src={active.image.src}
 								alt={active.image.alt}
@@ -339,7 +343,7 @@ export default function StarMapSection() {
 								))}
 							</dl>
 						) : null}
-						{receipt && <ProjectReceipt key={receipt.id} receipt={receipt} />}
+						{receipt && <PanelReceipt key={receipt.id} receipt={receipt} />}
 						<div className="system-panel__actions">
 							<PanelLink link={active.primary} variant="primary" onNavigate={() => select(null)} />
 							{active.secondary ? <PanelLink link={active.secondary} variant="ghost" /> : null}

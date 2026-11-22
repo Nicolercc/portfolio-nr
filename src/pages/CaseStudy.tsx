@@ -1,8 +1,10 @@
+import { BriefPage } from "../components/BriefPage";
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useId, useState, type ReactNode } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
 	getProject,
+	getProjectMetadata,
 	getNextProjectSlug,
 	type ProjectMedia,
 	type ProjectCaseStudy,
@@ -956,27 +958,27 @@ export default function CaseStudy() {
 	useEffect(() => {
 		if (!project) return;
 
+		const { title, description, image } = getProjectMetadata(project);
+		const fullStudy = project.kind === "case-study" ? project : undefined;
 		setDocumentMeta({
-			title: `${project.title} Case Study — ${PROFILE.name}`,
-			description: project.description,
+			title: `${title} — ${PROFILE.name}`,
+			description,
 			path: `/projects/${project.slug}`,
-			image: project.media.social ?? project.media.hero ?? project.media.detail,
+			image,
 			structuredData: {
 				"@context": "https://schema.org",
 				"@type": "CreativeWork",
-				name: `${project.title} Case Study`,
-				description: project.description,
+				name: title,
+				description,
 				url: `${PROFILE.website}/projects/${project.slug}`,
-				image: project.media.hero
-					? `${PROFILE.website}${project.media.hero}`
-					: undefined,
+				image: fullStudy?.media.hero ? `${PROFILE.website}${fullStudy.media.hero}` : undefined,
 				author: {
 					"@type": "Person",
 					name: PROFILE.name,
 					url: PROFILE.website,
 				},
-				keywords: project.stack,
-				about: project.category,
+				keywords: fullStudy?.stack,
+				about: fullStudy?.category,
 			},
 		});
 	}, [project]);
@@ -984,6 +986,8 @@ export default function CaseStudy() {
 	if (!project) {
 		return <NotFound />;
 	}
+
+	if (project.kind === "brief") return <BriefPage project={project} />;
 
 	const nextProjectKey = getNextProjectSlug(project.slug);
 	const nextProject = getProject(nextProjectKey);

@@ -1,7 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import vm from "node:vm";
-import ts from "typescript";
+import { loadBlogSlugs, loadProjects } from "./route-data.mjs";
 
 const root = process.cwd();
 const distDir = join(root, "dist");
@@ -29,38 +28,6 @@ function absoluteUrl(pathOrUrl) {
 	if (!pathOrUrl) return undefined;
 	if (/^https?:\/\//.test(pathOrUrl)) return pathOrUrl;
 	return new URL(pathOrUrl, baseSiteUrl).toString();
-}
-
-function loadProjects() {
-	const source = readFileSync(join(root, "src/data/projects.ts"), "utf8");
-	const output = ts.transpileModule(source, {
-		compilerOptions: {
-			module: ts.ModuleKind.CommonJS,
-			target: ts.ScriptTarget.ES2022,
-		},
-		fileName: "projects.ts",
-	}).outputText;
-	const module = { exports: {} };
-	const sandbox = {
-		module,
-		exports: module.exports,
-		require(specifier) {
-			throw new Error(`Unexpected import while reading projects.ts: ${specifier}`);
-		},
-	};
-
-	vm.runInNewContext(output, sandbox, { filename: "projects.ts" });
-	const registry = module.exports.projectsRegistry;
-	const listed = [
-		...module.exports.SHOWCASE_PROJECT_SLUGS,
-		...(module.exports.SECONDARY_CASE_STUDY_SLUGS ?? []),
-	];
-	// Every project in the registry renders a case study, so every one needs a built page.
-	// Unlisted ones (e.g. impactify) stay out of the sitemap but must not 404 for old links.
-	return {
-		registry,
-		slugs: [...listed, ...Object.keys(registry).filter((slug) => !listed.includes(slug))],
-	};
 }
 
 function parseFrontmatter(raw) {
@@ -157,7 +124,7 @@ function main() {
 	assert(existsSync(join(distDir, "index.html")), "dist/index.html missing. Run Vite build first.");
 
 	const baseHtml = readFileSync(join(distDir, "index.html"), "utf8");
-	const { registry, slugs } = loadProjects();
+	const { registry, slugs, getProjectMetadata } = loadProjects(root);
 	const blogPosts = loadBlogPosts();
 	const projectList = slugs.map((slug) => registry[slug]);
 	const routeMetas = [
@@ -174,12 +141,14 @@ function main() {
 				"Selected UX, accessibility, and frontend case studies by Nicole Rodriguez: interaction decisions taken from design through implementation and validation.",
 			image: DEFAULT_SOCIAL_IMAGE,
 		},
-		...projectList.map((project) => ({
-			path: `/projects/${project.slug}`,
-			title: `${project.title} Case Study — ${profile.name}`,
-			description: project.description,
-			image: project.media.social ?? project.media.hero ?? project.media.detail,
-		})),
+		...projectList.map((project) => {
+			const metadata = getProjectMetadata(project);
+			return {
+				...metadata,
+				path: `/projects/${project.slug}`,
+				title: `${metadata.title} — ${profile.name}`,
+			};
+		}),
 		{
 			path: "/blog",
 			title: `Writing — ${profile.name}`,

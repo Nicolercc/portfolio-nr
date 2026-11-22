@@ -1,13 +1,14 @@
+import { MoreWorkList } from "../MoreWorkList";
 import { Fragment, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { getShowcaseProjects, type Project } from "../../data/projects";
+import { getShowcaseProjects, type CaseStudyProject } from "../../data/projects";
 
 /* ─────────────────────────────────────────────
    SUB-COMPONENT: The Project Visuals
 ───────────────────────────────────────────── */
-function ProjectVisuals({ project }: { project: Project }) {
+function ProjectVisuals({ project }: { project: CaseStudyProject }) {
 	const { media } = project;
 
 	return (
@@ -32,7 +33,7 @@ function ProjectVisuals({ project }: { project: Project }) {
 /* ─────────────────────────────────────────────
    SUB-COMPONENT: Case Study Row
 ───────────────────────────────────────────── */
-function CaseStudyCard({ project, position }: { project: Project; position: number }) {
+function CaseStudyCard({ project, position }: { project: CaseStudyProject; position: number }) {
 	const cardRef = useRef<HTMLDivElement>(null);
 	const reduceMotion = useReducedMotion();
 	const { scrollYProgress } = useScroll({
@@ -169,6 +170,7 @@ export function Projects() {
 						<CaseStudyCard key={project.slug} project={project} position={i + 1} />
 					))}
 				</div>
+				<MoreWorkList compact />
 			</div>
 		</section>
 	);

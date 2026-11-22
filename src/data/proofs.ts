@@ -1,8 +1,7 @@
 import type { ProjectSlug } from "./projects";
 
 /**
- * Claims shown in the hero. Every row is copied from evidence already published
- * in that project's case study (src/data/projects.ts); keep them in sync.
+ * Claims grounded in the project write-up or linked public evidence.
  */
 export type Receipt = {
 	id: string;
@@ -14,6 +13,7 @@ export type Receipt = {
 	method: string;
 	/** What the claim does not cover. */
 	scope: string;
+	sources?: { label: string; href: string }[];
 };
 
 export const RECEIPTS: Receipt[] = [
@@ -63,5 +63,22 @@ export const RECEIPTS: Receipt[] = [
 		],
 		method: "Vitest, Playwright journeys and axe run on every push.",
 		scope: "Interactive prototype on a curated demo trip.",
+	},
+	{
+		id: "jt-review",
+		claim: "The review workflow has a public walkthrough and passing CI",
+		project: "jt · job tracker",
+		slug: "jt",
+		rows: [
+			{ label: "Walkthrough", value: "Synthetic email and a disposable SQLite database" },
+			{ label: "Review", value: "Approval records the event and decision together" },
+			{ label: "CI run #123", value: "Passed" },
+		],
+		method: "The README documents a synthetic email held for review, approved by the user, and turned into a deadline.",
+		scope: "The public evidence covers the synthetic workflow and automated checks. Live inboxes require separate evaluation.",
+		sources: [
+			{ label: "Read the walkthrough", href: "https://github.com/Nicolercc/jt#try-it-with-synthetic-data" },
+			{ label: "View CI run", href: "https://github.com/Nicolercc/jt/actions/runs/44926976407" },
+		],
 	},
 ];

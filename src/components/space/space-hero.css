@@ -186,8 +186,8 @@
 	margin: 0 0 14px;
 	padding: 14px 16px;
 	border-radius: 6px;
-	background: #f5f0e8;
-	color: #1a1714;
+	background: var(--color-paper);
+	color: var(--color-ink);
 	font-family: var(--font-mono);
 	font-size: var(--text-caption);
 	box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.8);

@@ -1,4 +1,4 @@
-export type ProjectStatus = "live" | "case-study" | "in-progress" | "archived";
+export type ProjectStatus = "live" | "prototype" | "open-source" | "client-data" | "archived";
 
 export type ProjectMetric = {
 	value: string;
@@ -162,15 +162,21 @@ export type ProjectHomepage = {
 	highlights: string[];
 };
 
-export type Project = {
+type ProjectBase = {
 	slug: ProjectSlug;
 	title: string;
 	shortTitle?: string;
-	category: string;
-	year: string;
 	status: ProjectStatus;
+	onMap: boolean;
+	oneLine: string;
 	role: string;
 	tagline: string;
+};
+
+export type CaseStudyProject = ProjectBase & {
+	kind: "case-study";
+	category: string;
+	year: string;
 	description: string;
 	/** One outcome line for the homepage case-study row. Falls back to tagline. */
 	outcome?: string;
@@ -184,13 +190,30 @@ export type Project = {
 	homepage: ProjectHomepage;
 };
 
+export type BriefArtifact =
+	| { format: "schema"; title: string; relationships: [string, string, string][] }
+	| { format: "terminal"; title: string; snippet: string };
+
+export type BriefProject = ProjectBase & {
+	kind: "brief";
+	brief: string;
+	artifact: BriefArtifact;
+	facts: [ProjectMetric, ProjectMetric, ProjectMetric];
+	receiptId?: string;
+	outbound: { label: string; href: string };
+};
+
+export type Project = CaseStudyProject | BriefProject;
+
 export type ProjectSlug =
 	| "sano"
 	| "ruvia"
 	| "impactify"
 	| "elite-global"
 	| "code4kidz"
-	| "tripcanvas";
+	| "tripcanvas"
+	| "van-alen"
+	| "jt";
 
 /** Homepage + projects index display order */
 export const SHOWCASE_PROJECT_SLUGS = [
@@ -201,13 +224,18 @@ export const SHOWCASE_PROJECT_SLUGS = [
 
 /** Case studies that stay reachable (linked from More Work) but are not selected work. */
 export const SECONDARY_CASE_STUDY_SLUGS = [
-	"ruvia",
+	"van-alen",
+	"jt",
 	"tripcanvas",
+	"ruvia",
 ] as const satisfies readonly ProjectSlug[];
 
 const projects: Record<ProjectSlug, Project> = {
 	sano: {
 		slug: "sano",
+		kind: "case-study",
+		onMap: true,
+		oneLine: "NYC restaurant inspection histories with the official grade first.",
 		title: "Sano",
 		category: "Public Data · Full-Stack",
 		year: "2026",
@@ -674,6 +702,9 @@ const projects: Record<ProjectSlug, Project> = {
 
 	impactify: {
 		slug: "impactify",
+		kind: "case-study",
+		onMap: false,
+		oneLine: "Civic news with plain-English context, built with Next.js and Supabase.",
 		title: "Impactify",
 		category: "Civic Tech · Full-Stack",
 		year: "2024–2025",
@@ -877,10 +908,13 @@ const projects: Record<ProjectSlug, Project> = {
 
 	ruvia: {
 		slug: "ruvia",
+		kind: "case-study",
+		onMap: true,
+		oneLine: "A recruiting prototype that scores proposed evidence against a fixed rubric.",
 		title: "Ruvia",
 		category: "Responsible AI · Decision-Support UX",
 		year: "2026",
-		status: "case-study",
+		status: "prototype",
 		role: "Product Designer & Full-Stack Engineer",
 		tagline:
 			"Evidence-first recruiting decision support: explicit criteria, visible uncertainty, and a human who makes every call.",
@@ -1078,6 +1112,9 @@ const projects: Record<ProjectSlug, Project> = {
 
 	code4kidz: {
 		slug: "code4kidz",
+		kind: "case-study",
+		onMap: true,
+		oneLine: "An accessible coding curriculum with verified answer checks.",
 		title: "Code4Kidz",
 		category: "EdTech · Frontend",
 		year: "2026",
@@ -1301,11 +1338,14 @@ const projects: Record<ProjectSlug, Project> = {
 	},
 	tripcanvas: {
 		slug: "tripcanvas",
+		kind: "case-study",
+		onMap: true,
+		oneLine: "A travel planner prototype that explains how much fits in a day.",
 		title: "TripCanvas",
 		shortTitle: "TripCanvas",
 		category: "Travel Planning · Interaction Design",
 		year: "2026",
-		status: "case-study",
+		status: "prototype",
 		role: "Product Designer & Engineer",
 		tagline:
 			"An interactive product prototype exploring how travelers turn scattered recommendations into a structured journey — and learn, with reasons, when a day won't work.",
@@ -1511,8 +1551,11 @@ const projects: Record<ProjectSlug, Project> = {
 
 	"elite-global": {
 		slug: "elite-global",
+		kind: "case-study",
+		onMap: true,
+		oneLine: "A bilingual website for a New York cleaning business.",
 		title: "Elite Global Cleaning Services",
-		shortTitle: "EGCS",
+		shortTitle: "Elite Global",
 		category: "Corporate · Client Work",
 		year: "2023",
 		status: "live",
@@ -1715,6 +1758,61 @@ const projects: Record<ProjectSlug, Project> = {
 		},
 	},
 
+	"van-alen": {
+		slug: "van-alen",
+		kind: "brief",
+		onMap: true,
+		title: "Van Alen Institute",
+		status: "client-data",
+		role: "Data model & migration · Pursuit capstone",
+		oneLine: "An Airtable migration connecting programs, projects, partners and funding.",
+		tagline: "One Airtable source of truth with staff entry forms, permissions and a guide.",
+		brief: "For my Pursuit capstone, I worked on the data model and migration for Van Alen Institute. The project brought program, project, partner and funding information into a shared Airtable base. Staff needed to maintain the information after handoff, so the design had to account for how they would enter records and manage access. I organized the base around linked tables so shared information could be maintained in one place and referenced across related work. The delivery included staff entry forms, permissions and a 27-page guide. The migration moved and verified more than 590 records across a model with 12 linked tables. The diagram shows five parts of that model and how they connect. It uses a simplified view for this public write-up. The record count describes the migration, and the available evidence ends at delivery.",
+		artifact: {
+			format: "schema",
+			title: "Simplified schema",
+			relationships: [
+				["Programs", "include", "Projects"],
+				["Funding", "supports", "Projects"],
+				["Partners", "join through", "Participations"],
+				["Participations", "connect to", "Projects"],
+			],
+		},
+		facts: [
+			{ value: "590+", label: "Records migrated and verified" },
+			{ value: "12", label: "Linked tables" },
+			{ value: "27 pages", label: "Staff guide" },
+		],
+		// TODO: Needs Nicole's anonymized method and counts
+		outbound: { label: "See the experience entry", href: "/#experience" },
+	},
+	jt: {
+		slug: "jt",
+		kind: "brief",
+		onMap: true,
+		title: "jt · job tracker",
+		status: "open-source",
+		role: "Solo builder · open source",
+		oneLine: "A local job tracker that turns application history into follow-up decisions.",
+		tagline: "Gmail supplies evidence, a language model proposes events, and you approve what gets recorded.",
+		brief: "I built jt to answer a daily question in my job search: which applications need my attention today? Email confirmations are incomplete, and a message can match several roles at the same company. I made the application record the source of truth for what I applied to and used incoming email to reconcile updates. A language model can propose an event. When an email matches multiple applications, jt holds it for review. Approval checks the application's current stage and records the event and decision together in an append-only log. The public walkthrough demonstrates that sequence with a synthetic message, a disposable database and an approval that surfaces a deadline. The tracker runs locally in one SQLite file and needs no hosted service. The walkthrough verifies the synthetic review path. Matching still depends on the information in the message and can require a person to identify the right application.",
+		artifact: {
+			format: "terminal",
+			title: "Review an update with fictional data",
+			snippet: `# Proposed: Northstar · interview
+$ jt review show 7
+# Two roles match. Review the message and pick an application.
+$ jt review approve 7 --app-id 3
+# Committed: interview event for application 3`,
+		},
+		facts: [
+			{ value: "~2,800", label: "Lines of Python" },
+			{ value: "1", label: "SQLite file, no server" },
+			{ value: "Append-only", label: "Event log" },
+		],
+		receiptId: "jt-review",
+		outbound: { label: "View on GitHub", href: "https://github.com/Nicolercc/jt" },
+	},
 };
 
 export const projectsRegistry: Record<ProjectSlug, Project> = projects;
@@ -1722,25 +1820,38 @@ export const projectsRegistry: Record<ProjectSlug, Project> = projects;
 /** @deprecated Prefer projectsRegistry — kept for existing imports during migration */
 export const projectsData = projectsRegistry;
 
-const PUBLIC_PROJECT_SLUG_SET = new Set<string>([
-	...SHOWCASE_PROJECT_SLUGS,
-	...SECONDARY_CASE_STUDY_SLUGS,
-]);
-
 export function isProjectSlug(slug: string): slug is ProjectSlug {
-	return PUBLIC_PROJECT_SLUG_SET.has(slug);
+	return Object.hasOwn(projectsRegistry, slug);
 }
 
 export function getProject(slug: string): Project | undefined {
 	return isProjectSlug(slug) ? projectsRegistry[slug] : undefined;
 }
 
-export function getShowcaseProjects(): Project[] {
-	return SHOWCASE_PROJECT_SLUGS.map((slug) => projectsRegistry[slug]);
+export function getShowcaseProjects(): CaseStudyProject[] {
+	return SHOWCASE_PROJECT_SLUGS.map((slug) => projectsRegistry[slug]).filter(
+		(project): project is CaseStudyProject => project.kind === "case-study",
+	);
 }
 
-export function getAllProjectSlugs(): ProjectSlug[] {
-	return [...SHOWCASE_PROJECT_SLUGS];
+export function getMoreWorkProjects(): Project[] {
+	const showcase = new Set<ProjectSlug>(SHOWCASE_PROJECT_SLUGS);
+	const secondary = new Set<ProjectSlug>(SECONDARY_CASE_STUDY_SLUGS);
+	return [
+		...SECONDARY_CASE_STUDY_SLUGS.map((slug) => projectsRegistry[slug]),
+		...Object.values(projectsRegistry).filter(({ slug }) => !showcase.has(slug) && !secondary.has(slug)),
+	];
+}
+
+export function getProjectMetadata(project: Project) {
+	if (project.kind === "brief") {
+		return { title: `${project.title} Project Brief`, description: project.oneLine, image: "/og-image.jpg" };
+	}
+	return {
+		title: `${project.title} Case Study`,
+		description: project.description,
+		image: project.media.social ?? project.media.hero ?? project.media.detail,
+	};
 }
 
 export function getNextProjectSlug(currentSlug: ProjectSlug): ProjectSlug {

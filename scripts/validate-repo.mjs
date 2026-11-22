@@ -76,12 +76,6 @@ for (const slug of showcaseSlugs) {
 	}
 }
 
-for (const slug of projectSlugs) {
-	if (!projectsSource.includes(`caseStudy: "/projects/${slug}"`)) {
-		fail(`Project is missing its case-study route: ${slug}`);
-	}
-}
-
 const blogSource = readFileSync(join(root, "src/data/blog.ts"), "utf8");
 const fallbackSlugs = [...blogSource.matchAll(/parseBlogPost\([^,]+,\s*"([^"]+)"/g)].map(
 	(match) => match[1],

@@ -60,9 +60,17 @@ async function labelFor(page, name) {
 	return label;
 }
 
+// Star labels drift with their systems every frame, so a pointer click waits for a
+// stable element that never settles. Select by keyboard instead, which also proves
+// the stars are operable without a mouse.
+async function activate(label) {
+	await label.focus();
+	await label.press("Enter");
+}
+
 async function assertPanelOpensAndCloses(page, viewport) {
 	const label = await labelFor(page, "Sano");
-	await label.click();
+	await activate(label);
 	const panel = page.locator(".system-panel");
 	await panel.waitFor({ state: "visible" });
 	const title = (await panel.locator("h2, h3").first().textContent())?.trim();
@@ -74,7 +82,7 @@ async function assertPanelOpensAndCloses(page, viewport) {
 	const escFocus = await page.evaluate(() => document.activeElement?.textContent ?? "");
 	assert(escFocus.includes("Sano"), `${viewport}: Escape should return focus to the Sano star, got "${escFocus.slice(0, 40)}".`);
 
-	await label.click();
+	await activate(label);
 	await panel.waitFor({ state: "visible" });
 	await panel.getByRole("button", { name: /back to map/i }).click();
 	await panel.waitFor({ state: "detached" });

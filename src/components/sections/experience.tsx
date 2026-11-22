@@ -1,5 +1,6 @@
 import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { PROFILE } from "../../data/profile";
 
 export function Experience() {
@@ -45,38 +46,35 @@ export function Experience() {
 		{
 			type: "Fellowship",
 			company: "Pursuit",
+			oneLine:
+				"Built a drift-proof evaluation harness for an AI inbox triage tool and rebuilt Impactify on the Next.js App Router.",
 			role: "AI-Native Software Engineering Fellow",
 			period: PROFILE.pursuitPeriod,
-			description:
-				"Built a drift-proof evaluation harness for an AI customer-inbox triage tool: one shared inference path, an automated CI gate, a serverless proxy layer, and PII redaction before any message reaches the model, reaching 8/8 accuracy on urgency and category classification. Also rebuilt Impactify from React/Vite to the Next.js App Router.",
-			skills: ["TypeScript", "Next.js", "Node.js", "Python", "PostgreSQL", "Claude API", "Cloud Run", "Docker", "Vercel"],
 		},
 		{
 			type: "Capstone",
 			company: "Van Alen Institute",
+			oneLine:
+				"Built the institute's Airtable data model and migrated and verified 590+ records.",
 			role: "Data Model & Migration Specialist · Pursuit capstone team",
 			period: "Oct — Nov 2026",
-			description:
-				"Built the institute's Airtable data model (12 linked tables) as one source of truth for programs, partners, projects, and funding; the staff dashboard reads from it. Migrated and verified 590+ records from spreadsheets, visitor logs, and event systems, set up permissions and staff entry forms, and wrote the 27-page staff guide.",
-			skills: ["Data Modeling", "Airtable", "Data Migration", "Permissions", "Documentation"],
 		},
 		{
 			type: "Freelance",
 			company: "Elite Global Cleaning Services",
+			oneLine:
+				"Built and maintained a bilingual client site through real infrastructure failures.",
+			projectHref: "/projects/elite-global",
 			role: "Freelance Full-Stack Developer",
 			period: "Nov 2024 — May 2025",
-			description:
-				"Sole technical point of contact for a Queens-based environmental remediation company. Shipped a static-first Astro and TypeScript site with React integrations, customer contact flows, SEO, and English/Spanish i18n. After launch, diagnosed a Netlify webhook and Porkbun DNS failure behind an expired SSL certificate and restored HTTPS. Still provide occasional maintenance.",
-			skills: ["Astro", "TypeScript", "React", "Tailwind", "Netlify", "Porkbun DNS", "i18n"],
 		},
 		{
 			type: "Editorial",
 			company: "POPSUGAR",
+			oneLine:
+				"Wrote plain-language articles for a national audience, which is why I care about clear product copy.",
 			role: "Freelance Writer",
 			period: "2022 — 2023",
-			description:
-				"Published a plain-language article for a national digital audience on an editorial deadline. Writing for readers I'll never meet is why I care about clear product copy, onboarding, and documentation.",
-			skills: ["Plain-Language Writing", "Editing", "Editorial Deadlines"],
 		},
 	];
 
@@ -90,20 +88,13 @@ export function Experience() {
 				<div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 					{/* LEFT: Sticky Header */}
 					<div className="lg:col-span-4 lg:sticky lg:top-32 h-fit space-y-4">
-						<motion.p
-							initial={reduceMotion ? false : { opacity: 0 }}
-							whileInView={{ opacity: 1 }}
-							viewport={{ once: true }}
-							className="font-mono text-caption tracking-[0.5em] text-rose uppercase"
-						>
-							Experience
-						</motion.p>
-						<h2 className="text-4xl md:text-5xl font-serif text-white leading-tight">
+						<h2 className="section-label">Experience</h2>
+						<p className="text-4xl md:text-5xl font-serif text-white leading-tight">
 							Built end to end, <br />
 							<span className="italic text-rose">
 								designed with care.
 							</span>
-						</h2>
+						</p>
 						<p className="text-sm text-white/60 font-light max-w-xs leading-relaxed">
 							Full-stack training, a designer's eye, and the habit of checking my
 							own work before anyone else has to.
@@ -164,19 +155,16 @@ export function Experience() {
 										</div>
 
 										<p className="text-muted-foreground font-light leading-relaxed max-w-2xl">
-											{exp.description}
+											{exp.oneLine}
+											{"projectHref" in exp && exp.projectHref ? (
+												<>
+													{" "}
+													<Link to={exp.projectHref} className="text-rose underline underline-offset-4">
+														Project
+													</Link>
+												</>
+											) : null}
 										</p>
-
-										<div className="flex flex-wrap gap-2 pt-2">
-											{exp.skills.map((skill) => (
-												<span
-													key={skill}
-													className="px-2 py-1 bg-white/[0.03] border border-white/10 rounded text-caption font-mono text-white/60 uppercase tracking-tighter"
-												>
-													{skill}
-												</span>
-											))}
-										</div>
 									</div>
 								</motion.div>
 							))}

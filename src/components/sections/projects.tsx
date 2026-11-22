@@ -8,7 +8,7 @@ import { getShowcaseProjects, type Project } from "../../data/projects";
    SUB-COMPONENT: The Project Visuals
 ───────────────────────────────────────────── */
 function ProjectVisuals({ project }: { project: Project }) {
-	const { media, homepage } = project;
+	const { media } = project;
 
 	return (
 		<figure>
@@ -25,18 +25,6 @@ function ProjectVisuals({ project }: { project: Project }) {
 					/>
 				) : null}
 			</div>
-			<figcaption className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-				{homepage.images.map((img) => (
-					<div key={img.label} className="border-t border-white/10 pt-3">
-						<p className="text-caption uppercase tracking-[0.25em] font-mono text-white/60">
-							{img.label}
-						</p>
-						{img.stat ? (
-							<p className="mt-1 text-xs text-muted-foreground">{img.stat}</p>
-						) : null}
-					</div>
-				))}
-			</figcaption>
 		</figure>
 	);
 }
@@ -56,7 +44,6 @@ function CaseStudyCard({ project, position }: { project: Project; position: numb
 	// Fade in once; never hide a project again after it has been read.
 	const opacity = useTransform(scrollYProgress, [0, 0.2, 1], [0, 1, 1]);
 
-	const { homepage } = project;
 	const accentClass = "text-rose";
 
 	return (
@@ -81,20 +68,13 @@ function CaseStudyCard({ project, position }: { project: Project; position: numb
 						{project.title}
 					</h3>
 
-					<p className="text-lg text-muted-foreground font-light leading-relaxed mb-8 max-w-md">
-						{project.tagline}
+					<p className="text-lg text-foreground leading-relaxed mb-4 max-w-md">
+						{project.outcome ?? project.tagline}
 					</p>
 
-					<div className="flex flex-wrap gap-2 mb-10">
-						{project.stack.map((tech) => (
-							<span
-								key={tech}
-								className="px-3 py-1 rounded-full border border-white/10 bg-white/[0.02] text-caption font-mono text-white/60"
-							>
-								{tech}
-							</span>
-						))}
-					</div>
+					<p className="mb-10 font-mono text-caption text-muted-foreground">
+						{(project.keyStack ?? project.stack).slice(0, 4).join(" · ")}
+					</p>
 
 					<Link
 						to={`/projects/${project.slug}`}
@@ -111,29 +91,6 @@ function CaseStudyCard({ project, position }: { project: Project; position: numb
 					className="lg:col-span-7"
 				>
 					<ProjectVisuals project={project} />
-					<div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-muted-foreground font-light">
-						<div>
-							<h4 className="text-caption uppercase tracking-widest text-white/60 mb-3">
-								Objective
-							</h4>
-							{project.description}
-						</div>
-						<div>
-							<h4 className="text-caption uppercase tracking-widest text-white/60 mb-3">
-								Key Solutions
-							</h4>
-							<ul className="space-y-2">
-								{homepage.highlights.map((h) => (
-									<li key={h} className="flex gap-2">
-										<span
-											className={`w-1 h-1 rounded-full mt-2 shrink-0 bg-rose`}
-										/>
-										{h}
-									</li>
-								))}
-							</ul>
-						</div>
-					</div>
 				</motion.div>
 			</div>
 		</motion.article>
@@ -155,16 +112,9 @@ export function Projects() {
 			<div className="max-w-7xl mx-auto relative z-10 border-t border-white/[0.05] pt-16">
 				{/* Editorial Header */}
 				<header className="mb-16 overflow-hidden">
-					<motion.div
-						initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						className="text-caption uppercase tracking-[0.4em] mb-8 font-mono font-bold text-rose"
-					>
-						Selected Works
-					</motion.div>
-					<h2 className="text-6xl md:text-9xl font-serif tracking-tighter leading-[0.85]">
-						<span className="sr-only">Crafting with Intention.</span>
+					<h2 className="section-label">Case studies</h2>
+					<p className="text-6xl md:text-9xl font-serif tracking-tighter leading-[0.85]">
+						<span className="sr-only">Crafting with intention.</span>
 						<span aria-hidden="true">
 						{/* Letters animate one by one, but each word stays unbreakable. */}
 						{["Crafting", "with"].map((word, w) => (
@@ -192,7 +142,7 @@ export function Projects() {
 						))}
 						<br />
 						<span className="italic text-rose">
-							{"Intention.".split("").map((char, i) => (
+							{"intention.".split("").map((char, i) => (
 								<motion.span
 									key={i}
 									initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 60 }}
@@ -210,7 +160,7 @@ export function Projects() {
 							))}
 						</span>
 						</span>
-					</h2>
+					</p>
 				</header>
 
 				{/* The Timeline of Projects */}

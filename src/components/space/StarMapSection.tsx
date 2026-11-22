@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { RECEIPTS } from "../../data/proofs";
-import { getStarSystems, type MapLink } from "../../data/starSystems";
+import { getStarSystems, starCss, type MapLink } from "../../data/starSystems";
 import type { StarMap } from "./StarMap";
 import "./space-hero.css";
 
@@ -218,7 +218,7 @@ export default function StarMapSection() {
 							}}
 							className="star-label"
 							data-lit={hovered === p.slug || selected === p.slug}
-							style={{ "--star": p.color } as React.CSSProperties}
+							style={{ "--star": starCss(p.color) } as React.CSSProperties}
 							aria-pressed={selected === p.slug}
 							onPointerEnter={() => setHovered(p.slug)}
 							onPointerLeave={() => setHovered(null)}
@@ -240,7 +240,7 @@ export default function StarMapSection() {
 						className="system-panel"
 						role="region"
 						aria-label={`${active.title} system`}
-						style={{ "--star": active.color } as React.CSSProperties}
+						style={{ "--star": starCss(active.color) } as React.CSSProperties}
 					>
 						<div className="system-panel__head">
 							<p className="system-panel__kicker">System · {active.role}</p>

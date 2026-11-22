@@ -97,6 +97,42 @@
 
 	--color-success: #4ade80;
 
+	/* Space palette: the only source for canvas, WebGL and project star colors.
+	   Read from JS/TS through src/lib/themeColors.ts. */
+	--color-star-sano: #4ade80;
+	--color-star-code4kidz: #ffb86b;
+	--color-star-tripcanvas: #7cc7ff;
+	--color-star-ruvia: #c3a0e1;
+	--color-star-elite-global: #d4849a;
+	--color-star-van-alen: #f5c97a;
+	--color-star-jt: #7ee0d0;
+	--color-starlight: #fffaf6;
+	--color-starlight-rose: #ffd9e3;
+	--color-starlight-lilac: #c9b6ff;
+	--color-starlight-ice: #b8dcff;
+	--color-moon: #fff6f8;
+	--color-glow: #ffffff;
+	--color-galaxy-inner: #f2b8c8;
+	--color-galaxy-outer: #7b6cff;
+	--color-nebula-rose: #d4849a;
+	--color-nebula-lilac: #5b3f9e;
+	--color-nebula-teal: #2fae7a;
+	--color-nebula-violet: #af70d2;
+	--color-nebula-green: #4ade80;
+	--color-sky-white: #fffaf8;
+	--color-sky-rose: #d4849a;
+	--color-sky-lilac: #c3a0e1;
+	--color-sky-green: #78dca0;
+	--color-sky-ice: #a0bee6;
+	--color-meteor-head: #fffcfa;
+	--color-meteor-core: #fff5f8;
+	--color-meteor-tail: #e8a0b4;
+	--color-meteor-end: #4ade80;
+	--color-globe-base: #24171a;
+	--color-globe-marker: #386142;
+	--color-globe-glow: #5c333d;
+	--color-globe-pin: #427a57;
+
 	--radius-sm: 6px;
 	--radius-md: 12px;
 	--radius-lg: 20px;

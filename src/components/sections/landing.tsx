@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { PROFILE } from "../../data/profile";
+import { rgbAlpha, themeAlpha, themeRgb, type ThemeColor } from "../../lib/themeColors";
 import "./landing.css";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -23,13 +24,24 @@ interface Star {
 
 // ─── Color map ────────────────────────────────────────────────────────────────
 
-const COLOR_MAP: Record<StarColor, [number, number, number]> = {
-	white: [255, 250, 248],
-	rose: [212, 132, 154],
-	lilac: [195, 160, 225],
-	green: [120, 220, 160],
-	iceblue: [160, 190, 230],
+const STAR_TOKENS: Record<StarColor, ThemeColor> = {
+	white: "sky-white",
+	rose: "sky-rose",
+	lilac: "sky-lilac",
+	green: "sky-green",
+	iceblue: "sky-ice",
 };
+
+/** Resolved once per mount, after the stylesheet has loaded. */
+let COLOR_MAP: Record<StarColor, [number, number, number]> | null = null;
+function colorMap() {
+	if (!COLOR_MAP) {
+		COLOR_MAP = Object.fromEntries(
+			Object.entries(STAR_TOKENS).map(([k, token]) => [k, themeRgb(token)]),
+		) as Record<StarColor, [number, number, number]>;
+	}
+	return COLOR_MAP;
+}
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -132,7 +144,7 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 			cy: H * 0.5,
 			rx: W * 0.38,
 			ry: H * 0.42,
-			r: [212, 132, 154],
+			r: themeRgb("nebula-rose"),
 			opacity: 0.06,
 		},
 		{
@@ -140,7 +152,7 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 			cy: H * 0.2,
 			rx: W * 0.3,
 			ry: H * 0.35,
-			r: [175, 112, 210],
+			r: themeRgb("nebula-violet"),
 			opacity: 0.05,
 		},
 		{
@@ -148,7 +160,7 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 			cy: H * 0.85,
 			rx: W * 0.28,
 			ry: H * 0.3,
-			r: [74, 222, 128],
+			r: themeRgb("nebula-green"),
 			opacity: 0.04,
 		},
 		{
@@ -156,7 +168,7 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 			cy: H * -0.04,
 			rx: W * 0.4,
 			ry: H * 0.28,
-			r: [212, 132, 154],
+			r: themeRgb("nebula-rose"),
 			opacity: 0.04,
 		},
 	];
@@ -170,12 +182,12 @@ function buildNebulaCanvas(W: number, H: number): HTMLCanvasElement {
 			b.cy,
 			Math.max(b.rx, b.ry),
 		);
-		grd.addColorStop(0, `rgba(${b.r[0]}, ${b.r[1]}, ${b.r[2]}, ${b.opacity})`);
+		grd.addColorStop(0, rgbAlpha(b.r, b.opacity));
 		grd.addColorStop(
 			0.5,
-			`rgba(${b.r[0]}, ${b.r[1]}, ${b.r[2]}, ${b.opacity * 0.4})`,
+			rgbAlpha(b.r, b.opacity * 0.4),
 		);
-		grd.addColorStop(1, `rgba(${b.r[0]}, ${b.r[1]}, ${b.r[2]}, 0)`);
+		grd.addColorStop(1, rgbAlpha(b.r, 0));
 
 		octx.save();
 		octx.translate(b.cx, b.cy);
@@ -261,18 +273,18 @@ function drawShootingStar(ctx: CanvasRenderingContext2D, s: ShootingStar) {
 	const f = edgeFade;
 
 	const grd = ctx.createLinearGradient(hx, hy, tx, ty);
-	grd.addColorStop(0, `rgba(255,252,250,${0.98 * f})`);
-	grd.addColorStop(0.05, `rgba(255,245,248,${0.65 * f})`);
-	grd.addColorStop(0.32, `rgba(232,160,180,${0.38 * f})`);
-	grd.addColorStop(0.58, `rgba(212,132,154,${0.22 * f})`);
-	grd.addColorStop(0.82, `rgba(120,220,160,${0.1 * f})`);
-	grd.addColorStop(1, "rgba(74,222,128,0)");
+	grd.addColorStop(0, themeAlpha("meteor-head", 0.98 * f));
+	grd.addColorStop(0.05, themeAlpha("meteor-core", 0.65 * f));
+	grd.addColorStop(0.32, themeAlpha("meteor-tail", 0.38 * f));
+	grd.addColorStop(0.58, themeAlpha("sky-rose", 0.22 * f));
+	grd.addColorStop(0.82, themeAlpha("sky-green", 0.1 * f));
+	grd.addColorStop(1, themeAlpha("meteor-end", 0));
 
 	// Soft outer glow
 	ctx.beginPath();
 	ctx.moveTo(hx, hy);
 	ctx.lineTo(tx, ty);
-	ctx.strokeStyle = `rgba(255,250,248,${0.14 * f})`;
+	ctx.strokeStyle = themeAlpha("sky-white", 0.14 * f);
 	ctx.lineWidth = 4.5;
 	ctx.lineCap = "round";
 	ctx.stroke();
@@ -289,15 +301,15 @@ function drawShootingStar(ctx: CanvasRenderingContext2D, s: ShootingStar) {
 	// Bright head dot
 	ctx.beginPath();
 	ctx.arc(hx, hy, 2.1, 0, Math.PI * 2);
-	ctx.fillStyle = `rgba(255,252,250,${0.95 * f})`;
+	ctx.fillStyle = themeAlpha("meteor-head", 0.95 * f);
 	ctx.fill();
 
 	// Head glow bloom
 	ctx.beginPath();
 	ctx.arc(hx, hy, 4, 0, Math.PI * 2);
 	const headGlow = ctx.createRadialGradient(hx, hy, 0, hx, hy, 4);
-	headGlow.addColorStop(0, `rgba(212,132,154,${0.35 * f})`);
-	headGlow.addColorStop(1, "rgba(74,222,128,0)");
+	headGlow.addColorStop(0, themeAlpha("sky-rose", 0.35 * f));
+	headGlow.addColorStop(1, themeAlpha("meteor-end", 0));
 	ctx.fillStyle = headGlow;
 	ctx.fill();
 }
@@ -310,16 +322,16 @@ function drawStar(
 	offsetX: number,
 	offsetY: number,
 ) {
-	const [r, g, b] = COLOR_MAP[s.color];
+	const rgb = colorMap()[s.color];
 	const x = s.x + offsetX;
 	const y = s.y + offsetY;
 
 	if (s.r >= 1.8) {
 		const glowR = s.r * 5;
 		const grd = ctx.createRadialGradient(x, y, 0, x, y, glowR);
-		grd.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${s.alpha * 0.45})`);
-		grd.addColorStop(0.4, `rgba(${r}, ${g}, ${b}, ${s.alpha * 0.1})`);
-		grd.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+		grd.addColorStop(0, rgbAlpha(rgb, s.alpha * 0.45));
+		grd.addColorStop(0.4, rgbAlpha(rgb, s.alpha * 0.1));
+		grd.addColorStop(1, rgbAlpha(rgb, 0));
 		ctx.beginPath();
 		ctx.arc(x, y, glowR, 0, Math.PI * 2);
 		ctx.fillStyle = grd;
@@ -328,7 +340,7 @@ function drawStar(
 
 	ctx.beginPath();
 	ctx.arc(x, y, s.r, 0, Math.PI * 2);
-	ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${s.alpha})`;
+	ctx.fillStyle = rgbAlpha(rgb, s.alpha);
 	ctx.fill();
 }
 

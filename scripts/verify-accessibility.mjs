@@ -149,7 +149,7 @@ async function main() {
 		assert(activeId === "main-content", "Skip link should move focus to main content.");
 
 		await desktop.goto(baseUrl, { waitUntil: "networkidle" });
-		await desktop.locator('a[href="/projects/sano"]').first().click();
+		await desktop.locator('a[href="/projects/sano"]:visible').first().click();
 		await desktop.waitForFunction(() => document.activeElement?.matches("[data-route-heading]"));
 		const focusedHeading = await desktop.evaluate(() => document.activeElement?.textContent?.trim());
 		assert(focusedHeading === "Sano", "Route change should focus the Sano page heading.");
@@ -161,7 +161,7 @@ async function main() {
 		});
 		await reduced.goto(baseUrl, { waitUntil: "networkidle" });
 		const reducedMotionState = await reduced.evaluate(() => {
-			const nebula = document.querySelector(".landing__nebula");
+			const nebula = document.querySelector(".space-hero__intro");
 			return {
 				matches: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
 				nebulaAnimation: nebula ? getComputedStyle(nebula).animationName : "",
@@ -170,7 +170,7 @@ async function main() {
 		assert(reducedMotionState.matches, "Reduced-motion media query should be emulated.");
 		assert(
 			reducedMotionState.nebulaAnimation === "none",
-			"Landing nebula animation should be disabled for reduced motion.",
+			"Hero entrance animation should be disabled for reduced motion.",
 		);
 
 		const forcedColors = await browser.newPage({

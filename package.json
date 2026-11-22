@@ -36,7 +36,8 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.2",
-    "splitting": "^1.1.0"
+    "splitting": "^1.1.0",
+    "three": "^0.180.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -46,6 +47,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/splitting": "^1.0.6",
+    "@types/three": "^0.180.0",
     "@vitejs/plugin-react": "^6.0.1",
     "axe-core": "^4.13.0",
     "eslint": "^9.39.4",

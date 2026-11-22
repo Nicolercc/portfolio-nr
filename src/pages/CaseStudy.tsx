@@ -207,7 +207,7 @@ function PersonaSection({
 		<motion.div {...fadeUp} className="space-y-6 border-t border-white/5 pt-16">
 			<div className="space-y-2">
 				<SectionLabel>Design Persona</SectionLabel>
-				<p className="font-mono text-caption uppercase tracking-[0.2em] text-muted-foreground/70">
+				<p className="font-mono text-caption uppercase tracking-[0.2em] text-muted-foreground">
 					Not validated user research — a scenario for product decisions
 				</p>
 			</div>
@@ -774,7 +774,7 @@ function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 				)}
 				{card.body && (
 					<div>
-						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">
+						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-muted-foreground mb-1">
 							Notes
 						</dt>
 						<dd className="font-light text-muted-foreground leading-relaxed">

@@ -36,6 +36,8 @@ export type SystemSpec = {
 	color: string;
 	/** Number of orbiting moons, one per published metric. */
 	moons: number;
+	/** Draw this system a little larger. */
+	emphasis?: boolean;
 };
 
 type SystemNode = {
@@ -191,6 +193,11 @@ export class StarMap {
 	private lookFrom = new Vector3();
 	private lookTo = new Vector3();
 	private look = new Vector3();
+	/** Screen-space shift of the view, as a fraction of width/height (setViewOffset). */
+	private view = new Vector2();
+	private viewFrom = new Vector2();
+	private viewTo = new Vector2();
+	private size = new Vector2(1, 1);
 	private flightStart = 0;
 	private flightDuration = 1400;
 	private scroll = 0;
@@ -357,11 +364,12 @@ export class StarMap {
 		specs.forEach((spec, i) => {
 			// Spread the systems along an arc that sits in front of the galaxy disc.
 			const a = -0.95 + (i / Math.max(n - 1, 1)) * 1.9;
-			const home = new Vector3(Math.sin(a) * 36, (i % 2 === 0 ? 1 : -1) * (5 + rand() * 7), 18 - Math.cos(a) * 22);
+			const spread = n > 5 ? 44 : 36;
+			const home = new Vector3(Math.sin(a) * spread, (i % 2 === 0 ? 1 : -1) * (5 + rand() * 7), 18 - Math.cos(a) * 22);
 			const group = new Group();
 			group.position.copy(home);
 			const color = new Color(spec.color);
-			const baseScale = i === 0 ? 1.35 : 1;
+			const baseScale = spec.emphasis ? 1.35 : 1;
 
 			const core = new Mesh(new SphereGeometry(1.25, 24, 16), new MeshBasicMaterial({ color: color.clone().lerp(new Color("#ffffff"), 0.55) }));
 			core.scale.setScalar(baseScale);
@@ -396,7 +404,7 @@ export class StarMap {
 			group.add(halo, core, hit);
 			this.systemsRoot.add(group);
 			// Phones: a vertical zigzag so labels never collide.
-			const narrowHome = new Vector3(i % 2 === 0 ? -9 : 9, 24 - i * (48 / Math.max(n - 1, 1)), 8);
+			const narrowHome = new Vector3(i % 2 === 0 ? -9 : 9, 30 - i * (60 / Math.max(n - 1, 1)), 8);
 			this.nodes.push({ slug: spec.slug, group, core, hit, halo, moons, rings, home: home.clone(), wideHome: home, narrowHome, baseScale });
 			linkPts.push(home.clone());
 		});
@@ -417,11 +425,13 @@ export class StarMap {
 		return out.set(this.wide ? -16 : 0, 0, 0);
 	}
 
-	private fly(toCam: Vector3, toLook: Vector3) {
+	private fly(toCam: Vector3, toLook: Vector3, toView = new Vector2()) {
 		this.camFrom.copy(this.camera.position);
 		this.lookFrom.copy(this.look);
+		this.viewFrom.copy(this.view);
 		this.camTo.copy(toCam);
 		this.lookTo.copy(toLook);
+		this.viewTo.copy(toView);
 		this.flightStart = performance.now();
 		this.flightDuration = this.opts.reducedMotion ? 0 : 1400;
 		this.loop();
@@ -435,11 +445,12 @@ export class StarMap {
 			this.fly(this.restingCamera(new Vector3()), this.restingLook(new Vector3()));
 			return;
 		}
-		const world = node.group.getWorldPosition(new Vector3());
-		// Sit off to one side so the system frames beside the info panel.
-		// Frame the system just right of centre, between the intro and the panel.
-		const offset = new Vector3(this.wide ? -3 : 0, 5, 34);
-		this.fly(world.clone().add(offset), world.clone().add(new Vector3(this.wide ? -5 : 0, this.wide ? 0 : -10, 0)));
+		const world = node.home.clone().add(this.systemsRoot.position);
+		// Look straight at the system, then slide the view so it lands in the open
+		// space: the left third on desktop (the panel is on the right), the top
+		// third on phones (the panel is a bottom sheet).
+		const view = this.wide ? new Vector2(0.2, 0) : new Vector2(0, 0.24);
+		this.fly(world.clone().add(new Vector3(0, 4, 30)), world, view);
 	}
 
 	setScroll(progress: number) {
@@ -520,6 +531,7 @@ export class StarMap {
 		if (w === 0 || h === 0) return;
 		this.wide = w / h > 1.15 && w >= 1024;
 		this.renderer.setSize(w, h, false);
+		this.size.set(w, h);
 		this.camera.aspect = w / h;
 		this.camera.fov = this.wide ? 55 : 64;
 		// On wide screens the scene sits right of the intro column.
@@ -569,11 +581,15 @@ export class StarMap {
 		const e = easeInOutCubic(k);
 		this.camera.position.lerpVectors(this.camFrom, this.camTo, e);
 		this.look.lerpVectors(this.lookFrom, this.lookTo, e);
+		this.view.lerpVectors(this.viewFrom, this.viewTo, e);
 		if (k >= 1) {
 			this.camera.position.copy(this.camTo);
 			this.look.copy(this.lookTo);
+			this.view.copy(this.viewTo);
 		}
-		const drift = this.focused ? 2 : 6;
+		const [w, h] = [this.size.x, this.size.y];
+		this.camera.setViewOffset(w, h, this.view.x * w, this.view.y * h, w, h);
+		const drift = this.focused ? 1 : 6;
 		this.camera.position.x += this.parallax.x * drift;
 		this.camera.position.y -= this.parallax.y * drift * 0.6;
 		this.camera.lookAt(this.look);

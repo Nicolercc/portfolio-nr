@@ -162,15 +162,21 @@ async function main() {
 		await reduced.goto(baseUrl, { waitUntil: "networkidle" });
 		const reducedMotionState = await reduced.evaluate(() => {
 			const nebula = document.querySelector(".landing__nebula");
+			const marquee = document.querySelector(".motion-safe\\:animate-marquee");
 			return {
 				matches: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
 				nebulaAnimation: nebula ? getComputedStyle(nebula).animationName : "",
+				marqueeAnimation: marquee ? getComputedStyle(marquee).animationName : "",
 			};
 		});
 		assert(reducedMotionState.matches, "Reduced-motion media query should be emulated.");
 		assert(
 			reducedMotionState.nebulaAnimation === "none",
 			"Landing nebula animation should be disabled for reduced motion.",
+		);
+		assert(
+			reducedMotionState.marqueeAnimation === "none",
+			"Marquee animation should be disabled for reduced motion.",
 		);
 
 		const forcedColors = await browser.newPage({

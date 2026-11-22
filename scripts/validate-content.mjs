@@ -41,6 +41,7 @@ const checkedFiles = [
 	"src/components/sections/contact.tsx",
 	"src/components/sections/landing.tsx",
 	"src/components/space/StarMapSection.tsx",
+	"src/components/sections/Capabilities.tsx",
 	"src/components/sections/experience.tsx",
 	"src/data/projects.ts",
 	"src/data/about.ts",

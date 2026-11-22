@@ -46,6 +46,7 @@ const allSource = [
 	"src/components/layouts/Navbar.tsx",
 	"src/components/sections/landing.tsx",
 	"src/components/space/StarMapSection.tsx",
+	"src/components/sections/Capabilities.tsx",
 	"src/components/sections/bento.tsx",
 	"src/pages/CaseStudy.tsx",
 	"src/pages/BlogPost.tsx",

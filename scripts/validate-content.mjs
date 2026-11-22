@@ -39,7 +39,7 @@ const checkedFiles = [
 	"index.html",
 	"src/components/layouts/Navbar.tsx",
 	"src/components/sections/contact.tsx",
-	"src/components/sections/landing.tsx",
+	"src/components/space/SpaceHero.tsx",
 	"src/components/sections/experience.tsx",
 	"src/data/projects.ts",
 	"src/data/about.ts",

@@ -41,7 +41,7 @@
 	position: relative;
 	z-index: 3;
 	max-width: 540px;
-	animation: space-rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+	animation: space-rise 1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 @keyframes space-rise {
@@ -74,6 +74,55 @@
 	color: var(--color-text-secondary);
 	max-width: 36ch;
 	margin: 16px 0 0;
+}
+
+.space-btn {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	padding: 0 20px;
+	border-radius: 999px;
+	font-family: var(--font-mono);
+	font-size: var(--text-caption);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	text-decoration: none;
+	transition:
+		background 0.2s ease,
+		color 0.2s ease,
+		border-color 0.2s ease;
+}
+.space-btn--primary {
+	background: var(--color-action);
+	border: 1px solid var(--color-action);
+	color: #0d0d0d;
+}
+.space-btn--primary:hover {
+	background: var(--color-rose-light);
+	border-color: var(--color-rose-light);
+}
+.space-btn--ghost {
+	background: rgba(13, 13, 13, 0.55);
+	border: 1px solid rgba(245, 240, 232, 0.35);
+	color: var(--color-text-primary);
+}
+.space-btn--ghost:hover {
+	border-color: var(--color-action);
+	color: var(--color-rose-light);
+}
+
+/* While a system is open on desktop, the intro steps aside so the star has room. */
+@media (min-width: 1024px) {
+	.space-hero__intro {
+		transition:
+			opacity 0.5s ease,
+			transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	.space-hero[data-open="true"] .space-hero__intro {
+		opacity: 0;
+		transform: translateX(-32px);
+		pointer-events: none;
+	}
 }
 
 /* ── Proof log ────────────────────────────────────────────── */
@@ -377,6 +426,10 @@
 /* While a system is open, the other labels step back. */
 .starmap[data-has-selection="true"] .star-label:not([aria-pressed="true"]) {
 	opacity: 0.35;
+}
+/* The open system's name is in the panel; its label would cover the star. */
+.space-hero[data-mode="webgl"] .starmap[data-has-selection="true"] .star-label[aria-pressed="true"] {
+	opacity: 0;
 }
 .starmap[data-has-selection="true"] .star-label[data-offscreen="true"] {
 	opacity: 0;

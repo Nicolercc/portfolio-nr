@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
@@ -166,22 +166,29 @@ export function Projects() {
 					<h2 className="text-6xl md:text-9xl font-serif tracking-tighter leading-[0.85]">
 						<span className="sr-only">Crafting with Intention.</span>
 						<span aria-hidden="true">
-						{"Crafting with".split("").map((char, i) => (
-							<motion.span
-								key={i}
-								initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 60 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								viewport={{ once: true }}
-								transition={{
-									duration: 0.5,
-									delay: i * 0.03,
-									ease: [0.16, 1, 0.3, 1],
-								}}
-								className="inline-block"
-								style={{ whiteSpace: char === " " ? "pre" : "normal" }}
-							>
-								{char}
-							</motion.span>
+						{/* Letters animate one by one, but each word stays unbreakable. */}
+						{["Crafting", "with"].map((word, w) => (
+							<Fragment key={word}>
+							{w > 0 ? " " : null}
+							<span className="inline-block whitespace-nowrap">
+								{word.split("").map((char, i) => (
+									<motion.span
+										key={i}
+										initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 60 }}
+										whileInView={{ opacity: 1, y: 0 }}
+										viewport={{ once: true }}
+										transition={{
+											duration: 0.5,
+											delay: (w * 9 + i) * 0.03,
+											ease: [0.16, 1, 0.3, 1],
+										}}
+										className="inline-block"
+									>
+										{char}
+									</motion.span>
+								))}
+							</span>
+							</Fragment>
 						))}
 						<br />
 						<span className="italic text-rose">

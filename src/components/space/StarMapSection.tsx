@@ -68,6 +68,24 @@ function ProjectReceipt({ receipt }: { receipt: (typeof RECEIPTS)[number] }) {
 }
 
 type Mode = "loading" | "webgl" | "static";
+const listPreferenceKey = "portfolio-star-map-list";
+
+function prefersList() {
+	try {
+		return localStorage.getItem(listPreferenceKey) === "true";
+	} catch {
+		return false;
+	}
+}
+
+function rememberList(enabled: boolean) {
+	try {
+		if (enabled) localStorage.setItem(listPreferenceKey, "true");
+		else localStorage.removeItem(listPreferenceKey);
+	} catch {
+		// The current choice still applies if storage is unavailable.
+	}
+}
 
 function prefersReducedMotion() {
 	return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -81,7 +99,14 @@ export default function StarMapSection() {
 	const engineRef = useRef<StarMap | null>(null);
 	const panelRef = useRef<HTMLDivElement>(null);
 	const returnFocusRef = useRef<HTMLElement | null>(null);
-	const [mode, setMode] = useState<Mode>("loading");
+	const [preferredList, setPreferredList] = useState(prefersList);
+	const [scene, setScene] = useState<"loading" | "slow" | "ready" | "unavailable">("loading");
+	const [engaged, setEngaged] = useState(false);
+	const [tabStop, setTabStop] = useState(systems[0]?.slug);
+	const [crowded, setCrowded] = useState(false);
+	const mode: Mode = preferredList || engaged || crowded || scene === "slow" || scene === "unavailable"
+		? "static"
+		: scene === "ready" ? "webgl" : "loading";
 	const [hovered, setHovered] = useState<string | null>(null);
 	const [selected, setSelected] = useState<string | null>(null);
 
@@ -97,14 +122,23 @@ export default function StarMapSection() {
 		if (!container) return;
 		let disposed = false;
 		let engine: StarMap | null = null;
+		const override = new URLSearchParams(window.location.search).get("starmapTimeout");
+		const milliseconds = override === null ? NaN : Number(override);
+		const timeout = window.setTimeout(() => setScene("slow"), Number.isFinite(milliseconds) && milliseconds >= 0 ? milliseconds : 4000);
+		const loseContext = () => {
+			engine?.dispose();
+			engine = null;
+			engineRef.current = null;
+			setScene("unavailable");
+		};
 		const boot = async () => {
-			const mod = await import("./StarMap");
-			if (disposed) return;
-			if (!mod.webglAvailable()) {
-				setMode("static");
-				return;
-			}
 			try {
+				const mod = await import("./StarMap");
+				if (disposed) return;
+				if (!mod.webglAvailable()) {
+					setScene("unavailable");
+					return;
+				}
 				engine = new mod.StarMap({
 					container,
 					labels: labelRefs.current,
@@ -116,18 +150,23 @@ export default function StarMapSection() {
 						emphasis: p.slug === "sano",
 					})),
 					onHover: setHovered,
-					onSelect: (slug) => select(slug),
+					onSelect: select,
+					onContextLost: loseContext,
+					onCrowding: setCrowded,
 				});
 				engineRef.current = engine;
-				setMode("webgl");
+				setScene("ready");
 			} catch {
-				setMode("static");
+				if (!disposed) loseContext();
+			} finally {
+				window.clearTimeout(timeout);
 			}
 		};
-		const idle = globalThis.requestIdleCallback ?? ((cb: () => void) => globalThis.setTimeout(cb, 60));
-		idle(() => void boot());
+		const bootTimer = window.setTimeout(() => void boot(), 0);
 		return () => {
 			disposed = true;
+			window.clearTimeout(bootTimer);
+			window.clearTimeout(timeout);
 			engine?.dispose();
 			engineRef.current = null;
 		};
@@ -161,8 +200,8 @@ export default function StarMapSection() {
 			panelRef.current?.focus();
 			const onKey = (e: KeyboardEvent) => {
 				if (e.key === "Escape") {
+					returnFocusRef.current?.focus({ preventScroll: true });
 					select(null);
-					returnFocusRef.current?.focus();
 				}
 			};
 			window.addEventListener("keydown", onKey);
@@ -173,8 +212,8 @@ export default function StarMapSection() {
 	const active = selected ? systems.find((p) => p.slug === selected) : undefined;
 	const receipt = active && RECEIPTS.find(({ slug }) => slug === active.slug);
 	const closePanel = () => {
+		returnFocusRef.current?.focus({ preventScroll: true });
 		select(null);
-		returnFocusRef.current?.focus();
 	};
 
 	return (
@@ -193,13 +232,45 @@ export default function StarMapSection() {
 				<p className="space-hero__tagline">Pick a star. Open a receipt.</p>
 
 				<p className="receipt-count">{RECEIPTS.length} receipts on this page</p>
+				{scene !== "unavailable" && mode !== "static" && (
+					<button type="button" className="space-btn space-btn--ghost" onClick={() => {
+						rememberList(true);
+						setPreferredList(true);
+					}}>List view</button>
+				)}
+				{mode === "static" && scene === "ready" && !crowded && (
+					<button type="button" className="space-btn space-btn--ghost" onClick={() => {
+						rememberList(false);
+						setPreferredList(false);
+						setEngaged(false);
+					}}>Show the galaxy</button>
+				)}
 			</div>
 
 			<div ref={mapRef} className="starmap" data-has-selection={Boolean(active)}>
-				<div className="starmap__labels" role="group" aria-label="Star map: one system per project">
-					<p className="starmap__hint" aria-hidden={mode === "static"}>
-						{mode === "static" ? "Projects" : "Pick a star to fly in."}
-					</p>
+				<div
+					className="starmap__labels"
+					role="group"
+					aria-label={mode === "static" ? "Constellation list" : "Star map: one system per project"}
+					inert={mode === "loading"}
+					onKeyDown={(event) => {
+						const step = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[event.key];
+						if (!step || mode !== "webgl") return;
+						const visible = systems
+							.map(({ slug }) => labelRefs.current.get(slug))
+							.filter((label): label is HTMLElement => Boolean(label && label.dataset.offscreen !== "true"));
+						const index = visible.indexOf(document.activeElement as HTMLElement);
+						if (index < 0) return;
+						event.preventDefault();
+						visible[(index + step + visible.length) % visible.length]?.focus();
+					}}
+					onFocusCapture={() => {
+						if (mode === "static" && scene === "slow") setEngaged(true);
+					}}
+					onPointerDownCapture={() => {
+						if (mode === "static" && scene === "slow") setEngaged(true);
+					}}
+				>
 					{systems.map((p) => (
 						<button
 							key={p.slug}
@@ -212,9 +283,14 @@ export default function StarMapSection() {
 							data-lit={hovered === p.slug || selected === p.slug}
 							style={{ "--star": starCss(p.color) } as React.CSSProperties}
 							aria-pressed={selected === p.slug}
+							tabIndex={mode === "static" || (mode === "webgl" && tabStop === p.slug) ? 0 : -1}
+							data-tab-stop={tabStop === p.slug}
 							onPointerEnter={() => setHovered(p.slug)}
 							onPointerLeave={() => setHovered(null)}
-							onFocus={() => setHovered(p.slug)}
+							onFocus={() => {
+								setHovered(p.slug);
+								setTabStop(p.slug);
+							}}
 							onBlur={() => setHovered(null)}
 							onClick={() => select(selected === p.slug ? null : p.slug)}
 						>

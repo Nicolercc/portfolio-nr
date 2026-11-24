@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { chromium } from "playwright";
+import sharp from "sharp";
 
 // Design-system guardrails the axe run does not cover on its own:
 // - no readable text under 14px (the type scale's floor)
@@ -131,6 +132,64 @@ function auditText({ minFontPx, pageBackground }) {
 	return failures;
 }
 
+function relativeLuminance(rgb) {
+	const linear = rgb.map((value) => {
+		const srgb = value / 255;
+		return srgb <= 0.04045 ? srgb / 12.92 : ((srgb + 0.055) / 1.055) ** 2.4;
+	});
+	return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+}
+
+async function auditCanvasPixels(page, selector) {
+	const areas = await page.locator(selector).evaluate((section) => {
+		const parser = document.createElement("canvas").getContext("2d");
+		const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
+		const areas = [];
+		for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+			const text = node.textContent.trim();
+			const parent = node.parentElement;
+			if (!text || parent.closest('[aria-hidden="true"], .sr-only, [hidden], [inert]')) continue;
+			const style = getComputedStyle(parent);
+			if (style.visibility !== "visible" || Number(style.opacity) < 0.05) continue;
+			parser.clearRect(0, 0, 1, 1);
+			parser.fillStyle = style.color;
+			parser.fillRect(0, 0, 1, 1);
+			const foreground = Array.from(parser.getImageData(0, 0, 1, 1).data);
+			const range = document.createRange();
+			range.selectNodeContents(node);
+			for (const { left, top, right, bottom } of range.getClientRects()) {
+				const x0 = Math.max(0, Math.ceil(left));
+				const y0 = Math.max(0, Math.ceil(top));
+				const x1 = Math.min(innerWidth, Math.floor(right));
+				const y1 = Math.min(innerHeight, Math.floor(bottom));
+				if (x0 < x1 && y0 < y1) areas.push({ text, foreground, x0, y0, x1, y1 });
+			}
+		}
+		return areas;
+	});
+	if (!areas.length) return [`No visible text sampled in ${selector}`];
+	const { data, info } = await sharp(await page.screenshot({
+		style: `${selector} * { -webkit-text-fill-color: transparent !important; text-shadow: none !important; }`,
+		scale: "css",
+	})).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+	const failures = new Map();
+	for (const { text, foreground, x0, y0, x1, y1 } of areas) {
+		let lowest = Infinity;
+		for (let y = y0; y < y1; y++) {
+			for (let x = x0; x < x1; x++) {
+				const offset = (y * info.width + x) * info.channels;
+				const bg = Array.from(data.subarray(offset, offset + 3));
+				const fg = bg.map((value, i) => (foreground[i] * foreground[3] + value * (255 - foreground[3])) / 255);
+				const first = relativeLuminance(fg) + 0.05;
+				const second = relativeLuminance(bg) + 0.05;
+				lowest = Math.min(lowest, Math.max(first / second, second / first));
+			}
+		}
+		if (lowest < 4.5) failures.set(text, Math.min(lowest, failures.get(text) ?? Infinity));
+	}
+	return [...failures].map(([text, contrast]) => `canvas contrast ${contrast.toFixed(2)}:1 < 4.5:1: "${text}"`);
+}
+
 async function main() {
 	const server = await serveDist();
 	const browser = await chromium.launch({ headless: true });
@@ -154,6 +213,19 @@ async function main() {
 				if (overflow > 1) problems.push(`${route} @${width}px: scrolls sideways by ${overflow}px`);
 				const failures = await page.evaluate(auditText, { minFontPx: MIN_FONT_PX, pageBackground: PAGE_BACKGROUND });
 				for (const failure of new Set(failures)) problems.push(`${route} @${width}px: ${failure}`);
+			}
+			if (width === 390 || width === 1440) {
+				for (const [hash, target] of [["", "#landing"], ["#universe", "#universe"]]) {
+					await page.goto(`${baseUrl}/?starmapTimeout=20000${hash}`, { waitUntil: "networkidle" });
+					await page.locator(target).evaluate((section) => {
+						window.scrollTo(0, section.offsetTop);
+					});
+					await page.evaluate(() => document.fonts.ready);
+					if (hash) {
+						await page.waitForFunction(() => document.querySelector("#universe")?.dataset.mode !== "loading");
+					}
+					for (const failure of await auditCanvasPixels(page, target)) problems.push(`/${hash} @${width}px: ${failure}`);
+				}
 			}
 			await page.close();
 		}

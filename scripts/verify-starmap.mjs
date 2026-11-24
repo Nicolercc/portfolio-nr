@@ -91,7 +91,8 @@ async function assertPanelOpensAndCloses(page, viewport) {
 }
 
 async function assertReceiptToggles(page, viewport) {
-	const button = page.locator("#universe .receipt-btn").first();
+	await activate(await labelFor(page, "Sano"));
+	const button = page.locator(".system-panel .receipt-btn");
 	await button.scrollIntoViewIfNeeded();
 	assert((await button.getAttribute("aria-expanded")) === "false", `${viewport}: receipt should start closed.`);
 	const slipId = await button.getAttribute("aria-controls");

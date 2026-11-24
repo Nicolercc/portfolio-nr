@@ -27,6 +27,46 @@ function PanelLink({ link, variant, onNavigate }: { link: MapLink; variant: "pri
 	);
 }
 
+function ProjectReceipt({ receipt }: { receipt: (typeof RECEIPTS)[number] }) {
+	const [open, setOpen] = useState(false);
+	const slipId = `receipt-${receipt.id}`;
+
+	return (
+		<div className="panel-receipt">
+			<div className="panel-receipt__row">
+				<span>{receipt.claim}</span>
+				<button
+					type="button"
+					className="receipt-btn"
+					aria-expanded={open}
+					aria-controls={slipId}
+					onClick={() => setOpen(!open)}
+				>
+					{open ? "Close receipt" : "Receipt"}
+				</button>
+			</div>
+			<div id={slipId} className="receipt-slip" hidden={!open}>
+				<dl>
+					{receipt.rows.map(({ label, value }) => (
+						<div key={label} className="receipt-slip__row">
+							<dt>{label}</dt>
+							<dd>{value}</dd>
+						</div>
+					))}
+				</dl>
+				<p className="receipt-slip__method">{receipt.method}</p>
+				<p className="receipt-slip__scope">{receipt.scope}</p>
+				<div className="receipt-slip__foot">
+					<span className="receipt-slip__stamp">✓ Published evidence</span>
+					<Link to={`/projects/${receipt.slug}`} className="receipt-slip__link">
+						Full evidence in the {receipt.project} case study →
+					</Link>
+				</div>
+			</div>
+		</div>
+	);
+}
+
 type Mode = "loading" | "webgl" | "static";
 
 function prefersReducedMotion() {
@@ -44,7 +84,6 @@ export default function StarMapSection() {
 	const [mode, setMode] = useState<Mode>("loading");
 	const [hovered, setHovered] = useState<string | null>(null);
 	const [selected, setSelected] = useState<string | null>(null);
-	const [openReceipt, setOpenReceipt] = useState<string | null>(null);
 
 	const select = useCallback((slug: string | null) => {
 		if (slug) returnFocusRef.current = labelRefs.current.get(slug) ?? null;
@@ -132,6 +171,7 @@ export default function StarMapSection() {
 	}, [selected, select]);
 
 	const active = selected ? systems.find((p) => p.slug === selected) : undefined;
+	const receipt = active && RECEIPTS.find(({ slug }) => slug === active.slug);
 	const closePanel = () => {
 		select(null);
 		returnFocusRef.current?.focus();
@@ -152,58 +192,7 @@ export default function StarMapSection() {
 				</p>
 				<p className="space-hero__tagline">Pick a star. Open a receipt.</p>
 
-				<div className="proof-log">
-					<h2 className="proof-log__title">
-						<span>Proof log</span>
-						<span className="proof-log__count">
-							{RECEIPTS.length}/{RECEIPTS.length} claims have a receipt
-						</span>
-					</h2>
-					<ul className="proof-log__list">
-						{RECEIPTS.map((r) => {
-							const open = openReceipt === r.id;
-							const slipId = `receipt-${r.id}`;
-							return (
-								<li key={r.id} className="proof-log__item" data-open={open}>
-									<div className="proof-log__row">
-										<span className="proof-log__claim">
-											<span className="proof-log__claim-text">{r.claim}</span>
-											<span className="proof-log__source">{r.project}</span>
-										</span>
-										<button
-											type="button"
-											className="receipt-btn"
-											aria-expanded={open}
-											aria-controls={slipId}
-											onClick={() => setOpenReceipt(open ? null : r.id)}
-										>
-											{open ? "Close" : "Receipt"}
-											<span className="sr-only"> for {r.claim}</span>
-										</button>
-									</div>
-									<div id={slipId} className="receipt-slip" hidden={!open}>
-										<dl>
-											{r.rows.map((row) => (
-												<div key={row.label} className="receipt-slip__row">
-													<dt>{row.label}</dt>
-													<dd>{row.value}</dd>
-												</div>
-											))}
-										</dl>
-										<p className="receipt-slip__method">{r.method}</p>
-										<p className="receipt-slip__scope">{r.scope}</p>
-										<div className="receipt-slip__foot">
-											<span className="receipt-slip__stamp">✓ Published evidence</span>
-											<Link to={`/projects/${r.slug}`} className="receipt-slip__link">
-												Full evidence in the {r.project} case study →
-											</Link>
-										</div>
-									</div>
-								</li>
-							);
-						})}
-					</ul>
-				</div>
+				<p className="receipt-count">{RECEIPTS.length} receipts on this page</p>
 			</div>
 
 			<div ref={mapRef} className="starmap" data-has-selection={Boolean(active)}>
@@ -274,6 +263,7 @@ export default function StarMapSection() {
 								))}
 							</dl>
 						) : null}
+						{receipt && <ProjectReceipt key={receipt.id} receipt={receipt} />}
 						<div className="system-panel__actions">
 							<PanelLink link={active.primary} variant="primary" onNavigate={() => select(null)} />
 							{active.secondary ? <PanelLink link={active.secondary} variant="ghost" /> : null}

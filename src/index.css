@@ -384,3 +384,33 @@
 		opacity: 0.4;
 	}
 }
+
+/* Closing marquee: one slow loop of outlined type above Contact (D19). */
+.closing-marquee__track {
+	animation: marquee 60s linear infinite;
+}
+.closing-marquee__text {
+	font-family: var(--font-serif);
+	font-weight: 400;
+	font-size: 64px;
+	line-height: 1.1;
+	color: transparent;
+	-webkit-text-stroke: 1px color-mix(in srgb, var(--color-text-primary) 12%, transparent);
+}
+.closing-marquee__star {
+	font-size: 28px;
+	color: color-mix(in srgb, var(--color-rose) 35%, transparent);
+}
+@media (min-width: 768px) {
+	.closing-marquee__text {
+		font-size: 96px;
+	}
+}
+@media (min-width: 1024px) {
+	.closing-marquee__text {
+		font-size: 128px;
+	}
+}
+html[data-motion="reduce"] .closing-marquee__track {
+	animation: none !important;
+}

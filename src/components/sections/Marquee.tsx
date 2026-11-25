@@ -1,25 +1,22 @@
-const technologies = [
-	"React",
-	"TypeScript",
-	"Tailwind CSS",
-	"Framer Motion",
-	"Astro",
-	"Stripe",
-	"Firebase",
-	"PostgreSQL",
-	"Figma",
-];
+import { useReducedMotion } from "../../lib/motionPreference";
 
+const PHRASE = ["Nicole Rodriguez", "Let's build something real"];
+
+/**
+ * The closing band above Contact: huge outlined Cormorant on one slow 60s loop.
+ * Decorative (aria-hidden); it stops with Pause motion or the OS setting (D19).
+ */
 export function Marquee() {
+	const reduced = useReducedMotion();
+	const run = [...PHRASE, ...PHRASE];
+
 	return (
-		<section aria-hidden="true" data-a11y-decorative className="py-24 overflow-hidden border-y border-white/5 bg-white/[0.01]">
-			<div className="flex gap-20 motion-safe:animate-marquee whitespace-nowrap">
-				{[...technologies, ...technologies].map((t, i) => (
-					<span
-						key={i}
-						className="text-[64px] md:text-[96px] lg:text-[128px] font-serif font-bold italic opacity-[0.03] hover:opacity-10 transition-opacity cursor-default uppercase tracking-tighter"
-					>
-						{t}
+		<section aria-hidden="true" data-a11y-decorative className="closing-marquee overflow-hidden py-12">
+			<div className={`flex w-max items-center gap-12 whitespace-nowrap ${reduced ? "" : "closing-marquee__track"}`}>
+				{(reduced ? PHRASE : run).map((text, i) => (
+					<span key={i} className="flex items-center gap-12">
+						<span className="closing-marquee__text">{text}</span>
+						<span className="closing-marquee__star">✦</span>
 					</span>
 				))}
 			</div>

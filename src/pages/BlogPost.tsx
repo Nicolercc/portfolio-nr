@@ -203,7 +203,7 @@ export default function BlogPost() {
 						</Link>
 						<Link
 							to="/#contact"
-							className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-action text-[#0d0d0d] text-sm font-medium hover:bg-action/85 transition-colors duration-200"
+							className="inline-flex min-h-[44px] items-center gap-2 px-5 py-2 rounded-full bg-action text-[#0d0d0d] text-sm font-medium hover:bg-action/85 transition-colors duration-200"
 						>
 							Get in Touch
 						</Link>

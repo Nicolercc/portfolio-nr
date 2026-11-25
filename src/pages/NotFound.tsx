@@ -23,7 +23,7 @@ export default function NotFound() {
 				</p>
 				<Link
 					to="/"
-					className="inline-block mt-4 border-b border-white/20 pb-1 hover:border-white transition-all"
+					className="inline-flex min-h-[44px] items-center mt-4 border-b border-white/20 hover:border-white transition-all"
 				>
 					Return Home
 				</Link>

@@ -17,8 +17,8 @@ export function Footer() {
 					</p>
 				</div>
 				<ul className="flex flex-wrap items-center gap-x-6 gap-y-1" aria-label="Contact and profiles">
-					<li>
-						<a href={mailtoHref} className={linkClass}>
+					<li className="min-w-0">
+						<a href={mailtoHref} className={`${linkClass} [overflow-wrap:anywhere]`}>
 							{PROFILE.email}
 						</a>
 					</li>

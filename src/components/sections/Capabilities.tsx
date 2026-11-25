@@ -203,7 +203,7 @@ export function Capabilities() {
 	return (
 		<section
 			id="capabilities"
-			className="relative min-h-screen flex flex-col justify-center px-6 md:px-12 pt-10 pb-16 overflow-hidden"
+			className="relative lg:min-h-screen flex flex-col justify-center px-6 md:px-12 pt-10 pb-16 overflow-hidden"
 		>
 			{/* Cinematic Background Glows
           Moved blur from a Tailwind class to inline style so we can also set

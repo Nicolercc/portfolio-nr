@@ -1140,7 +1140,7 @@ export default function CaseStudy() {
 									href={links.github}
 									target="_blank"
 									rel="noreferrer"
-									className="inline-flex items-center justify-center gap-2 w-full font-mono text-caption uppercase tracking-widest text-white/60 hover:text-white/85 transition-colors py-2"
+									className="inline-flex min-h-[44px] items-center justify-center gap-2 w-full font-mono text-caption uppercase tracking-widest text-white/60 hover:text-white/85 transition-colors py-2"
 								>
 									<GitBranch size={10} />
 									Source Code

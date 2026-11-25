@@ -89,7 +89,7 @@ function SocialPill({ label, href }: { label: string; href: string }) {
 			href={href}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="group inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-transparent px-[15px] py-1.5 text-caption font-medium tracking-wide no-underline transition-all duration-[220ms] hover:border-[#D4849A] hover:bg-[rgba(212,132,154,0.08)] hover:text-[#D4849A]"
+			className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-white/[0.08] bg-transparent px-[15px] py-1.5 text-caption font-medium tracking-wide no-underline transition-all duration-[220ms] hover:border-[#D4849A] hover:bg-[rgba(212,132,154,0.08)] hover:text-[#D4849A]"
 			style={{
 				fontFamily: "'Inter', sans-serif",
 				color: "rgba(245,240,232,0.62)",
@@ -449,23 +449,23 @@ function CardDeck() {
 					onClick={retreat}
 					whileHover={{ scale: 1.08, borderColor: T.rose }}
 					whileTap={{ scale: 0.94 }}
-					className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#D4849A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4849A]"
+					className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#D4849A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4849A]"
 				>
 					←
 				</motion.button>
 
-				<div className="flex items-center" role="group" aria-label="Select hobby">
+				<div className="hidden items-center sm:flex" role="group" aria-label="Select hobby">
 					{HOBBIES.map((h, i) => {
 						const active = i === topIndex;
 						return (
-							// 24px hit area (WCAG 2.5.8) around the same small visual dot.
+							// 44px hit area around the same small visual dot; phones use the arrows instead.
 							<button
 								key={h.title}
 								type="button"
 								aria-current={active ? "true" : undefined}
 								aria-label={`Show ${h.title}`}
 								onClick={() => setTopIndex(i)}
-								className="flex h-6 min-w-6 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4ADE80]"
+								className="flex h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4ADE80]"
 							>
 								<motion.span
 									aria-hidden="true"
@@ -490,7 +490,7 @@ function CardDeck() {
 					onClick={advance}
 					whileHover={{ scale: 1.08, borderColor: T.green }}
 					whileTap={{ scale: 0.94 }}
-					className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#4ADE80] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4ADE80]"
+					className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#4ADE80] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4ADE80]"
 				>
 					→
 				</motion.button>

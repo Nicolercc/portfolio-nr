@@ -95,6 +95,35 @@ async function scrollThrough(page) {
 	await page.waitForTimeout(300);
 }
 
+// WCAG 2.5.5-style 44px targets on phones. Links inside running text are exempt
+// (WCAG 2.5.8 inline exception): their block holds other text besides the link.
+async function smallTargets(page, route) {
+	await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
+	await scrollThrough(page);
+	return page.evaluate((routeName) => {
+		const MIN = 44;
+		const found = [];
+		for (const el of document.querySelectorAll("a[href], button, summary, [role='button'], input, select, textarea")) {
+			const style = getComputedStyle(el);
+			if (style.visibility === "hidden" || style.display === "none" || el.closest("[inert], [aria-hidden='true']")) continue;
+			const rect = el.getBoundingClientRect();
+			if (rect.width === 0 && rect.height === 0) continue;
+			if (el.matches(".sr-only, .sr-only *") || (rect.width <= 1 && rect.height <= 1)) continue;
+			if (style.display === "inline" && el.tagName === "A") {
+				const block = el.parentElement?.closest("p, li, dd, td, figcaption, blockquote");
+				const own = (el.textContent ?? "").trim().length;
+				const blockText = (block?.textContent ?? "").trim().length;
+				if (block && blockText > own + 2) continue;
+			}
+			if (rect.width < MIN - 0.5 || rect.height < MIN - 0.5) {
+				const label = (el.getAttribute("aria-label") || el.textContent || el.tagName).trim().replace(/\s+/g, " ").slice(0, 40);
+				found.push(`${routeName} "${label}" ${Math.round(rect.width)}x${Math.round(rect.height)}`);
+			}
+		}
+		return found;
+	}, route);
+}
+
 async function runAxe(page, route) {
 	await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
 	await scrollThrough(page);
@@ -190,6 +219,16 @@ async function main() {
 		await assertNoHorizontalOverflow(mobile, "/projects/sano");
 		await assertNoHorizontalOverflow(mobile, "/projects/tripcanvas");
 
+		const landscape = await browser.newPage({ viewport: { width: 844, height: 390 }, reducedMotion: "reduce" });
+		for (const route of ["/", "/projects", "/projects/sano", "/blog"]) await assertNoHorizontalOverflow(landscape, route);
+		await landscape.close();
+		const bigText = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+		await bigText.addInitScript(() => {
+			document.addEventListener("DOMContentLoaded", () => document.documentElement.style.setProperty("font-size", "200%", "important"));
+		});
+		for (const route of ["/", "/projects", "/projects/sano", "/blog"]) await assertNoHorizontalOverflow(bigText, route);
+		await bigText.close();
+
 		for (const route of getContentRoutes()) {
 			await desktop.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
 			const headingCount = await desktop.locator("[data-route-heading]").count();
@@ -239,6 +278,14 @@ async function main() {
 			const visible = await phoneNav.locator("nav").getByText(name, { exact: true }).first().isVisible();
 			assert(visible, `Mobile navigation should show ${name}.`);
 		}
+
+		const phoneTargets = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+		const undersized = [];
+		for (const route of ["/", ...getContentRoutes(), "/does-not-exist"]) {
+			undersized.push(...(await smallTargets(phoneTargets, route)));
+		}
+		await phoneTargets.close();
+		assert(undersized.length === 0, `Tap targets under 44px at 390px:\n${undersized.join("\n")}`);
 
 		const axeViolations = [];
 		for (const viewport of [

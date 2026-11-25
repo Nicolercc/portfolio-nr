@@ -198,6 +198,7 @@
 		background: var(--color-text-primary);
 		color: var(--color-bg);
 		padding: 0.65rem 1rem;
+		min-height: 44px;
 		font-size: var(--text-caption);
 		font-weight: 700;
 		text-decoration: none;

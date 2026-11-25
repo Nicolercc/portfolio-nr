@@ -122,6 +122,22 @@ function auditText({ minFontPx, pageBackground }) {
 	return failures;
 }
 
+// Sideways scroll, and text whose box is cut off by an ancestor that clips overflow.
+function auditLayout() {
+	const issues = [];
+	const overflow = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - window.innerWidth;
+	if (overflow > 1) issues.push(`scrolls sideways by ${overflow}px`);
+	for (const el of document.querySelectorAll("h1, h2, h3, p, a, button, li, dd, dt")) {
+		if (el.closest('[aria-hidden="true"], [data-a11y-decorative], .sr-only, [inert]')) continue;
+		const style = getComputedStyle(el);
+		if (style.display === "none" || style.visibility === "hidden") continue;
+		if (el.scrollWidth > el.clientWidth + 2 && style.overflowX !== "visible" && style.textOverflow !== "ellipsis") {
+			issues.push(`text clipped inside "${el.textContent.trim().slice(0, 40)}"`);
+		}
+	}
+	return [...new Set(issues)];
+}
+
 function relativeLuminance(rgb) {
 	const linear = rgb.map((value) => {
 		const srgb = value / 255;
@@ -216,6 +232,18 @@ async function main() {
 					}
 					for (const failure of await auditCanvasPixels(page, target)) problems.push(`/${hash} @${width}px: ${failure}`);
 				}
+			}
+			await page.close();
+		}
+		// Landscape phone and 200% text: nothing clips, overlaps or scrolls sideways.
+		for (const [label, viewport, zoom] of [["844x390", { width: 844, height: 390 }, 1], ["390 @200% text", { width: 390, height: 844 }, 2]]) {
+			const page = await browser.newPage({ viewport, reducedMotion: "reduce" });
+			for (const route of ROUTES) {
+				await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
+				if (zoom !== 1) await page.addStyleTag({ content: `html { font-size: ${zoom * 100}% !important; }` });
+				await page.evaluate(() => document.fonts.ready);
+				await page.waitForTimeout(300);
+				for (const issue of await page.evaluate(auditLayout)) problems.push(`${route} @${label}: ${issue}`);
 			}
 			await page.close();
 		}

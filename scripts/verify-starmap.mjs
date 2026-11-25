@@ -162,6 +162,38 @@ async function assertSlowFallback(browser, engage) {
 	}
 }
 
+// D23 + R12: on phones the panel is a modal sheet. Focus stays inside, the page
+// behind is inert, and scrolling inside the sheet never scrolls the page.
+async function assertPhoneSheet(page) {
+	const label = await labelFor(page, "Sano");
+	await activate(label);
+	const panel = page.locator(".system-panel");
+	await panel.waitFor({ state: "visible" });
+	assert((await panel.getAttribute("role")) === "dialog", "phone: panel should be role=dialog.");
+	assert((await panel.getAttribute("aria-modal")) === "true", "phone: panel should be aria-modal.");
+	const behind = await page.evaluate(() => ({
+		footer: Boolean(document.querySelector("footer")?.closest("[inert]")),
+		nav: Boolean(document.querySelector("nav")?.closest("[inert]")),
+	}));
+	assert(behind.footer && behind.nav, `phone: page behind the sheet should be inert, got ${JSON.stringify(behind)}.`);
+	for (let i = 0; i < 12; i++) {
+		await page.keyboard.press("Tab");
+		const inside = await page.evaluate(() => Boolean(document.activeElement?.closest(".system-panel")));
+		assert(inside, `phone: Tab ${i + 1} moved focus out of the sheet.`);
+	}
+	const before = await page.evaluate(() => window.scrollY);
+	const box = await panel.boundingBox();
+	await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+	await page.mouse.wheel(0, 600);
+	await page.waitForTimeout(400);
+	const after = await page.evaluate(() => window.scrollY);
+	assert(Math.abs(after - before) < 2, `phone: page scrolled ${after - before}px while the sheet was open.`);
+	await page.keyboard.press("Escape");
+	await panel.waitFor({ state: "detached" });
+	const released = await page.evaluate(() => !document.querySelector("footer")?.closest("[inert]") && document.documentElement.style.overflow !== "hidden");
+	assert(released, "phone: closing the sheet should release inert and the scroll lock.");
+}
+
 async function main() {
 	const server = await serveDist();
 	const browser = await chromium.launch({ headless: true });
@@ -178,6 +210,10 @@ async function main() {
 			await assertContextLoss(page);
 			await page.close();
 		}
+		const sheetPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+		await openMap(sheetPage, "phone sheet");
+		await assertPhoneSheet(sheetPage);
+		await sheetPage.close();
 		await assertSlowFallback(browser, false);
 		await assertSlowFallback(browser, true);
 		const zoomed = await browser.newPage({ viewport: { width: 844, height: 390 }, reducedMotion: "reduce" });

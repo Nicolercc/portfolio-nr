@@ -442,6 +442,7 @@
 	z-index: 40;
 	max-height: 72svh;
 	overflow-y: auto;
+	overscroll-behavior: contain;
 	padding: 18px 20px 20px;
 	border-radius: 16px;
 	border: 1px solid color-mix(in srgb, var(--star) 45%, transparent);
@@ -452,6 +453,14 @@
 		0 30px 80px -30px rgba(0, 0, 0, 0.9),
 		0 0 0 1px rgba(255, 255, 255, 0.03) inset;
 	animation: panel-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+}
+.system-panel__handle {
+	width: 44px;
+	height: 5px;
+	margin: -6px auto 12px;
+	border-radius: 9999px;
+	background: rgba(245, 240, 232, 0.28);
+	touch-action: none;
 }
 .system-panel:focus {
 	outline: none;

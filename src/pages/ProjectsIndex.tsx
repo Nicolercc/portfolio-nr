@@ -37,7 +37,7 @@ export default function ProjectsIndex() {
 	}, []);
 
 	return (
-		<main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-foreground px-6 md:px-12 pt-28 pb-16 md:pt-32 md:pb-20 focus:outline-none">
+		<main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-foreground [overflow-wrap:anywhere] px-6 md:px-12 pt-28 pb-16 md:pt-32 md:pb-20 focus:outline-none">
 			<div className="max-w-7xl mx-auto">
 				<header className="mb-14 md:mb-16">
 					<p className="text-caption uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
@@ -90,7 +90,7 @@ export default function ProjectsIndex() {
 
 									<Link
 										to={`/projects/${project.slug}`}
-										className="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:text-rose transition-colors"
+										className="inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold text-foreground hover:text-rose transition-colors"
 									>
 										View Case Study <span aria-hidden>→</span>
 									</Link>

@@ -1,6 +1,6 @@
 import { getReducedMotion, subscribe } from "../../lib/motionPreference";
 import createGlobe from "cobe";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { themeUnit } from "../../lib/themeColors";
 
 type LocationGlobeProps = {
@@ -24,12 +24,26 @@ const NYC: [number, number] = [40.7128, -74.006];
 const INITIAL_PHI = 2.38;
 const INITIAL_THETA = 0.22;
 
+function webglAvailable() {
+	try {
+		const probe = document.createElement("canvas");
+		return Boolean(probe.getContext("webgl2") || probe.getContext("webgl"));
+	} catch {
+		return false;
+	}
+}
+
+type GlobeControls = { spin: (delta: number) => void; reset: () => void };
+
 export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const controlsRef = useRef<GlobeControls | null>(null);
+	// The static SVG globe shows until the WebGL globe has drawn, and stays without WebGL (D12).
+	const [ready, setReady] = useState(false);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) return;
+		if (!canvas || !webglAvailable()) return;
 
 		const dpr = Math.min(window.devicePixelRatio ?? 2, 2);
 		let phi = INITIAL_PHI;
@@ -73,17 +87,46 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 		canvas.style.maxWidth = "100%";
 
 		// Spins on its own only while motion is on; dragging still works when paused.
+		let onScreen = true;
+		let drawn = false;
 		const loop = () => {
 			if (autoRotate && !dragging) {
 				phi += 0.0016;
 			}
 			globe.update({ phi, theta });
-			rafId = autoRotate || dragging ? requestAnimationFrame(loop) : 0;
+			if (!drawn) {
+				drawn = true;
+				setReady(true);
+			}
+			rafId = (autoRotate || dragging) && onScreen ? requestAnimationFrame(loop) : 0;
 		};
 		const kick = () => {
-			if (rafId === 0 && !document.hidden) rafId = requestAnimationFrame(loop);
+			if (rafId === 0 && !document.hidden && onScreen) rafId = requestAnimationFrame(loop);
 		};
 		rafId = requestAnimationFrame(loop);
+
+		// Off screen, the globe stops drawing; it picks up again when it scrolls back (R4).
+		const observer = new IntersectionObserver(([entry]) => {
+			onScreen = entry.isIntersecting;
+			if (onScreen) kick();
+			else {
+				cancelAnimationFrame(rafId);
+				rafId = 0;
+			}
+		});
+		observer.observe(canvas);
+
+		controlsRef.current = {
+			spin: (delta) => {
+				phi += delta;
+				kick();
+			},
+			reset: () => {
+				phi = INITIAL_PHI;
+				theta = INITIAL_THETA;
+				kick();
+			},
+		};
 		const unsubscribe = subscribe((reduced) => {
 			autoRotate = !reduced;
 			kick();
@@ -150,6 +193,8 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 
 		return () => {
 			cancelAnimationFrame(rafId);
+			observer.disconnect();
+			controlsRef.current = null;
 			unsubscribe();
 			document.removeEventListener("visibilitychange", onVisibilityChange);
 			canvas.removeEventListener("pointerdown", onPointerDown);
@@ -162,22 +207,42 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 		};
 	}, [size]);
 
+	const button =
+		"inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-muted-foreground transition-colors duration-150 hover:border-rose hover:text-rose";
+
 	return (
 		<div className={className}>
 			<div
 				className="relative mx-auto overflow-hidden rounded-full ring-1 ring-white/10 shadow-[0_0_36px_-10px_color-mix(in_srgb,var(--color-rose)_35%,transparent)]"
-				style={{ width: size, height: size }}
+				style={{ width: size, height: size, maxWidth: "100%" }}
 			>
+				<img
+					src="/media/globe-nyc.svg"
+					alt=""
+					width={size}
+					height={size}
+					className={`absolute inset-0 size-full transition-opacity duration-300 ${ready ? "opacity-0" : "opacity-100"}`}
+				/>
 				<canvas
 					ref={canvasRef}
 					role="img"
-					aria-label="Interactive globe. A green marker shows New York City. Drag to rotate; double-click to reset the view."
-					className="block size-full cursor-grab active:cursor-grabbing"
+					aria-label="Globe with a green pin on New York City. Drag or use the buttons below to spin it."
+					className={`relative block size-full cursor-grab active:cursor-grabbing ${ready ? "opacity-100" : "opacity-0"}`}
 				/>
 			</div>
-			<p className="mt-2 text-center text-caption leading-tight text-muted-foreground">
-				Drag to orbit · Double-click to reset
-			</p>
+			<p className="mt-3 text-center text-sm text-foreground">New York City · open to remote</p>
+			<div className="mt-3 flex items-center justify-center gap-2" role="group" aria-label="Spin the globe">
+				<button type="button" className={button} aria-label="Rotate globe left" onClick={() => controlsRef.current?.spin(-0.35)}>
+					<span aria-hidden>←</span>
+				</button>
+				<button type="button" className={button} aria-label="Reset globe" onClick={() => controlsRef.current?.reset()}>
+					<span aria-hidden>↺</span>
+				</button>
+				<button type="button" className={button} aria-label="Rotate globe right" onClick={() => controlsRef.current?.spin(0.35)}>
+					<span aria-hidden>→</span>
+				</button>
+			</div>
+			<p className="mt-2 text-center text-caption leading-tight text-muted-foreground">Drag or use the buttons to spin.</p>
 		</div>
 	);
 }

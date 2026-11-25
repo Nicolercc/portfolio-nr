@@ -1,9 +1,9 @@
 import { MoreWorkList } from "../MoreWorkList";
-import { Fragment, useRef } from "react";
+import { Fragment } from "react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { useReducedMotion } from "../../lib/motionPreference";
-import { ArrowUpRight } from "lucide-react";
+import { Reveal } from "../ui/Reveal";
 import { getShowcaseProjects, type CaseStudyProject } from "../../data/projects";
 
 /* ─────────────────────────────────────────────
@@ -34,40 +34,17 @@ function ProjectVisuals({ project }: { project: CaseStudyProject }) {
 /* ─────────────────────────────────────────────
    SUB-COMPONENT: Case Study Row
 ───────────────────────────────────────────── */
-function CaseStudyCard({ project, position }: { project: CaseStudyProject; position: number }) {
-	const cardRef = useRef<HTMLDivElement>(null);
-	const reduceMotion = useReducedMotion();
-	const { scrollYProgress } = useScroll({
-		target: cardRef,
-		offset: ["start end", "end start"],
-	});
-
-	// Fade in once; never hide a project again after it has been read.
-	const opacity = useTransform(scrollYProgress, [0, 0.2, 1], [0, 1, 1]);
-
-	const accentClass = "text-rose";
-
+export function CaseStudyRow({ project, headingLevel = "h3" }: { project: CaseStudyProject; headingLevel?: "h2" | "h3" }) {
+	const Heading = headingLevel;
 	return (
-		<motion.article
-			ref={cardRef}
-			style={reduceMotion ? undefined : { opacity }}
-			className="relative py-8 lg:py-12 border-white/10 group"
-		>
+		<Reveal as="article" className="relative py-8 lg:py-12">
 			<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start">
-				{/* Left Side: Info */}
 				<div className="lg:col-span-5 lg:sticky lg:top-32">
-					<div className="flex items-center gap-4 mb-4 lg:mb-6">
-						<span className={`text-xs font-mono ${accentClass}`}>
-							{String(position).padStart(2, "0")}
-						</span>
-						<span className="text-caption uppercase tracking-[0.3em] text-muted-foreground">
-							{project.category}
-						</span>
-					</div>
+					<p className="mb-3 font-mono text-caption text-muted-foreground">{project.category}</p>
 
-					<h3 className="text-4xl md:text-7xl font-serif leading-none mb-4 lg:mb-6">
+					<Heading className="text-4xl md:text-7xl font-serif font-normal leading-none mb-4 lg:mb-6">
 						{project.title}
-					</h3>
+					</Heading>
 
 					<p className="text-base md:text-lg text-foreground leading-relaxed mb-3 lg:mb-4 max-w-md">
 						{project.outcome ?? project.tagline}
@@ -77,23 +54,17 @@ function CaseStudyCard({ project, position }: { project: CaseStudyProject; posit
 						{(project.keyStack ?? project.stack).slice(0, 4).join(" · ")}
 					</p>
 
-					<Link
-						to={`/projects/${project.slug}`}
-						className={`inline-flex min-h-[44px] items-center gap-2 text-xs uppercase tracking-widest font-bold ${accentClass} group/link`}
-					>
-						Explore Case Study
-						<ArrowUpRight className="w-4 h-4 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform" />
+					<Link to={`/projects/${project.slug}`} className="text-link">
+						Read the case study <span aria-hidden="true">→</span>
+						<span className="sr-only"> for {project.title}</span>
 					</Link>
 				</div>
 
-				{/* Right Side: Visuals */}
-				<div
-					className="order-first lg:order-none lg:col-span-7"
-				>
+				<div className="order-first lg:order-none lg:col-span-7">
 					<ProjectVisuals project={project} />
 				</div>
 			</div>
-		</motion.article>
+		</Reveal>
 	);
 }
 
@@ -107,11 +78,12 @@ export function Projects() {
 	return (
 		<section
 			id="work"
-			className="relative scroll-mt-24 px-6 md:px-12 bg-transparent overflow-hidden"
+			data-chapter="2"
+			className="section-rhythm relative scroll-mt-24 px-6 md:px-12 overflow-hidden"
 		>
-			<div className="max-w-7xl mx-auto relative z-10 border-t border-white/[0.05] pt-16">
+			<div className="max-w-7xl mx-auto relative z-10">
 				{/* Editorial Header */}
-				<header className="mb-16 overflow-hidden">
+				<header className="mb-12 overflow-hidden">
 					<h2 className="section-label">Case studies</h2>
 					<p className="text-6xl md:text-9xl font-serif tracking-tighter leading-[0.85]">
 						<span className="sr-only">Crafting with intention.</span>
@@ -128,7 +100,7 @@ export function Projects() {
 										whileInView={{ opacity: 1, y: 0 }}
 										viewport={{ once: true }}
 										transition={{
-											duration: 0.5,
+											duration: 0.7,
 											delay: (w * 9 + i) * 0.03,
 											ease: [0.16, 1, 0.3, 1],
 										}}
@@ -149,7 +121,7 @@ export function Projects() {
 									whileInView={{ opacity: 1, y: 0 }}
 									viewport={{ once: true }}
 									transition={{
-										duration: 0.5,
+										duration: 0.7,
 										delay: 0.2 + i * 0.04,
 										ease: [0.16, 1, 0.3, 1],
 									}}
@@ -165,8 +137,8 @@ export function Projects() {
 
 				{/* The Timeline of Projects */}
 				<div className="space-y-0">
-					{showcaseProjects.map((project, i) => (
-						<CaseStudyCard key={project.slug} project={project} position={i + 1} />
+					{showcaseProjects.map((project) => (
+						<CaseStudyRow key={project.slug} project={project} />
 					))}
 				</div>
 				<MoreWorkList compact />

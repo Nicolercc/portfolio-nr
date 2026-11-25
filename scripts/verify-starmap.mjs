@@ -46,10 +46,18 @@ function serveDist() {
 	return new Promise((resolve) => server.listen(port, "127.0.0.1", () => resolve(server)));
 }
 
-async function openMap(page) {
+async function openMap(page, viewport) {
 	await page.goto(`${baseUrl}${HOME}`, { waitUntil: "networkidle" });
 	await page.locator("#universe").scrollIntoViewIfNeeded();
-	await page.waitForSelector('#universe[data-mode="webgl"]', { timeout: 30000 });
+	const map = page.locator("#universe");
+	await page.waitForFunction(() => {
+		const scene = document.querySelector("#universe")?.dataset.scene;
+		return scene === "ready" || scene === "unavailable";
+	}, null, { timeout: 30000 });
+	await page.waitForSelector('#universe[data-mode="webgl"]', { timeout: 3000 }).catch(async (error) => {
+		const state = await map.evaluate(({ dataset }) => ({ ...dataset }));
+		throw new Error(`${viewport}: expected WebGL mode, got ${JSON.stringify(state)}`, { cause: error });
+	});
 	// Let the first frames place the labels.
 	await page.waitForTimeout(600);
 }
@@ -163,7 +171,7 @@ async function main() {
 			["phone", { width: 390, height: 844 }],
 		]) {
 			const page = await browser.newPage({ viewport });
-			await openMap(page);
+			await openMap(page, name);
 			await assertKeyboardOrder(page);
 			await assertPanelOpensAndCloses(page, name);
 			await assertReceiptToggles(page, name);

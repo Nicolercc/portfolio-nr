@@ -217,7 +217,7 @@ export default function StarMapSection() {
 	};
 
 	return (
-		<section ref={sectionRef} className="space-hero" id="universe" data-mode={mode} data-open={Boolean(active)} aria-labelledby="universe-heading">
+		<section ref={sectionRef} className="space-hero" id="universe" data-mode={mode} data-scene={scene} data-crowded={crowded} data-open={Boolean(active)} aria-labelledby="universe-heading">
 			<div className="space-hero__nebula" aria-hidden />
 
 			<div className="space-hero__intro" inert={Boolean(active)}>

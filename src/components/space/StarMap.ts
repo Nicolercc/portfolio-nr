@@ -382,7 +382,8 @@ export class StarMap {
 		specs.forEach((spec, i) => {
 			// Spread the systems along an arc that sits in front of the galaxy disc.
 			const a = -0.95 + (i / Math.max(n - 1, 1)) * 1.9;
-			const spread = n > 5 ? 44 : 36;
+			// Leave room for backplates on the right edge after shifting past the intro.
+			const spread = 27;
 			const home = new Vector3(Math.sin(a) * spread, (i % 2 === 0 ? 1 : -1) * (5 + rand() * 7), 18 - Math.cos(a) * 22);
 			const group = new Group();
 			group.position.copy(home);

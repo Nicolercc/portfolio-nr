@@ -64,104 +64,6 @@ function SocialPill({ label, href }: { label: string; href: string }) {
 }
 
 /* ─────────────────────────────────────────────
-   ANIMATED ORB AVATAR
-───────────────────────────────────────────── */
-function BlobOrb() {
-	const reduceMotion = useReducedMotion();
-
-	return (
-		<div className="bento__blobOrb">
-			<motion.div
-				className="bento__blobOrb-spin"
-				animate={reduceMotion ? { rotate: 0 } : { rotate: 360 }}
-				transition={reduceMotion ? { duration: 0 } : { duration: 18, repeat: Infinity, ease: "linear" }}
-				style={{ willChange: "transform" }}
-			/>
-			<div className="bento__blobOrb-inner">🌺</div>
-		</div>
-	);
-}
-
-/* ─────────────────────────────────────────────
-   STRATEGY CARD
-   Updated: concrete copy replacing vague buzzwords.
-───────────────────────────────────────────── */
-function StrategyCard() {
-	return (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true }}
-			className="relative group overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 p-7 h-full flex flex-col justify-between transition-colors hover:border-[rgba(212,132,154,0.2)]"
-		>
-			{/* Decorative background monogram */}
-			<div
-				data-a11y-decorative
-				className="pointer-events-none absolute right-0 top-0 p-4 opacity-10 transition-opacity group-hover:opacity-20"
-				aria-hidden="true"
-			>
-				<span
-					className="text-6xl italic"
-					style={{ fontFamily: "'Cormorant Garamond', serif" }}
-				>
-					NR
-				</span>
-			</div>
-
-			<div>
-				<div className="mb-6 flex items-center gap-2">
-					<span
-						className="h-1.5 w-1.5 rounded-full bg-[#D4849A]"
-						style={{ boxShadow: "0 0 8px #D4849A" }}
-					/>
-					<span className="font-mono text-caption uppercase tracking-[0.2em] text-[#D4849A]">
-						Background
-					</span>
-				</div>
-
-				<h3
-					className="mb-4 text-2xl leading-tight"
-					style={{ fontFamily: "'Cormorant Garamond', serif" }}
-				>
-					BA in Journalism &amp; Politics —{" "}
-					<span className="italic" style={{ color: "#D4849A" }}>
-						the other half
-					</span>{" "}
-					of the stack
-				</h3>
-
-				<p className="max-w-sm text-sm font-light leading-relaxed text-[rgba(245,240,232,0.62)]">
-					I build interfaces with the same principles as good journalism:{" "}
-					<strong className="font-medium text-[rgba(245,240,232,0.85)]">
-						clarity
-					</strong>
-					,{" "}
-					<strong className="font-medium text-[rgba(245,240,232,0.85)]">
-						accessibility
-					</strong>
-					, and zero tolerance for dark patterns. My degree isn't a detour —
-					it's why I understand the people using what I build.
-				</p>
-			</div>
-
-			<div className="mt-8 flex items-center justify-between border-t border-white/5 pt-6">
-				<span className="font-mono text-caption uppercase tracking-widest text-white/60">
-					Engineer × Writer
-				</span>
-				<div className="flex -space-x-2">
-					<div className="flex h-6 w-6 items-center justify-center rounded-full border border-[rgba(212,132,154,0.4)] bg-[rgba(212,132,154,0.2)] text-caption">
-						📰
-					</div>
-					<div className="flex h-6 w-6 items-center justify-center rounded-full border border-[rgba(74,222,128,0.4)] bg-[rgba(74,222,128,0.2)] text-caption">
-						💻
-					</div>
-				</div>
-			</div>
-		</motion.div>
-	);
-}
-
-/* ─────────────────────────────────────────────
    DRAGGABLE CARD
 ───────────────────────────────────────────── */
 function DraggableCard({
@@ -304,7 +206,6 @@ function DraggableCard({
 						className="h-[5px] w-[5px] rounded-full"
 						style={{
 							background: hobby.accent,
-							boxShadow: `0 0 6px ${hobby.accent}`,
 						}}
 					/>
 					<span
@@ -372,6 +273,9 @@ function CardDeck() {
 		setTopIndex((prev) => (prev - 1 + total) % total);
 	}, [total]);
 
+	// Announce each change politely; focus stays on the control that was pressed (D25).
+	const announcement = `Hobby ${topIndex + 1} of ${total}: ${HOBBIES[topIndex].title}`;
+
 	const visibleDepths = [3, 2, 1, 0];
 	const stackCards = visibleDepths.map((depth) => {
 		const idx = (topIndex + depth) % total;
@@ -380,6 +284,9 @@ function CardDeck() {
 
 	return (
 		<div className="flex flex-col items-center gap-6">
+			<p className="sr-only" aria-live="polite" aria-atomic="true" data-hobby-status>
+				{announcement}
+			</p>
 			<div
 				className="bento__deckWrap"
 				role="region"
@@ -434,7 +341,6 @@ function CardDeck() {
 									animate={{
 										width: active ? 18 : 5,
 										background: active ? T.green : T.mutedLo,
-										boxShadow: active ? `0 0 8px ${T.green}` : "none",
 									}}
 									transition={
 										reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 28 }
@@ -499,14 +405,18 @@ export default function BentoSection() {
 					transition={reduceMotion ? { duration: 0 } : { duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
 					className="bento__col"
 				>
-					<BlobOrb />
-
-					<p className="bento__eyebrow">{BIO.eyebrow}</p>
-					<h2 className="sr-only">
-						{BIO.name} {BIO.role}
-					</h2>
-					<h2 aria-hidden="true" className="bento__h2 bento__name">{BIO.name}</h2>
-					<h2 aria-hidden="true" className="bento__h2 bento__role">{BIO.role}</h2>
+					<h2 className="section-label">About</h2>
+					<img
+						src={BIO.photo.src}
+						alt={BIO.photo.alt}
+						width={112}
+						height={112}
+						loading="lazy"
+						decoding="async"
+						className="bento__photo"
+					/>
+					<p className="bento__h2 bento__name">{BIO.name}</p>
+					<p className="bento__h2 bento__role">{BIO.role}</p>
 
 					{BIO.paragraphs.map((p, i) => (
 						<p key={i} className="bento__p">
@@ -517,15 +427,6 @@ export default function BentoSection() {
 					<div className="bento__taglineBox">
 						<p className="bento__taglineText">
 							{BIO.tagline}
-							{!reduceMotion && (
-								<motion.span
-									animate={{ opacity: [1, 0, 1] }}
-									transition={{ duration: 0.85, repeat: Infinity }}
-									className="ml-0.5 inline-block w-0.5 align-middle"
-									style={{ height: "0.85em", background: T.rose }}
-									aria-hidden="true"
-								/>
-							)}
 						</p>
 					</div>
 
@@ -546,9 +447,6 @@ export default function BentoSection() {
 					<p className="bento__rightLabel">// what I love</p>
 					<div className="bento__rightStack">
 						<CardDeck />
-						<div className="bento__strategyWrap">
-							<StrategyCard />
-						</div>
 					</div>
 				</motion.div>
 			</div>

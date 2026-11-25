@@ -115,7 +115,23 @@
 .bento__role {
 	line-height: 1.15;
 	margin: 0 0 24px;
-	color: var(--color-action);
+	color: var(--bento-fg);
+}
+
+/* Photo slot (Nicole's photo replaces the placeholder). */
+.bento__photo {
+	display: block;
+	width: 112px;
+	height: 112px;
+	margin: 8px auto 20px;
+	border-radius: 9999px;
+	object-fit: cover;
+}
+
+@media (min-width: 1024px) {
+	.bento__photo {
+		margin-left: 0;
+	}
 }
 
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

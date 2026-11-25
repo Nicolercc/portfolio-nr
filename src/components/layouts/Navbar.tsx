@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PROFILE } from "../../data/profile";
 
 const linkClass =
-	"inline-flex min-h-[44px] items-center px-2 sm:px-3 md:px-4 text-xs sm:text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200 whitespace-nowrap";
+	"min-h-[44px] items-center px-2 sm:px-3 md:px-4 text-xs sm:text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200 whitespace-nowrap";
 
 // Always visible on every page: Resume and Contact are one click away from the first
 // screen, and case studies get their way back to the work here instead of a floating link.
@@ -36,13 +36,13 @@ export function Navbar() {
 				<div className="flex items-center gap-1 rounded-full px-1.5 sm:px-2 py-0.5 glass-panel overflow-x-auto max-w-[calc(100vw-5.75rem)] md:max-w-none">
 					{isHome ? (
 						<>
-							<button onClick={() => scrollTo("work")} className={linkClass}>
+							<button onClick={() => scrollTo("work")} className={`${linkClass} inline-flex`}>
 								Work
 							</button>
 							<button onClick={() => scrollTo("about")} className={`${linkClass} hidden sm:inline-flex`}>
 								About
 							</button>
-							<a href={PROFILE.resumePath} download className={linkClass}>
+							<a href={PROFILE.resumePath} download className={`${linkClass} inline-flex`}>
 								Resume
 							</a>
 							<a
@@ -56,20 +56,20 @@ export function Navbar() {
 							{/* The Contact pill is desktop-only, so phones get it here. */}
 							<button
 								onClick={() => scrollTo("contact")}
-								className={`${linkClass} md:hidden`}
+								className={`${linkClass} inline-flex md:hidden`}
 							>
 								Contact
 							</button>
 						</>
 					) : (
 						<>
-							<Link to="/projects" className={linkClass}>
+							<Link to="/projects" className={`${linkClass} inline-flex`}>
 								Work
 							</Link>
 							<Link to="/#about" className={`${linkClass} hidden sm:inline-flex`}>
 								About
 							</Link>
-							<a href={PROFILE.resumePath} download className={linkClass}>
+							<a href={PROFILE.resumePath} download className={`${linkClass} inline-flex`}>
 								Resume
 							</a>
 							<a
@@ -80,7 +80,7 @@ export function Navbar() {
 							>
 								GitHub
 							</a>
-							<Link to="/#contact" className={`${linkClass} md:hidden`}>
+							<Link to="/#contact" className={`${linkClass} inline-flex md:hidden`}>
 								Contact
 							</Link>
 						</>

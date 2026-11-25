@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { RECEIPTS } from "../../data/proofs";
 import { getStarSystems, starCss, type MapLink } from "../../data/starSystems";
 import type { StarMap } from "./StarMap";
+import { getSmoothScroll } from "../../lib/smoothScroll";
 import "./space-hero.css";
 
 function PanelLink({ link, variant, onNavigate }: { link: MapLink; variant: "primary" | "ghost"; onNavigate?: () => void }) {
@@ -89,6 +90,38 @@ function rememberList(enabled: boolean) {
 	}
 }
 
+const PHONE_QUERY = "(max-width: 1023px)";
+
+function usePhoneSheet() {
+	const [phone, setPhone] = useState(() => typeof window !== "undefined" && window.matchMedia(PHONE_QUERY).matches);
+	useEffect(() => {
+		const query = window.matchMedia(PHONE_QUERY);
+		const update = () => setPhone(query.matches);
+		query.addEventListener("change", update);
+		return () => query.removeEventListener("change", update);
+	}, []);
+	return phone;
+}
+
+const FOCUSABLE = 'a[href], button:not([disabled]), summary, [tabindex]:not([tabindex="-1"])';
+
+/** Make everything outside `keep` inert; returns a function that undoes it. */
+function inertOutside(keep: HTMLElement) {
+	const changed: Element[] = [];
+	let node: HTMLElement | null = keep;
+	while (node && node !== document.body) {
+		const parent: HTMLElement | null = node.parentElement;
+		if (!parent) break;
+		for (const sibling of Array.from(parent.children)) {
+			if (sibling === node || sibling.hasAttribute("inert") || sibling.tagName === "SCRIPT") continue;
+			sibling.setAttribute("inert", "");
+			changed.push(sibling);
+		}
+		node = parent;
+	}
+	return () => changed.forEach((el) => el.removeAttribute("inert"));
+}
+
 function prefersReducedMotion() {
 	return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
@@ -111,6 +144,8 @@ export default function StarMapSection() {
 		: scene === "ready" ? "webgl" : "loading";
 	const [hovered, setHovered] = useState<string | null>(null);
 	const [selected, setSelected] = useState<string | null>(null);
+	const phone = usePhoneSheet();
+	const swipeRef = useRef<{ y: number; armed: boolean } | null>(null);
 
 	const select = useCallback((slug: string | null) => {
 		if (slug) returnFocusRef.current = labelRefs.current.get(slug) ?? null;
@@ -181,7 +216,8 @@ export default function StarMapSection() {
 			if (!el) return;
 			// Leaving the map closes an open system, so the phone sheet never follows you down the page.
 			const rect = el.getBoundingClientRect();
-			if (rect.bottom < window.innerHeight * 0.25 || rect.top > window.innerHeight * 0.75) setSelected((cur) => {
+			const focusInPanel = Boolean(panelRef.current?.contains(document.activeElement));
+			if (!focusInPanel && (rect.bottom < window.innerHeight * 0.25 || rect.top > window.innerHeight * 0.75)) setSelected((cur) => {
 				if (cur) engineRef.current?.focus(null);
 				return null;
 			});
@@ -212,6 +248,26 @@ export default function StarMapSection() {
 	}, [selected, select]);
 
 	const active = selected ? systems.find((p) => p.slug === selected) : undefined;
+	const modal = Boolean(active) && phone;
+
+	// On phones the panel is a modal sheet: the page behind it is inert and does not scroll.
+	useEffect(() => {
+		const panel = panelRef.current;
+		if (!modal || !panel) return;
+		const restoreInert = inertOutside(panel);
+		const lenis = getSmoothScroll();
+		lenis?.stop();
+		const root = document.documentElement;
+		const previous = { root: root.style.overflow, body: document.body.style.overflow };
+		root.style.overflow = "hidden";
+		document.body.style.overflow = "hidden";
+		return () => {
+			restoreInert();
+			root.style.overflow = previous.root;
+			document.body.style.overflow = previous.body;
+			lenis?.start();
+		};
+	}, [modal, selected]);
 	const receipt = active && RECEIPTS.find(({ slug }) => slug === active.slug);
 	const closePanel = () => {
 		returnFocusRef.current?.focus({ preventScroll: true });
@@ -311,17 +367,44 @@ export default function StarMapSection() {
 						ref={panelRef}
 						tabIndex={-1}
 						className="system-panel"
-						role="region"
-						aria-label={`${active.title} system`}
+						role={modal ? "dialog" : "region"}
+						aria-modal={modal || undefined}
+						aria-labelledby="system-panel-title"
 						style={{ "--star": starCss(active.color) } as React.CSSProperties}
+						onKeyDown={(event) => {
+							if (!modal || event.key !== "Tab") return;
+							const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.offsetParent !== null);
+							if (!items.length) return;
+							const first = items[0];
+							const last = items[items.length - 1];
+							const current = document.activeElement;
+							if (event.shiftKey && (current === first || current === event.currentTarget)) {
+								event.preventDefault();
+								last.focus();
+							} else if (!event.shiftKey && current === last) {
+								event.preventDefault();
+								first.focus();
+							}
+						}}
+						onTouchStart={(event) => {
+							const onHandle = (event.target as HTMLElement).closest(".system-panel__handle");
+							swipeRef.current = { y: event.touches[0].clientY, armed: Boolean(onHandle) || event.currentTarget.scrollTop <= 0 };
+						}}
+						onTouchEnd={(event) => {
+							const start = swipeRef.current;
+							swipeRef.current = null;
+							if (!modal || !start?.armed) return;
+							if (event.changedTouches[0].clientY - start.y > 80) closePanel();
+						}}
 					>
+						{modal ? <div className="system-panel__handle" aria-hidden /> : null}
 						<div className="system-panel__head">
 							<p className="system-panel__kicker">System · {active.role}</p>
 							<button type="button" className="system-panel__close" onClick={closePanel}>
 								Back to map
 							</button>
 						</div>
-						<h2 className="system-panel__title">{active.title}</h2>
+						<h2 id="system-panel-title" className="system-panel__title">{active.title}</h2>
 						<ProjectStatusPill status={active.status} />
 						<p className="system-panel__tagline">{active.tagline}</p>
 						{active.kind === "brief" ? <BriefArtifactCard artifact={active.artifact} /> : active.image ? (

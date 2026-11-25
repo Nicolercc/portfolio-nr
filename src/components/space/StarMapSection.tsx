@@ -1,4 +1,3 @@
-import { BriefArtifactCard } from "../BriefArtifactCard";
 import { ProjectStatusPill } from "../ProjectStatusPill";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
@@ -9,12 +8,12 @@ import { getSmoothScroll } from "../../lib/smoothScroll";
 import { getReducedMotion, subscribe } from "../../lib/motionPreference";
 import "./space-hero.css";
 
-function PanelLink({ link, variant, onNavigate }: { link: MapLink; variant: "primary" | "ghost"; onNavigate?: () => void }) {
-	const className = variant === "primary" ? "btn-primary" : "btn-secondary";
+function PanelLink({ link, onNavigate }: { link: MapLink; onNavigate?: () => void }) {
+	const className = "text-link";
 	if (link.to) {
 		return (
 			<Link to={link.to} className={className}>
-				{link.label}
+				{link.label} <span aria-hidden="true">→</span>
 			</Link>
 		);
 	}
@@ -131,6 +130,7 @@ export default function StarMapSection() {
 	const labelRefs = useRef(new Map<string, HTMLElement>());
 	const engineRef = useRef<StarMap | null>(null);
 	const panelRef = useRef<HTMLDivElement>(null);
+	const leaderRef = useRef<SVGLineElement>(null);
 	const returnFocusRef = useRef<HTMLElement | null>(null);
 	const [preferredList, setPreferredList] = useState(prefersList);
 	const [scene, setScene] = useState<"loading" | "slow" | "ready" | "unavailable">("loading");
@@ -188,6 +188,7 @@ export default function StarMapSection() {
 					onSelect: select,
 					onContextLost: loseContext,
 					onCrowding: setCrowded,
+					caption: { get: () => panelRef.current, leader: () => leaderRef.current },
 				});
 				engineRef.current = engine;
 				setScene("ready");
@@ -278,16 +279,27 @@ export default function StarMapSection() {
 	return (
 		<section ref={sectionRef} className="space-hero" id="universe" data-chapter="1" data-mode={mode} data-scene={scene} data-crowded={crowded} data-open={Boolean(active)} aria-labelledby="universe-heading">
 
-			<div className="space-hero__intro" inert={Boolean(active)}>
-				<h2 id="universe-heading" className="section-label">
-					Projects
+			<div className="space-hero__intro">
+				{/* The heading stays while a project is open and becomes the trail back. */}
+				<h2 id="universe-heading" className="section-label space-hero__trail">
+					{active ? (
+						<>
+							<button type="button" onClick={closePanel}>Projects</button>
+							<span aria-hidden="true"> › </span>
+							<span>{active.title}</span>
+						</>
+					) : (
+						"Projects"
+					)}
 				</h2>
 				<p className="space-hero__heading">
 					Every star is
 					<br />
 					something I've built.
 				</p>
-				<p className="space-hero__tagline">Pick a star. Open a receipt.</p>
+				<p className="space-hero__tagline">
+					{active && mode === "webgl" ? "Arrow keys move to the next star. Esc goes back." : "Pick a star. Open a receipt."}
+				</p>
 
 				<p className="receipt-count">{RECEIPTS.length} receipts on this page</p>
 				{scene !== "unavailable" && mode !== "static" && (
@@ -306,6 +318,11 @@ export default function StarMapSection() {
 			</div>
 
 			<div ref={mapRef} className="starmap" data-has-selection={Boolean(active)}>
+				{active && !modal && mode === "webgl" ? (
+					<svg className="starmap__leader" aria-hidden="true" style={{ "--star": starCss(active.color) } as React.CSSProperties}>
+						<line ref={leaderRef} x1="0" y1="0" x2="0" y2="0" />
+					</svg>
+				) : null}
 				<div
 					className="starmap__labels"
 					role="group"
@@ -398,40 +415,37 @@ export default function StarMapSection() {
 						}}
 					>
 						{modal ? <div className="system-panel__handle" aria-hidden /> : null}
+						<button type="button" className="system-panel__close" aria-label="Back to map" onClick={closePanel}>
+							<span aria-hidden="true">×</span>
+						</button>
 						<div className="system-panel__head">
-							<p className="system-panel__kicker">System · {active.role}</p>
-							<button type="button" className="system-panel__close" onClick={closePanel}>
-								Back to map
-							</button>
+							<span className="system-panel__dot" aria-hidden="true" />
+							<h2 id="system-panel-title" className="system-panel__title">{active.title}</h2>
+							<ProjectStatusPill status={active.status} />
 						</div>
-						<h2 id="system-panel-title" className="system-panel__title">{active.title}</h2>
-						<ProjectStatusPill status={active.status} />
 						<p className="system-panel__tagline">{active.tagline}</p>
-						{active.kind === "brief" ? <BriefArtifactCard artifact={active.artifact} /> : active.image ? (
-							<img
-								src={active.image.src}
-								alt={active.image.alt}
-								width={1440}
-								height={900}
-								loading="lazy"
-								decoding="async"
-								className="system-panel__shot"
-							/>
+						{receipt ? (
+							<PanelReceipt key={receipt.id} receipt={receipt} />
+						) : active.metrics[0] ? (
+							<p className="system-panel__proof">
+								<b>{active.metrics[0].value}</b> {active.metrics[0].label}
+							</p>
 						) : null}
-						{active.metrics.length ? (
-							<dl className="system-panel__metrics">
-								{active.metrics.slice(0, 3).map((m) => (
-									<div key={m.label}>
-										<dt>{m.label}</dt>
-										<dd>{m.value}</dd>
-									</div>
-								))}
-							</dl>
-						) : null}
-						{receipt && <PanelReceipt key={receipt.id} receipt={receipt} />}
 						<div className="system-panel__actions">
-							<PanelLink link={active.primary} variant="primary" onNavigate={() => select(null)} />
-							{active.secondary ? <PanelLink link={active.secondary} variant="ghost" /> : null}
+							<PanelLink link={active.primary} onNavigate={() => select(null)} />
+							<a
+								href={`#work-${active.slug}`}
+								className="text-link"
+								onClick={(event) => {
+									const row = document.getElementById(`work-${active.slug}`);
+									if (!row) return;
+									event.preventDefault();
+									select(null);
+									row.scrollIntoView({ behavior: getReducedMotion() ? "auto" : "smooth", block: "start" });
+								}}
+							>
+								See it below <span aria-hidden="true">↓</span>
+							</a>
 						</div>
 					</div>
 				) : null}

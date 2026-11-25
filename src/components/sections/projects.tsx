@@ -37,7 +37,7 @@ function ProjectVisuals({ project }: { project: CaseStudyProject }) {
 export function CaseStudyRow({ project, headingLevel = "h3" }: { project: CaseStudyProject; headingLevel?: "h2" | "h3" }) {
 	const Heading = headingLevel;
 	return (
-		<Reveal as="article" className="relative py-8 lg:py-12">
+		<Reveal as="article" id={headingLevel === "h3" ? `work-${project.slug}` : undefined} className="relative scroll-mt-24 py-8 lg:py-12">
 			<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start">
 				<div className="lg:col-span-5 lg:sticky lg:top-32">
 					<p className="mb-3 font-mono text-caption text-muted-foreground">{project.category}</p>

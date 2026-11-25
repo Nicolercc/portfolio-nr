@@ -37,7 +37,7 @@ export function getStarSystems() {
 		const isBrief = project.kind === "brief";
 		const media = isBrief ? undefined : project.media;
 		const primary: MapLink = {
-			label: isBrief ? "Open project brief" : "Open case study",
+			label: isBrief ? "Read the project brief" : "Read the case study",
 			to: isBrief ? `/projects/${slug}` : project.links.caseStudy,
 		};
 		const secondary: MapLink | undefined = !isBrief && project.links.live

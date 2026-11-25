@@ -27,15 +27,15 @@
 	animation: space-rise var(--dur-slow) var(--ease-out) backwards;
 }
 
-/* Phones: the galaxy can sit behind the label block, so it gets a feathered scrim (D15, D19). */
-@media (max-width: 1023px) {
+/* A feathered scrim behind the heading only: the sky stays open everywhere else (D15, D19). */
+@media all {
 	.space-hero__intro {
 		isolation: isolate;
 	}
 	.space-hero__intro::before {
 		content: "";
 		position: absolute;
-		inset: -28% -16%;
+		inset: -48% -22%;
 		z-index: -1;
 		background: radial-gradient(closest-side, rgba(13, 13, 13, 0.94) 62%, rgba(13, 13, 13, 0.6) 82%, transparent 100%);
 		pointer-events: none;
@@ -132,11 +132,6 @@
 		transition:
 			opacity var(--dur-slow) var(--ease-out),
 			transform var(--dur-slow) var(--ease-out);
-	}
-	.space-hero[data-open="true"] .space-hero__intro {
-		opacity: 0;
-		transform: translateX(-32px);
-		pointer-events: none;
 	}
 }
 
@@ -443,8 +438,8 @@
 	overscroll-behavior: contain;
 	padding: 18px 20px 20px;
 	border-radius: var(--radius-card);
-	border: 1px solid color-mix(in srgb, var(--star) 45%, transparent);
-	background: rgba(12, 11, 14, 0.94);
+	border: 1px solid rgba(245, 240, 232, 0.14);
+	background: rgba(13, 13, 13, 0.88);
 	backdrop-filter: blur(16px);
 	-webkit-backdrop-filter: blur(16px);
 	box-shadow:
@@ -476,87 +471,109 @@
 .system-panel__head {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+	padding-right: 44px;
 }
-.system-panel__kicker {
-	margin: 0;
-	font-family: var(--font-mono);
-	font-size: var(--text-caption);
-	color: var(--star);
+.system-panel__dot {
+	width: 10px;
+	height: 10px;
+	border-radius: var(--radius-pill);
+	background: var(--star);
+	box-shadow: 0 0 10px var(--star);
 }
 .system-panel__close {
-	flex-shrink: 0;
-	white-space: nowrap;
-	min-height: 44px;
-	padding: 0 12px;
-	border-radius: var(--radius-control);
-	border: 1px solid rgba(245, 240, 232, 0.2);
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	width: 44px;
+	height: 44px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	border-radius: var(--radius-pill);
 	background: transparent;
-	color: var(--color-text-primary);
-	font-family: var(--font-mono);
-	font-size: var(--text-caption);
+	color: var(--color-text-secondary);
+	font-size: 22px;
 	cursor: pointer;
+	transition: color var(--dur-fast) var(--ease-out);
 }
 .system-panel__close:hover {
-	border-color: var(--star);
+	color: var(--color-text-primary);
 }
 .system-panel__title {
-	margin: 6px 0 0;
+	margin: 0;
 	font-family: var(--font-serif);
 	font-weight: 400;
-	font-size: var(--text-title);
+	font-size: 30px;
 	line-height: 1;
 	color: var(--color-text-primary);
 }
 .system-panel__tagline {
 	margin: 10px 0 0;
-	font-size: var(--text-body);
+	font-size: 15px;
 	line-height: 1.5;
-	color: var(--color-text-secondary);
-}
-.system-panel__shot {
-	display: block;
-	width: 100%;
-	height: auto;
-	aspect-ratio: 16 / 10;
-	object-fit: cover;
-	object-position: top;
-	margin-top: 14px;
-	border-radius: var(--radius-control);
-	border: 1px solid rgba(255, 255, 255, 0.08);
-}
-.system-panel__metrics {
-	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 10px;
-	margin: 14px 0 0;
-}
-.system-panel__metrics div {
-	padding-top: 8px;
-	border-top: 1px solid color-mix(in srgb, var(--star) 40%, transparent);
-}
-.system-panel__metrics dt {
-	font-size: var(--text-caption);
-	color: var(--color-text-secondary);
-	line-height: 1.35;
-}
-.system-panel__metrics dd {
-	margin: 0 0 4px;
-	order: -1;
-	font-family: var(--font-mono);
-	font-size: var(--text-body);
 	color: var(--color-text-primary);
 }
-.system-panel__metrics div {
-	display: flex;
-	flex-direction: column;
+.system-panel__proof {
+	margin: 14px 0 0;
+	padding-top: 12px;
+	border-top: 1px solid rgba(245, 240, 232, 0.14);
+	font-family: var(--font-mono);
+	font-size: var(--text-caption);
+	color: var(--color-text-secondary);
+}
+.system-panel__proof b {
+	font-weight: 400;
+	color: var(--color-text-primary);
 }
 .system-panel__actions {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 10px;
-	margin-top: 18px;
+	gap: 0 20px;
+	margin-top: 6px;
+}
+
+/* The trail: "Projects › Ruvia". */
+.space-hero__trail button {
+	all: unset;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+}
+.space-hero__trail button:hover {
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+.space-hero__trail button:focus-visible {
+	outline: 2px solid var(--color-rose-light);
+	outline-offset: 3px;
+}
+
+/* The hairline from the star to its caption. */
+.starmap__leader {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	pointer-events: none;
+	overflow: visible;
+}
+.starmap__leader line {
+	stroke: var(--star);
+	stroke-width: 1;
+	opacity: 0.85;
+	stroke-dasharray: 200;
+	stroke-dashoffset: 200;
+	animation: leader-draw var(--dur-slow) var(--ease-out) forwards;
+}
+@keyframes leader-draw {
+	to {
+		stroke-dashoffset: 0;
+	}
 }
 
 /* ── Desktop: the map fills the hero behind the intro ─────── */
@@ -568,13 +585,6 @@
 	}
 	.space-hero__intro {
 		max-width: 500px;
-	}
-	.starmap::after {
-		content: "";
-		position: absolute;
-		inset: 0 55% 0 0;
-		background: linear-gradient(90deg, var(--color-bg) 0%, var(--color-bg) 65%, transparent);
-		pointer-events: none;
 	}
 	.starmap__labels {
 		z-index: 1;
@@ -597,10 +607,30 @@
 		right: 48px;
 		bottom: auto;
 		top: 50%;
-		width: min(400px, 32vw);
+		width: 360px;
 		transform: translateY(-50%);
 		max-height: calc(100% - 160px);
 		animation-name: panel-in-side;
+	}
+	/* The caption names the open star, so its own label steps out (it keeps focus for Esc). */
+	.space-hero[data-mode="webgl"] .starmap[data-has-selection="true"] .star-label[aria-pressed="true"] {
+		opacity: 0;
+	}
+	/* Galaxy: the engine places the caption beside the star (transform), so it only fades. */
+	.space-hero[data-mode="webgl"] .system-panel {
+		left: 0;
+		top: 0;
+		right: auto;
+		width: 340px;
+		max-height: none;
+		overflow: visible;
+		transform: translate3d(-9999px, 0, 0);
+		animation: caption-in var(--dur-base) var(--ease-out) var(--dur-base) both;
+	}
+	@keyframes caption-in {
+		from {
+			opacity: 0;
+		}
 	}
 	@keyframes panel-in-side {
 		from {

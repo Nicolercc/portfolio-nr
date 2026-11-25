@@ -22,7 +22,7 @@ export function MoreWorkList({ compact = false }: { compact?: boolean }) {
 					if (compact && primary) {
 						const titleLink = "inline-flex min-h-11 items-center gap-2 font-serif text-lead text-foreground hover:text-rose";
 						return (
-							<li key={project.slug} className="border-t border-white/10 py-3">
+							<li key={project.slug} id={`work-${project.slug}`} className="scroll-mt-24 border-t border-white/10 py-3">
 								<div className="flex flex-wrap items-center gap-x-3">
 									<span aria-hidden="true" className="h-2 w-2 rounded-full bg-muted-foreground" style={color ? { backgroundColor: starCss(color) } : undefined} />
 									<h3 className="m-0">

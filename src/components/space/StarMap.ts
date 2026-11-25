@@ -274,7 +274,7 @@ export class StarMap {
 	// ── Building ────────────────────────────────────────────────────────────
 
 	private starMaterial(twinkle: number, opacity = 1) {
-		return new ShaderMaterial({
+		const material = new ShaderMaterial({
 			vertexShader: STAR_VERT,
 			fragmentShader: STAR_FRAG,
 			transparent: true,
@@ -287,6 +287,25 @@ export class StarMap {
 				uOpacity: { value: opacity },
 			},
 		});
+		material.userData.twinkle = twinkle;
+		return material;
+	}
+
+	/** Pause motion or the OS setting: freeze on one still frame, live. */
+	setReducedMotion(reduced: boolean) {
+		if (this.opts.reducedMotion === reduced) return;
+		this.opts.reducedMotion = reduced;
+		this.scene.traverse((object) => {
+			const material = (object as { material?: ShaderMaterial }).material;
+			if (material?.uniforms?.uTwinkle && typeof material.userData.twinkle === "number") {
+				material.uniforms.uTwinkle.value = reduced ? 0 : material.userData.twinkle;
+			}
+		});
+		if (reduced) {
+			this.parallaxTarget.set(0, 0);
+			this.running = false;
+		}
+		this.loop(true);
 	}
 
 	private buildField(count: number) {

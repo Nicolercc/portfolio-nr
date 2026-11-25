@@ -1,5 +1,6 @@
 import { mailtoHref, PROFILE } from "../../data/profile";
 import { CopyEmailButton } from "../ui/CopyEmailButton";
+import { MotionToggle } from "../ui/MotionToggle";
 
 const linkClass =
 	"inline-flex min-h-[44px] items-center text-sm text-muted-foreground transition-colors duration-150 hover:text-rose";
@@ -34,6 +35,9 @@ export function Footer() {
 						<a href={PROFILE.linkedin} target="_blank" rel="noopener noreferrer" className={linkClass}>
 							LinkedIn
 						</a>
+					</li>
+					<li>
+						<MotionToggle />
 					</li>
 					<li>
 						<a href={PROFILE.github} target="_blank" rel="noopener noreferrer" className={linkClass}>

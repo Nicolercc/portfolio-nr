@@ -220,6 +220,23 @@
 		}
 	}
 
+	/* Pause motion (and the OS setting, mirrored by src/lib/motionPreference.ts). */
+	html[data-motion="reduce"] *,
+	html[data-motion="reduce"] *::before,
+	html[data-motion="reduce"] *::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		scroll-behavior: auto !important;
+		transition-duration: 0.001ms !important;
+	}
+
+	/* Marquees stop and show the whole list instead of scrolling it. */
+	html[data-motion="reduce"] [class*="animate-marquee"] {
+		animation: none !important;
+		flex-wrap: wrap;
+		white-space: normal;
+	}
+
 	@media (forced-colors: active) {
 		:focus-visible {
 			outline: 2px solid Highlight;

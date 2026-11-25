@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useReducedMotion } from "../lib/motionPreference";
 import { blogPostList } from "../data/blog";
 import { formatBlogDate } from "../lib/parseBlogPost";
 import { PROFILE } from "../data/profile";

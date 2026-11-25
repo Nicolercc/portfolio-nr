@@ -155,8 +155,18 @@ export function Sky({ mode = { kind: "home" } }: { mode?: SkyMode }) {
 			ctx.fillRect(0, 0, W, H);
 		};
 
-		const draw = () => {
+		let last = 0;
+		let lastScroll = -1;
+		const draw = (now = performance.now()) => {
 			raf = 0;
+			// Idle twinkling only needs ~30fps; scrolling and chapter changes still draw every frame.
+			const scrolling = window.scrollY !== lastScroll;
+			lastScroll = window.scrollY;
+			if (!still && !scrolling && now - last < 32) {
+				raf = requestAnimationFrame(draw);
+				return;
+			}
+			last = now;
 			const t = (performance.now() - start) / 1000;
 			const goal = target();
 			current = mix(current, goal, still ? 1 : 0.08);

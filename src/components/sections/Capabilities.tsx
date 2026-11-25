@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useReducedMotion } from "../../lib/motionPreference";
-import { Cpu, Globe, ShieldCheck, Zap } from "lucide-react";
+import { Cpu, Globe } from "lucide-react";
 import { LocationGlobe } from "./LocationGlobe";
 
 // The "Tech Stack" rows for the marquee
@@ -117,7 +117,7 @@ function EngineRoomCard() {
 			viewport={{ once: true, margin: "-60px" }}
 			transition={reduceMotion ? { duration: 0 } : { duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
 			whileHover={reduceMotion ? undefined : { y: -5 }}
-			className="group relative md:col-span-4 lg:col-span-4 row-span-1 glass-panel rounded-3xl p-6 overflow-hidden flex flex-col justify-between min-h-[240px] border-white/[0.07]"
+			className="group relative lg:col-span-2 glass-panel rounded-3xl p-6 overflow-hidden flex flex-col justify-between min-h-[240px] border-white/[0.07]"
 		>
 			{/* Ambient: soft grid */}
 			<div
@@ -174,8 +174,6 @@ function EngineRoomCard() {
 }
 
 export function Capabilities() {
-	const reduceMotion = useReducedMotion();
-
 	return (
 		<section
 			id="capabilities"
@@ -207,16 +205,11 @@ export function Capabilities() {
 			<div className="max-w-7xl mx-auto w-full relative z-10">
 				<h2 className="section-label">Stack</h2>
 
-				{/* Bento Grid Layout */}
-				<div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 auto-rows-[minmax(200px,auto)]">
-					{/* 1. Tech Stack Card (Large) */}
+				{/* Engine Room (two thirds) and the NYC globe (one third); stacked on phones. */}
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 					<EngineRoomCard />
 
-					{/* 2. Location Card (Small) */}
-					<motion.div
-						whileHover={reduceMotion ? undefined : { y: -5 }}
-						className="md:col-span-2 lg:col-span-2 glass-panel rounded-3xl p-6 flex flex-col justify-between border-green/20"
-					>
+					<div className="lg:col-span-1 glass-panel rounded-3xl p-6 flex flex-col justify-between gap-4 border-green/20">
 						<div className="flex justify-between items-start">
 							<div className="w-8 h-8 rounded-full bg-green/15 flex items-center justify-center">
 								<Globe className="w-4 h-4 text-green" />
@@ -225,69 +218,20 @@ export function Capabilities() {
 								NYC / Remote
 							</span>
 						</div>
-						<div className="space-y-4">
-							<LocationGlobe className="w-full" size={160} />
-							<div className="space-y-0.5 pt-0.5">
-								<h3 className="font-serif text-lg leading-snug text-foreground">
-									New York City
-								</h3>
-								<p className="text-xs text-muted-foreground leading-relaxed">
-									Home base on the map · collaborating remote-first across time
-									zones
-								</p>
-							</div>
-						</div>
-					</motion.div>
-
-					{/* 3. Methodology Card (Medium) */}
-					<motion.div
-						whileHover={reduceMotion ? undefined : { y: -5 }}
-						className="md:col-span-3 lg:col-span-3 glass-panel rounded-3xl p-8 flex flex-col justify-center gap-6"
-					>
-						<p className="text-caption uppercase tracking-[0.2em] text-muted-foreground font-bold">
-							What You Get
-						</p>
-						<div className="grid grid-cols-2 gap-4">
-							<div className="space-y-1">
-								<div className="flex items-center gap-2 text-rose">
-									<Zap className="w-4 h-4" />
-									<span className="text-sm font-medium text-foreground">
-										Performance
-									</span>
-								</div>
-								<p className="text-xs text-muted-foreground">
-									Performance-minded builds with measured budgets.
-								</p>
-							</div>
-							<div className="space-y-1">
-								<div className="flex items-center gap-2 text-green">
-									<ShieldCheck className="w-4 h-4" />
-									<span className="text-sm font-medium text-foreground">
-										Accessibility
-									</span>
-								</div>
-								<p className="text-xs text-muted-foreground">
-									Accessibility-conscious interfaces and motion controls.
-								</p>
-							</div>
-						</div>
-					</motion.div>
-
-					{/* 4. Experience Card (Medium) */}
-					<motion.div
-						whileHover={reduceMotion ? undefined : { y: -5 }}
-						className="md:col-span-3 lg:col-span-3 glass-panel rounded-3xl p-8 bg-gradient-to-br from-rose/5 to-transparent flex flex-col justify-center"
-					>
-						<h3 className="text-3xl font-serif italic mb-2">
-							"Code you keep."
-						</h3>
-						<p className="text-sm text-muted-foreground font-light leading-relaxed">
-							I focus on clean handoffs, zero lock-in, and maintainable
-							architecture. I don't just build for today; I build for the
-							engineers who inherit my work.
-						</p>
-					</motion.div>
+						<LocationGlobe className="w-full" size={180} />
+					</div>
 				</div>
+
+				<p className="mt-8 max-w-3xl text-base leading-relaxed text-muted-foreground">
+					<a
+						href="https://github.com/Nicolercc/portfolio-nr/actions"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-foreground underline decoration-rose/50 underline-offset-4 hover:text-rose"
+					>
+						Every page of this site is checked for accessibility in CI, and its code and images stay under size budgets.
+					</a>
+				</p>
 			</div>
 		</section>
 	);

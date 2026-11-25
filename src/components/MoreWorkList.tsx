@@ -15,6 +15,35 @@ export function MoreWorkList({ compact = false }: { compact?: boolean }) {
 					const color = project.onMap ? getStarColor(project.slug) : undefined;
 					const live = project.kind === "case-study" ? project.links.live : undefined;
 					const github = project.kind === "case-study" ? project.links.github : undefined;
+					const primary = project.onMap
+						? project.kind === "brief" ? `/projects/${project.slug}` : project.links.caseStudy ?? `/projects/${project.slug}`
+						: live;
+					// On the homepage the title is the link, so each row stays one short block.
+					if (compact && primary) {
+						const titleLink = "inline-flex min-h-11 items-center gap-2 font-serif text-lead text-foreground hover:text-rose";
+						return (
+							<li key={project.slug} className="border-t border-white/10 py-3">
+								<div className="flex flex-wrap items-center gap-x-3">
+									<span aria-hidden="true" className="h-2 w-2 rounded-full bg-muted-foreground" style={color ? { backgroundColor: starCss(color) } : undefined} />
+									<h3 className="m-0">
+										{primary.startsWith("/") ? (
+											<Link to={primary} className={titleLink}>
+												{project.title}
+												<span aria-hidden="true" className="text-rose">→</span>
+											</Link>
+										) : (
+											<a href={primary} className={titleLink}>
+												{project.title}
+												<span aria-hidden="true" className="text-rose">↗</span>
+											</a>
+										)}
+									</h3>
+									<ProjectStatusPill status={project.status} />
+								</div>
+								<p className="text-body text-muted-foreground">{project.oneLine}</p>
+							</li>
+						);
+					}
 					return (
 						<li key={project.slug} className="border-t border-white/10 py-4">
 							<div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1">

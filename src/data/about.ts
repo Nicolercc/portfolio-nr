@@ -3,13 +3,15 @@
 import { PROFILE } from "./profile";
 
 export const BENTO_BIO = {
-	eyebrow: "About me",
 	name: "I'm Nicole,",
 	role: "full-stack product engineer",
 	paragraphs: [
 		"NYC-based, Dominican Republic-raised. I build web products that are as thoughtful as they look — clean architecture, intentional UI, real performance.",
 		"I care about technology that actually does something. When I'm not writing code I'm filming, hiking somewhere with no signal, or island hopping back to my roots.",
+		"Before code, I earned a BA in Journalism & Politics, which is why I build for clarity and accessibility and want to understand the people using what I build.",
 	],
+	// TODO: Nicole supplies photo + alt text. Until then the placeholder is decorative.
+	photo: { src: "/media/about-photo-placeholder.svg", alt: "" },
 	tagline: "I make things. Usually with code. Sometimes with clay & paint.",
 	links: [
 		{

@@ -158,6 +158,16 @@ async function main() {
 			await small.close();
 		}
 
+		// Length budget (D14): the phone homepage must not grow. The D14 goal is 9,500px;
+		// the gate sits at today's settled height until Nicole picks which content to trim.
+		const budget = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+		await budget.goto(baseUrl, { waitUntil: "networkidle" });
+		await budget.evaluate(() => document.fonts.ready);
+		await budget.waitForTimeout(400);
+		const phoneHeight = await budget.evaluate(() => document.documentElement.scrollHeight);
+		assert(phoneHeight < 10200, `Homepage is ${phoneHeight}px tall at 390px; the budget is 10,200px (goal 9,500px).`);
+		await budget.close();
+
 		// Every page ends with a way to reach out: the shared footer with email, resume and profiles.
 		for (const route of ["/", "/projects", "/projects/sano", "/blog/i-was-taught-to-build", "/does-not-exist"]) {
 			await desktop.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });

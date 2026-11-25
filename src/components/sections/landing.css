@@ -7,119 +7,10 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	/* Deep cosmos base — very dark, slightly warm-tinted near bottom */
-	background:
-		radial-gradient(
-			ellipse 130% 70% at 50% 120%,
-			rgba(45, 18, 30, 0.95) 0%,
-			transparent 55%
-		),
-		var(--color-bg);
+	/* Transparent: the shared Sky is the background (Arrival chapter). */
 	overflow: hidden;
 }
 
-/*
- * ── Vignette overlay ────────────────────────────────────────
- * Sits above canvas layers, below content.
- * Pulls focus to center and softens edge stars.
- */
-.landing::after {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: 1;
-	pointer-events: none;
-	background: radial-gradient(
-		ellipse 75% 65% at 50% 50%,
-		transparent 35%,
-		rgba(0, 0, 0, 0.38) 100%
-	);
-}
-
-/* ── Particle canvas ─────────────────────────────────────────
- * Above CSS nebula (0) + vignette (::after, 1) so stars / meteors
- * stay visible; typography stays above via .landing__content (2).
- */
-.landing__canvas {
-	position: absolute;
-	inset: 0;
-	pointer-events: none;
-	z-index: 2;
-}
-
-/*
- * ── CSS Nebula layer ─────────────────────────────────────────
- * Pure CSS: 4 soft radial blobs placed at different corners.
- * Zero JS cost — renders instantly, looks great even before
- * canvas loads. Add <div class="landing__nebula"> as the first
- * child of .landing (before the canvas).
- *
- * Color logic:
- *   - Rose blobs (left + top): signature palette, warmer
- *   - Green blob (top-right):  accent, kept low opacity
- *   - Purple blob (bottom-right): bridges rose ↔ green
- */
-/* A soft reading zone protects the intro even over a bright particle. */
-.landing__content::before {
-	content: "";
-	position: absolute;
-	inset: -40% -24%;
-	z-index: -1;
-	background: radial-gradient(ellipse closest-side, var(--color-bg) 65%, transparent);
-	pointer-events: none;
-}
-
-.landing__nebula {
-	position: absolute;
-	inset: 0;
-	z-index: 0;
-	pointer-events: none;
-	background:
-		/* Rose — left mid */
-		radial-gradient(
-			ellipse 58% 48% at 12% 52%,
-			rgba(212, 132, 154, 0.14) 0%,
-			transparent 68%
-		),
-		/* Green — top-right accent */
-		radial-gradient(
-				ellipse 44% 36% at 85% 22%,
-				rgba(74, 222, 128, 0.08) 0%,
-				transparent 62%
-			),
-		/* Purple — bottom-right */
-		radial-gradient(
-				ellipse 40% 55% at 76% 88%,
-				rgba(175, 112, 210, 0.09) 0%,
-				transparent 60%
-			),
-		/* Rose — top-center, faint */
-		radial-gradient(
-				ellipse 52% 38% at 48% 0%,
-				rgba(212, 132, 154, 0.07) 0%,
-				transparent 65%
-			);
-	/* Slow breathing animation — purely cosmetic, cheap on GPU */
-	animation: nebula-breathe 18s ease-in-out infinite alternate;
-}
-
-@keyframes nebula-breathe {
-	0% {
-		opacity: 0.85;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-
-/* Respect reduced motion — freeze nebula, disable canvas animation
- * (the canvas JS also checks this; CSS gate is a fast fallback) */
-@media (prefers-reduced-motion: reduce) {
-	.landing__nebula {
-		animation: none;
-	}
-}
-html[data-motion="reduce"] .landing__nebula,
 html[data-motion="reduce"] .landing__scroll-cue {
 	animation: none;
 }
@@ -136,7 +27,7 @@ html[data-motion="reduce"] .landing__scroll-cue {
 	align-items: center;
 	gap: 0;
 	text-align: center;
-	animation: landing-fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+	animation: landing-fade-up var(--dur-slow) var(--ease-out) both;
 }
 
 /* A soft dark scrim behind the name and buttons: the stars are placed at random,
@@ -144,9 +35,9 @@ html[data-motion="reduce"] .landing__scroll-cue {
 .landing__content::before {
 	content: "";
 	position: absolute;
-	inset: -12% -18%;
+	inset: -40% -22%;
 	z-index: -1;
-	background: radial-gradient(ellipse at center, rgba(13, 13, 13, 0.92) 62%, rgba(13, 13, 13, 0.55) 80%, transparent 100%);
+	background: radial-gradient(closest-side, rgba(13, 13, 13, 0.9) 58%, rgba(13, 13, 13, 0.5) 80%, transparent 100%);
 	pointer-events: none;
 }
 
@@ -165,20 +56,19 @@ html[data-motion="reduce"] .landing__scroll-cue {
 .landing__eyebrow {
 	font-family: var(--font-sans);
 	font-size: var(--text-caption);
-	font-weight: 500;
-	letter-spacing: 0.22em;
+	font-weight: 600;
+	letter-spacing: 0.12em;
 	text-transform: uppercase;
-	color: var(--color-rose);
+	color: var(--color-rose-light);
 	display: block;
 	max-width: 100%;
 	text-wrap: balance;
 	margin-bottom: 18px;
-	opacity: 0.85;
 }
 
 @media (max-width: 480px) {
 	.landing__eyebrow {
-		letter-spacing: 0.14em;
+		letter-spacing: 0.12em;
 		font-size: var(--text-caption);
 	}
 }
@@ -235,7 +125,7 @@ html[data-motion="reduce"] .landing__scroll-cue {
 	max-width: min(560px, calc(100vw - 32px));
 	font-family: var(--font-mono);
 	font-size: var(--text-caption);
-	letter-spacing: 0.04em;
+	letter-spacing: 0;
 	color: var(--color-text-secondary);
 	text-wrap: balance;
 }
@@ -243,8 +133,8 @@ html[data-motion="reduce"] .landing__scroll-cue {
 	width: 7px;
 	height: 7px;
 	flex-shrink: 0;
-	border-radius: 50%;
-	background: var(--color-green);
+	border-radius: var(--radius-pill);
+	background: var(--color-rose);
 }
 
 /* ── Actions row ─────────────────────────────────────────────*/
@@ -265,11 +155,11 @@ html[data-motion="reduce"] .landing__scroll-cue {
 	gap: 8px;
 	font-family: var(--font-mono);
 	font-size: var(--text-caption);
-	letter-spacing: 0.08em;
+	letter-spacing: 0;
 	color: var(--color-text-secondary);
 	background: rgba(212, 132, 154, 0.08);
 	border: 1px solid rgba(212, 132, 154, 0.25);
-	border-radius: 100px;
+	border-radius: var(--radius-pill);
 	padding: 7px 16px;
 	/* Frosted glass effect — gives the UI element depth against the cosmos */
 	backdrop-filter: blur(8px);
@@ -279,10 +169,9 @@ html[data-motion="reduce"] .landing__scroll-cue {
 .landing__status-dot {
 	width: 7px;
 	height: 7px;
-	border-radius: 50%;
+	border-radius: var(--radius-pill);
 	background: #4ade80;
 	box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5);
-	animation: pulse-dot 2s ease-in-out infinite;
 	flex-shrink: 0;
 }
 
@@ -302,9 +191,9 @@ html[data-motion="reduce"] .landing__scroll-cue {
 .landing__secondary-btn {
 	font-family: var(--font-mono);
 	font-size: var(--text-caption);
-	letter-spacing: 0.1em;
+	letter-spacing: 0.12em;
 	text-transform: uppercase;
-	border-radius: 100px;
+	border-radius: var(--radius-pill);
 	padding: 7px 20px;
 	min-height: 44px;
 	display: inline-flex;
@@ -312,10 +201,10 @@ html[data-motion="reduce"] .landing__scroll-cue {
 	justify-content: center;
 	text-decoration: none;
 	transition:
-		background 0.2s ease,
-		color 0.2s ease,
-		border-color 0.2s ease,
-		box-shadow 0.2s ease;
+		background var(--dur-fast) var(--ease-out),
+		color var(--dur-fast) var(--ease-out),
+		border-color var(--dur-fast) var(--ease-out),
+		box-shadow var(--dur-fast) var(--ease-out);
 	backdrop-filter: blur(8px);
 	-webkit-backdrop-filter: blur(8px);
 }
@@ -386,10 +275,9 @@ html[data-motion="reduce"] .landing__scroll-cue {
 	/* A backplate keeps the label readable over whichever stars drift behind it. */
 	background: rgba(13, 13, 13, 0.85);
 	border: none;
-	border-radius: 9999px;
+	border-radius: var(--radius-pill);
 	cursor: pointer;
 	padding: 8px 16px;
-	animation: cue-float 2.4s ease-in-out infinite;
 }
 
 @keyframes cue-float {
@@ -405,7 +293,7 @@ html[data-motion="reduce"] .landing__scroll-cue {
 .landing__scroll-label {
 	font-family: var(--font-mono);
 	font-size: var(--text-caption);
-	letter-spacing: 0.2em;
+	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	color: var(--color-text-muted);
 }

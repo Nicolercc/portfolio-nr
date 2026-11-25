@@ -1,19 +1,16 @@
+import { Sky } from "../components/layouts/Sky";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { MoreWorkList } from "../components/MoreWorkList";
-import { ProjectStatusPill } from "../components/ProjectStatusPill";
+import { CaseStudyRow } from "../components/sections/projects";
 import { OPEN_SOURCE_CONTRIBUTIONS } from "../data/openSource";
 import { getShowcaseProjects } from "../data/projects";
-import { useInView } from "../hooks/useInView";
 import { PROFILE } from "../data/profile";
 import { setDocumentMeta } from "../lib/documentMeta";
 
 const projects = getShowcaseProjects();
 
 export default function ProjectsIndex() {
-	const { ref, inView } = useInView();
-
 	useEffect(() => {
 		setDocumentMeta({
 			title: `Projects — ${PROFILE.name}`,
@@ -37,76 +34,36 @@ export default function ProjectsIndex() {
 	}, []);
 
 	return (
-		<main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-foreground [overflow-wrap:anywhere] px-6 md:px-12 pt-28 pb-16 md:pt-32 md:pb-20 focus:outline-none">
+		<>
+		<Sky mode={{ kind: "record" }} />
+		<main id="main-content" tabIndex={-1} className="min-h-screen text-foreground [overflow-wrap:anywhere] px-6 md:px-12 pt-28 pb-16 md:pt-32 md:pb-20 focus:outline-none">
 			<div className="max-w-7xl mx-auto">
 				<header className="mb-14 md:mb-16">
-					<p className="text-caption uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
-						/ work
-					</p>
+					<p className="section-label">Work</p>
 					<h1
 						data-route-heading
 						tabIndex={-1}
-						className="text-5xl md:text-8xl font-serif tracking-tight leading-[0.9] focus:outline-none"
+						className="text-5xl md:text-8xl font-serif font-normal tracking-tight leading-[0.9] focus:outline-none"
 					>
 						Selected Projects
 					</h1>
-					<p className="mt-5 max-w-2xl text-muted-foreground font-light leading-relaxed">
+					<p className="mt-5 max-w-2xl text-muted-foreground leading-relaxed">
 						Case studies in accessible, trustworthy interfaces: the UX decision,
 						how I built it, and the evidence that it works.
 					</p>
 				</header>
 
-				<section
-					ref={ref}
-					className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6"
-				>
-					{projects.map((project, idx) => {
-						const num = String(idx + 1).padStart(2, "0");
-						return (
-							<article
-								key={project.slug}
-								style={{
-									opacity: inView ? 1 : 0,
-									transform: inView ? "none" : "translateY(18px)",
-									transition:
-										"opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
-									transitionDelay: `${idx * 0.1}s`,
-								}}
-							>
-								<div className="glass-panel rounded-3xl border border-white/8 p-7 md:p-8 transition-all duration-300 hover:-translate-y-1 hover:border-white/20">
-									<div className="mb-5 flex items-center gap-3">
-										<span className="text-xs font-mono text-rose">{num}</span>
-										<ProjectStatusPill status={project.status} />
-									</div>
-									<h2 className="text-3xl md:text-4xl font-serif mb-3 tracking-tight">
-										{project.title}
-									</h2>
-									<p className="text-caption uppercase tracking-[0.28em] font-mono text-muted-foreground mb-5">
-										{project.year} · {project.category}
-									</p>
-									<p className="text-muted-foreground font-light leading-relaxed mb-7">
-										{project.tagline}
-									</p>
-
-									<Link
-										to={`/projects/${project.slug}`}
-										className="inline-flex min-h-[44px] items-center gap-2 text-sm font-semibold text-foreground hover:text-rose transition-colors"
-									>
-										View Case Study <span aria-hidden>→</span>
-									</Link>
-								</div>
-							</article>
-						);
-					})}
+				<section aria-label="Case studies" className="divide-y divide-white/10">
+					{projects.map((project) => (
+						<CaseStudyRow key={project.slug} project={project} headingLevel="h2" />
+					))}
 				</section>
 
 				<MoreWorkList />
 
 				{OPEN_SOURCE_CONTRIBUTIONS.length > 0 && (
 					<section aria-labelledby="open-source-heading" className="mt-20 md:mt-24">
-						<p className="text-caption uppercase tracking-[0.35em] font-mono font-bold text-rose mb-5">
-							/ open source
-						</p>
+						<p className="section-label">Open source</p>
 						<h2
 							id="open-source-heading"
 							className="text-3xl md:text-5xl font-serif tracking-tight mb-8"
@@ -117,7 +74,7 @@ export default function ProjectsIndex() {
 							{OPEN_SOURCE_CONTRIBUTIONS.map((contribution) => (
 								<li
 									key={contribution.url}
-									className="glass-panel rounded-3xl border border-white/8 p-6 md:p-7 flex flex-col md:flex-row md:items-center gap-4 md:gap-8"
+									className="glass-panel rounded-2xl border border-white/8 p-6 md:p-7 flex flex-col md:flex-row md:items-center gap-4 md:gap-8"
 								>
 									<div className="min-w-0 flex-1">
 										<div className="flex flex-wrap items-center gap-3 mb-2">
@@ -125,16 +82,12 @@ export default function ProjectsIndex() {
 												{contribution.repository}
 											</h3>
 											<span
-												className={`rounded-full border px-3 py-1 font-mono text-caption uppercase tracking-widest ${
-													contribution.status === "Merged"
-														? "border-green/40 text-green"
-														: "border-white/20 text-white/75"
-												}`}
+												className={`rounded-full border px-3 py-1 font-mono text-caption ${ contribution.status === "Merged" ? "border-green/40 text-green" : "border-white/20 text-white/75" }`}
 											>
 												{contribution.status}
 											</span>
 										</div>
-										<p className="text-muted-foreground font-light leading-relaxed">
+										<p className="text-muted-foreground leading-relaxed">
 											{contribution.summary}
 										</p>
 									</div>
@@ -159,5 +112,6 @@ export default function ProjectsIndex() {
 				)}
 			</div>
 		</main>
+		</>
 	);
 }

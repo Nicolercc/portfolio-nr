@@ -10,7 +10,7 @@ import { getReducedMotion, subscribe } from "../../lib/motionPreference";
 import "./space-hero.css";
 
 function PanelLink({ link, variant, onNavigate }: { link: MapLink; variant: "primary" | "ghost"; onNavigate?: () => void }) {
-	const className = `space-btn space-btn--${variant}`;
+	const className = variant === "primary" ? "btn-primary" : "btn-secondary";
 	if (link.to) {
 		return (
 			<Link to={link.to} className={className}>
@@ -276,8 +276,7 @@ export default function StarMapSection() {
 	};
 
 	return (
-		<section ref={sectionRef} className="space-hero" id="universe" data-mode={mode} data-scene={scene} data-crowded={crowded} data-open={Boolean(active)} aria-labelledby="universe-heading">
-			<div className="space-hero__nebula" aria-hidden />
+		<section ref={sectionRef} className="space-hero" id="universe" data-chapter="1" data-mode={mode} data-scene={scene} data-crowded={crowded} data-open={Boolean(active)} aria-labelledby="universe-heading">
 
 			<div className="space-hero__intro" inert={Boolean(active)}>
 				<h2 id="universe-heading" className="section-label">
@@ -292,13 +291,13 @@ export default function StarMapSection() {
 
 				<p className="receipt-count">{RECEIPTS.length} receipts on this page</p>
 				{scene !== "unavailable" && mode !== "static" && (
-					<button type="button" className="space-btn space-btn--ghost" onClick={() => {
+					<button type="button" className="btn-secondary" onClick={() => {
 						rememberList(true);
 						setPreferredList(true);
 					}}>List view</button>
 				)}
 				{mode === "static" && scene === "ready" && !crowded && (
-					<button type="button" className="space-btn space-btn--ghost" onClick={() => {
+					<button type="button" className="btn-secondary" onClick={() => {
 						rememberList(false);
 						setPreferredList(false);
 						setEngaged(false);

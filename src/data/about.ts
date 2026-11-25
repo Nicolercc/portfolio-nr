@@ -29,9 +29,9 @@ export const BENTO_HOBBIES = [
 		desc: "Trails, shorelines, anywhere with no signal. I grew up where the mountains meet the sea — I've been chasing that feeling ever since.",
 		tag: "grounded",
 		rot: 3,
-		accent: "#4ADE80",
-		border: "rgba(74,222,128,0.4)",
-		glow: "rgba(74,222,128,0.15)",
+		accent: "#7EE0D0",
+		border: "rgba(126,224,208,0.4)",
+		glow: "rgba(126,224,208,0.15)",
 	},
 	{
 		icon: "🏝️",

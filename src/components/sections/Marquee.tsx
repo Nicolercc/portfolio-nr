@@ -11,7 +11,7 @@ export function Marquee() {
 	const run = [...PHRASE, ...PHRASE];
 
 	return (
-		<section aria-hidden="true" data-a11y-decorative className="closing-marquee overflow-hidden py-12">
+		<section aria-hidden="true" data-a11y-decorative data-chapter="5" className="closing-marquee overflow-hidden py-12">
 			<div className={`flex w-max items-center gap-12 whitespace-nowrap ${reduced ? "" : "closing-marquee__track"}`}>
 				{(reduced ? PHRASE : run).map((text, i) => (
 					<span key={i} className="flex items-center gap-12">

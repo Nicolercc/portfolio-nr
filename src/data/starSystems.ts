@@ -18,6 +18,11 @@ export function getStarColor(slug: ProjectSlug): ThemeColor | undefined {
 	return STAR_PRESENTATION[slug]?.color;
 }
 
+/** The star color for any slug (undefined off the map), so its pages tint the sky to match. */
+export function starTint(slug: string): ThemeColor | undefined {
+	return STAR_PRESENTATION[slug as ProjectSlug]?.color;
+}
+
 export function starCss(color: ThemeColor): string {
 	return `var(--color-${color})`;
 }

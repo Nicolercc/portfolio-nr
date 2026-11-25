@@ -1,10 +1,11 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PROFILE } from "../../data/profile";
 import { getReducedMotion } from "../../lib/motionPreference";
 import { MotionToggle } from "../ui/MotionToggle";
 
 const linkClass =
-	"min-h-[44px] items-center px-2 sm:px-3 md:px-4 text-xs sm:text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200 whitespace-nowrap";
+	"min-h-[44px] items-center px-2 sm:px-3 md:px-4 text-xs sm:text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-150 whitespace-nowrap";
 
 // Always visible on every page: Resume and Contact are one click away from the first
 // screen, and case studies get their way back to the work here instead of a floating link.
@@ -12,6 +13,14 @@ export function Navbar() {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const isHome = location.pathname === "/";
+	// Transparent over the sky at the top; a thin translucent bar once the page scrolls.
+	const [scrolled, setScrolled] = useState(false);
+	useEffect(() => {
+		const update = () => setScrolled(window.scrollY > 64);
+		update();
+		window.addEventListener("scroll", update, { passive: true });
+		return () => window.removeEventListener("scroll", update);
+	}, []);
 
 	const scrollTo = (id: string) => {
 		const reduceMotion = getReducedMotion();
@@ -23,12 +32,13 @@ export function Navbar() {
 	return (
 		<nav
 			aria-label="Primary"
-			className="fixed top-0 left-0 right-0 z-40 py-3 bg-[#0d0d0d]/90 backdrop-blur-md border-b border-white/[0.06]"
+			data-scrolled={scrolled}
+			className={`fixed top-0 left-0 right-0 z-40 border-b transition-colors duration-300 ${scrolled ? "py-2 bg-background/70 backdrop-blur-md border-white/[0.06]" : "py-3 bg-transparent border-transparent"}`}
 		>
 		<div className="max-w-7xl mx-auto px-4 md:px-12 flex items-center justify-between gap-3">
 				<button
 					type="button"
-					className="w-11 h-11 rounded-lg bg-foreground text-background flex items-center justify-center font-sans font-bold text-xs cursor-pointer select-none tracking-tight shrink-0"
+					className="w-11 h-11 rounded-md bg-foreground text-background flex items-center justify-center font-sans font-bold text-xs cursor-pointer select-none shrink-0"
 					onClick={() => (isHome ? scrollTo("landing") : navigate("/"))}
 					aria-label={isHome ? "Scroll to top" : "Go to homepage"}
 				>
@@ -94,14 +104,14 @@ export function Navbar() {
 				{isHome ? (
 					<button
 						onClick={() => scrollTo("contact")}
-						className="hidden md:flex min-h-[44px] items-center gap-2 px-5 rounded-full bg-action text-[#0d0d0d] text-sm font-medium hover:bg-action/85 transition-colors duration-200"
+						className="btn-primary hidden md:inline-flex"
 					>
 						Contact
 					</button>
 				) : (
 					<Link
 						to="/#contact"
-						className="hidden md:flex min-h-[44px] items-center gap-2 px-5 rounded-full bg-action text-[#0d0d0d] text-sm font-medium hover:bg-action/85 transition-colors duration-200"
+						className="btn-primary hidden md:inline-flex"
 					>
 						Contact
 					</Link>

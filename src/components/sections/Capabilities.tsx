@@ -39,29 +39,25 @@ const techRows = [
 const stackLanes = [
 	{
 		label: "Product UI",
-		dotClass: "bg-rose/90 shadow-[0_0_10px_rgba(212,132,154,0.45)]",
+		dotClass: "bg-rose",
 	},
 	{
 		label: "Systems & data",
-		dotClass: "bg-foreground/40 ring-1 ring-white/15",
+		dotClass: "bg-secondary-foreground",
 	},
 	{
 		label: "Ship & observe",
-		dotClass: "bg-green/90 shadow-[0_0_10px_rgba(74,222,128,0.4)]",
+		dotClass: "bg-muted-foreground",
 	},
 ] as const;
 
 function TechBadge({ name }: { name: string }) {
-	const reduceMotion = useReducedMotion();
-
 	return (
-		<motion.span
-			whileHover={reduceMotion ? undefined : { scale: 1.04, y: -1 }}
-			transition={{ type: "spring", stiffness: 400, damping: 22 }}
-			className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-xs text-muted-foreground whitespace-nowrap shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] hover:border-rose/45 hover:text-foreground hover:shadow-[0_0_20px_-6px_rgba(212,132,154,0.35)] transition-[border-color,color,box-shadow] duration-300"
+		<span
+			className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-xs text-muted-foreground whitespace-nowrap shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] hover:border-rose/45 hover:text-foreground transition-[border-color,color] duration-150"
 		>
 			{name}
-		</motion.span>
+		</span>
 	);
 }
 
@@ -112,16 +108,15 @@ function EngineRoomCard() {
 
 	return (
 		<motion.div
-			initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 28 }}
+			initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
 			whileInView={{ opacity: 1, y: 0 }}
 			viewport={{ once: true, margin: "-60px" }}
-			transition={reduceMotion ? { duration: 0 } : { duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-			whileHover={reduceMotion ? undefined : { y: -5 }}
-			className="group relative lg:col-span-2 glass-panel rounded-3xl p-6 overflow-hidden flex flex-col justify-between min-h-[240px] border-white/[0.07]"
+			transition={reduceMotion ? { duration: 0 } : { duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+			className="group relative lg:col-span-2 glass-panel rounded-2xl p-6 overflow-hidden flex flex-col justify-between min-h-[240px] border-white/[0.07]"
 		>
 			{/* Ambient: soft grid */}
 			<div
-				className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl"
+				className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl"
 				aria-hidden
 			>
 				<div className="absolute inset-0 opacity-[0.45] bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:28px_28px] [mask-image:radial-gradient(ellipse_80%_70%_at_50%_40%,black,transparent)]" />
@@ -130,9 +125,6 @@ function EngineRoomCard() {
 			<div className="relative z-10 flex flex-col gap-5 min-h-0">
 				<div className="flex items-start justify-between gap-4">
 					<div className="min-w-0 space-y-2">
-						<p className="text-caption uppercase tracking-[0.2em] text-rose font-bold">
-							Capabilities
-						</p>
 						<h3 className="text-xl font-serif tracking-tight">
 							The Engine Room
 						</h3>
@@ -144,7 +136,7 @@ function EngineRoomCard() {
 							{stackLanes.map((lane) => (
 								<span
 									key={lane.label}
-									className="inline-flex items-center gap-1.5 text-caption font-mono uppercase tracking-[0.14em] text-muted-foreground/90"
+									className="inline-flex items-center gap-1.5 text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light"
 								>
 									<span
 										className={`h-1.5 w-1.5 shrink-0 rounded-full ${lane.dotClass}`}
@@ -177,31 +169,9 @@ export function Capabilities() {
 	return (
 		<section
 			id="capabilities"
-			className="relative lg:min-h-screen flex flex-col justify-center px-6 md:px-12 pt-10 pb-16 overflow-hidden"
+			data-chapter="3"
+			className="section-rhythm relative flex flex-col justify-center px-6 md:px-12 overflow-hidden"
 		>
-			{/* Cinematic Background Glows
-          Moved blur from a Tailwind class to inline style so we can also set
-          will-change + translateZ. This promotes each glow to its own GPU
-          compositing layer — Safari paints them once and never again.
-          Blur radius reduced from 120px → 80px; visually imperceptible at
-          these opacities (10%), but cuts Safari repaint cost significantly. */}
-			<div
-				className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-rose/10 rounded-full pointer-events-none"
-				style={{
-					filter: "blur(80px)",
-					willChange: "transform",
-					transform: "translateZ(0)",
-				}}
-			/>
-			<div
-				className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-green/10 rounded-full pointer-events-none"
-				style={{
-					filter: "blur(80px)",
-					willChange: "transform",
-					transform: "translateZ(0)",
-				}}
-			/>
-
 			<div className="max-w-7xl mx-auto w-full relative z-10">
 				<h2 className="section-label">Stack</h2>
 
@@ -209,13 +179,13 @@ export function Capabilities() {
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 					<EngineRoomCard />
 
-					<div className="lg:col-span-1 glass-panel rounded-3xl p-6 flex flex-col justify-between gap-4 border-green/20">
+					<div className="lg:col-span-1 glass-panel rounded-2xl p-6 flex flex-col justify-between gap-4">
 						<div className="flex justify-between items-start">
-							<div className="w-8 h-8 rounded-full bg-green/15 flex items-center justify-center">
-								<Globe className="w-4 h-4 text-green" />
+							<div className="w-8 h-8 rounded-full bg-rose/10 flex items-center justify-center">
+								<Globe className="w-4 h-4 text-rose" aria-hidden />
 							</div>
-							<span className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green/10 border border-green/25 text-caption text-green font-bold uppercase tracking-wide">
-								NYC / Remote
+							<span className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-white/15 font-mono text-caption text-secondary-foreground">
+								NYC / remote
 							</span>
 						</div>
 						<LocationGlobe className="w-full" size={180} />

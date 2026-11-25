@@ -9,18 +9,12 @@
 	position: relative;
 	overflow: hidden;
 	width: 100%;
-	padding: 64px 0;
-}
-
-@media (min-width: 768px) {
-	#about.bento {
-		padding: 80px 0;
-	}
+	padding-block: 88px;
 }
 
 @media (min-width: 1024px) {
 	#about.bento {
-		padding: 100px 0;
+		padding-block: 128px;
 	}
 }
 
@@ -74,7 +68,7 @@
 .bento__eyebrow {
 	font-family: "DM Mono", ui-monospace, monospace;
 	font-size: var(--text-caption);
-	letter-spacing: 0.16em;
+	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	color: var(--bento-rose);
 	margin: 0 0 10px;
@@ -93,7 +87,7 @@
 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .bento__h2 {
 	font-family: "Cormorant Garamond", Georgia, serif;
-	font-weight: 600;
+	font-weight: 400;
 	font-size: clamp(var(--text-section), 7vw, var(--text-title));
 	letter-spacing: -0.02em;
 	color: var(--bento-fg);
@@ -124,7 +118,7 @@
 	width: 112px;
 	height: 112px;
 	margin: 8px auto 20px;
-	border-radius: 9999px;
+	border-radius: var(--radius-pill);
 	object-fit: cover;
 }
 
@@ -165,7 +159,7 @@
 	padding: 13px 16px;
 	border-left: 2px solid var(--bento-rose);
 	background: rgba(212, 132, 154, 0.032);
-	border-radius: 0 8px 8px 0;
+	border-radius: 0 var(--radius-control) var(--radius-control) 0;
 	min-height: 46px;
 }
 
@@ -213,7 +207,7 @@
 .bento__rightLabel {
 	font-family: "DM Mono", ui-monospace, monospace;
 	font-size: var(--text-caption);
-	letter-spacing: 0.16em;
+	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	color: rgba(74, 222, 128, 0.8);
 	margin: 0 0 28px;
@@ -273,18 +267,6 @@
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    STRATEGY CARD SLOT
 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-.bento__strategyWrap {
-	margin-top: 28px;
-	height: auto;
-	min-height: 220px;
-	width: 100%;
-}
-
-@media (min-width: 1024px) {
-	.bento__strategyWrap {
-		height: 240px;
-	}
-}
 
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    HINT TEXT
@@ -293,105 +275,8 @@
 	font-family: "DM Mono", ui-monospace, monospace;
 	font-size: var(--text-caption);
 	color: var(--bento-mutedLo);
-	letter-spacing: 0.08em;
+	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	margin: 0;
 	text-align: center;
-}
-
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   AMBIENT GLOWS + GRID â€” off on mobile
-   (saves render cost on small devices)
-â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-.bento__gridBg,
-.bento__glowRose,
-.bento__glowGreen {
-	display: none;
-}
-
-@media (min-width: 768px) {
-	.bento__gridBg {
-		display: block;
-		position: absolute;
-		inset: 0;
-		background-image:
-			linear-gradient(rgba(245, 240, 232, 0.022) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(245, 240, 232, 0.022) 1px, transparent 1px);
-		background-size: 48px 48px;
-		mask-image: radial-gradient(
-			ellipse 80% 60% at 50% 50%,
-			black 25%,
-			transparent 100%
-		);
-		pointer-events: none;
-	}
-
-	.bento__glowRose {
-		display: block;
-		position: absolute;
-		top: 8%;
-		left: 0;
-		width: 440px;
-		height: 440px;
-		border-radius: 50%;
-		background: radial-gradient(
-			circle,
-			rgba(212, 132, 154, 0.1) 0%,
-			transparent 70%
-		);
-		filter: blur(50px);
-		pointer-events: none;
-	}
-
-	.bento__glowGreen {
-		display: block;
-		position: absolute;
-		bottom: 5%;
-		right: 0;
-		width: 380px;
-		height: 380px;
-		border-radius: 50%;
-		background: radial-gradient(
-			circle,
-			rgba(74, 222, 128, 0.08) 0%,
-			transparent 70%
-		);
-		filter: blur(50px);
-		pointer-events: none;
-	}
-}
-
-/* ── Blob orb (Bio) — conic gradient + blur on CSS layer; motion only rotates ─ */
-.bento__blobOrb {
-	position: relative;
-	width: 110px;
-	height: 110px;
-	margin-bottom: 28px;
-}
-
-.bento__blobOrb-spin {
-	position: absolute;
-	inset: 0;
-	border-radius: 60% 40% 55% 45% / 45% 55% 45% 55%;
-	background: conic-gradient(
-		from 0deg,
-		var(--bento-rose),
-		#c4a8ff,
-		var(--bento-green),
-		var(--bento-rose)
-	);
-	filter: blur(2px);
-	opacity: 0.55;
-	will-change: transform;
-}
-
-.bento__blobOrb-inner {
-	position: absolute;
-	inset: 6px;
-	border-radius: inherit;
-	background: var(--bento-bg);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: var(--text-title);
 }

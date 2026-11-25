@@ -29,7 +29,7 @@ export function CopyEmailButton({ className = "" }: { className?: string }) {
 			<button
 				type="button"
 				onClick={copy}
-				className={`inline-flex min-h-[44px] items-center justify-center rounded-full border border-white/25 px-5 text-sm font-medium text-foreground transition-colors duration-150 hover:border-rose hover:text-rose ${className}`}
+				className={`btn-secondary ${className}`}
 			>
 				{label}
 			</button>

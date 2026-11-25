@@ -168,13 +168,13 @@ async function main() {
 		assert(phoneHeight < 10200, `Homepage is ${phoneHeight}px tall at 390px; the budget is 10,200px (goal 9,500px).`);
 		await budget.close();
 
-		// Every page ends with a way to reach out: the shared footer with email, resume and profiles.
+		// Every page ends with the shared footer: resume, profiles and Pause motion (email lives in Contact).
 		for (const route of ["/", "/projects", "/projects/sano", "/blog/i-was-taught-to-build", "/does-not-exist"]) {
 			await desktop.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
 			const footer = desktop.locator("body > #root footer").last();
 			assert((await footer.count()) > 0, `${route} is missing the shared footer.`);
-			for (const name of ["Resume (PDF)", "LinkedIn", "GitHub", "Copy email"]) {
-				const count = await footer.getByRole(name === "Copy email" ? "button" : "link", { name }).count();
+			for (const name of ["Resume (PDF)", "LinkedIn", "GitHub", "Pause motion"]) {
+				const count = await footer.getByRole(name === "Pause motion" ? "button" : "link", { name }).count();
 				assert(count > 0, `${route} footer is missing "${name}".`);
 			}
 			assert((await desktop.locator('nav[aria-label="Primary"]').count()) === 1, `${route} should have exactly one primary nav.`);

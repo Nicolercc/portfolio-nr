@@ -1,3 +1,4 @@
+import { Sky } from "../components/layouts/Sky";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -158,28 +159,30 @@ export default function BlogPost() {
 	}
 
 	const fadeUp = {
-		initial: { opacity: 0, y: 20 },
+		initial: { opacity: 0, y: 16 },
 		animate: { opacity: 1, y: 0 },
-		transition: { duration: 0.8, ease },
+		transition: { duration: 0.7, ease },
 	};
 
 	return (
-		<main id="main-content" tabIndex={-1} className="bg-background text-foreground min-h-screen selection:bg-rose/30 pb-24 isolate focus:outline-none">
+		<>
+		<Sky mode={{ kind: "record" }} />
+		<main id="main-content" tabIndex={-1} className="text-foreground min-h-screen selection:bg-rose/30 pb-24 isolate focus:outline-none">
 
 				<header className="relative pt-40 md:pt-52 px-6 md:px-20">
 					<motion.div {...fadeUp} className="max-w-[65ch] mx-auto">
-						<span className="section-label mb-6 block font-mono text-rose uppercase tracking-[0.4em]">
+						<span className="section-label block">
 							{formatBlogDate(post.date)} · {post.readTime}
 						</span>
 						<h1
 							data-route-heading
 							tabIndex={-1}
-							className="text-5xl md:text-7xl font-serif italic leading-[0.95] mb-8 tracking-tighter focus:outline-none"
+							className="text-5xl md:text-7xl font-serif leading-[0.95] mb-8 tracking-tighter focus:outline-none"
 						>
 							{post.title}
 						</h1>
 						{post.tags.length > 0 && (
-							<p className="font-mono text-caption uppercase tracking-[0.2em] text-muted-foreground">
+							<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 								{post.tags.join(" · ")}
 							</p>
 						)}
@@ -196,19 +199,19 @@ export default function BlogPost() {
 					<div className="max-w-[65ch] mx-auto flex flex-col sm:flex-row items-center justify-center gap-4">
 						<Link
 							to="/blog"
-							className="group inline-flex items-center gap-3 px-5 py-3 rounded-full border border-rose/30 bg-rose/5 hover:bg-rose/10 hover:border-rose/60 text-rose font-mono text-caption uppercase tracking-widest transition-all duration-300"
+							className="btn-secondary"
 						>
-							<span className="w-1.5 h-1.5 rounded-full bg-rose motion-safe:animate-pulse" />
-							More Writing
+							More writing
 						</Link>
 						<Link
 							to="/#contact"
-							className="inline-flex min-h-[44px] items-center gap-2 px-5 py-2 rounded-full bg-action text-[#0d0d0d] text-sm font-medium hover:bg-action/85 transition-colors duration-200"
+							className="btn-primary"
 						>
-							Get in Touch
+							Get in touch
 						</Link>
 					</div>
 				</footer>
 		</main>
+		</>
 	);
 }

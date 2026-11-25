@@ -1,12 +1,11 @@
-import { mailtoHref, PROFILE } from "../../data/profile";
-import { CopyEmailButton } from "../ui/CopyEmailButton";
+import { PROFILE } from "../../data/profile";
 import { MotionToggle } from "../ui/MotionToggle";
 
 const linkClass =
 	"inline-flex min-h-[44px] items-center text-sm text-muted-foreground transition-colors duration-150 hover:text-rose";
 
-// Shared on every page so a reader who finishes a case study, a post or a 404
-// always has a way to reach out.
+// Shared on every page: name, role, resume and profiles. Email lives in Contact,
+// one tap away from the nav on every page.
 export function Footer() {
 	return (
 		<footer className="relative z-10 border-t border-white/[0.06] px-6 md:px-12 py-10">
@@ -18,14 +17,6 @@ export function Footer() {
 					</p>
 				</div>
 				<ul className="flex flex-wrap items-center gap-x-6 gap-y-1" aria-label="Contact and profiles">
-					<li className="min-w-0">
-						<a href={mailtoHref} className={`${linkClass} [overflow-wrap:anywhere]`}>
-							{PROFILE.email}
-						</a>
-					</li>
-					<li>
-						<CopyEmailButton />
-					</li>
 					<li>
 						<a href={PROFILE.resumePath} download className={linkClass}>
 							Resume (PDF)

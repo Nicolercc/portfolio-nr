@@ -1,3 +1,5 @@
+import { Sky } from "../components/layouts/Sky";
+import { starTint } from "../data/starSystems";
 import { BriefPage } from "../components/BriefPage";
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useId, useState, type ReactNode } from "react";
@@ -22,7 +24,7 @@ import {
 import { CASE_STUDY_MEDIA } from "../data/caseStudyMedia.generated";
 import { PROFILE } from "../data/profile";
 import { setDocumentMeta } from "../lib/documentMeta";
-import { ArrowUpRight, GitBranch, Play } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 import NotFound from "./NotFound";
 
 const GLANCE_PROOF_LABELS = new Set([
@@ -118,9 +120,7 @@ function SectionLabel({
 }) {
 	return (
 		<h2
-			className={`font-mono text-caption uppercase tracking-[0.3em] italic opacity-80 ${
-				accent === "green" ? "text-green" : "text-rose"
-			}`}
+			className={`text-caption uppercase ${ accent === "green" ? "text-green" : "text-rose" } font-sans font-semibold tracking-[0.12em] text-rose-light`}
 		>
 			{children}
 		</h2>
@@ -159,12 +159,12 @@ function AtAGlanceSection({
 				{keyDecisionSummary && (
 					<motion.div
 						{...fadeUp}
-						className="rounded-sm border border-green/20 bg-green/[0.03] p-5 md:p-6 space-y-2 min-w-0"
+						className="rounded-md border border-green/20 bg-green/[0.03] p-5 md:p-6 space-y-2 min-w-0"
 					>
-						<p className="font-mono text-caption uppercase tracking-[0.25em] text-green/90">
+						<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 							Key Decision
 						</p>
-						<p className="text-sm leading-relaxed text-green/90 font-light break-words">
+						<p className="text-sm leading-relaxed text-green/90 break-words">
 							{keyDecisionSummary}
 						</p>
 					</motion.div>
@@ -175,17 +175,13 @@ function AtAGlanceSection({
 						<motion.div
 							key={item.label}
 							{...fadeUp}
-							className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-2 min-w-0"
+							className="rounded-md border border-white/5 bg-white/[0.02] p-5 space-y-2 min-w-0"
 						>
-							<p className="font-mono text-caption uppercase tracking-[0.25em] text-rose/80">
+							<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 								{item.label}
 							</p>
 							<p
-								className={`text-sm leading-relaxed break-words ${
-									GLANCE_PROOF_LABELS.has(item.label)
-										? "text-green/90 font-mono text-caption uppercase tracking-wider"
-										: "text-muted-foreground font-light"
-								}`}
+								className={`text-sm leading-relaxed break-words ${ GLANCE_PROOF_LABELS.has(item.label) ? "text-green/90 text-caption uppercase tracking-wider" : "text-muted-foreground" } font-sans font-semibold tracking-[0.12em] text-rose-light`}
 							>
 								{item.value}
 							</p>
@@ -208,26 +204,26 @@ function PersonaSection({
 		<motion.div {...fadeUp} className="space-y-6 border-t border-white/5 pt-16">
 			<div className="space-y-2">
 				<SectionLabel>Design Persona</SectionLabel>
-				<p className="font-mono text-caption uppercase tracking-[0.2em] text-muted-foreground">
+				<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 					Not validated user research — a scenario for product decisions
 				</p>
 			</div>
-			<div className="rounded-sm border border-white/5 bg-white/[0.02] p-6 md:p-8 space-y-5">
-				<p className="font-serif text-2xl italic text-white/90">{persona.name}</p>
-				<p className="font-light text-muted-foreground leading-relaxed text-sm max-w-2xl">
+			<div className="rounded-md border border-white/5 bg-white/[0.02] p-6 md:p-8 space-y-5">
+				<p className="font-serif text-2xl text-white/90">{persona.name}</p>
+				<p className="text-muted-foreground leading-relaxed text-sm max-w-2xl">
 					{persona.summary}
 				</p>
 				<div className="flex flex-wrap gap-2">
 					{persona.issueAreas.map((area) => (
 						<span
 							key={area}
-							className="px-3 py-1 border border-green/20 rounded-full font-mono text-caption uppercase tracking-wider text-green/80"
+							className="px-3 py-1 border border-green/20 rounded-full font-mono text-caption text-green/80"
 						>
 							{area}
 						</span>
 					))}
 				</div>
-				<p className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90">
+				<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 					Time budget · {persona.timeConstraint}
 				</p>
 			</div>
@@ -244,8 +240,8 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 	const contentId = useId();
 	const actionHref = getImpactifyActionHref(liveHref, selectedIssue.actionPath);
 	const transition = reduceMotion
-		? { duration: 0.18, ease: "easeOut" as const }
-		: { duration: 0.28, ease: [0.16, 1, 0.3, 1] as const };
+		? { duration: 0.15, ease: [0.16, 1, 0.3, 1] as const }
+		: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const };
 
 	return (
 		<motion.div
@@ -257,12 +253,12 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 		>
 			<div className="space-y-2">
 				<SectionLabel>Core Loop Prototype</SectionLabel>
-				<p className="font-light text-muted-foreground leading-relaxed text-sm max-w-2xl">
+				<p className="text-muted-foreground leading-relaxed text-sm max-w-2xl">
 					Pick an issue, get the briefing, then take one clear next step.
 				</p>
 			</div>
 
-			<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-6 min-w-0 overflow-hidden">
+			<div className="rounded-md border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-6 min-w-0 overflow-hidden">
 				<div
 					className="flex flex-wrap gap-3"
 					role="group"
@@ -278,11 +274,7 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 								aria-pressed={selected}
 								aria-controls={contentId}
 								onClick={() => setSelectedIssueId(issue.id)}
-								className={`min-h-[44px] rounded-full border px-4 py-2 font-mono text-caption uppercase tracking-[0.18em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green ${
-									selected
-										? "border-green/60 bg-green/15 text-green"
-										: "border-white/10 bg-black/20 text-muted-foreground hover:border-rose/40 hover:text-white"
-								}`}
+								className={`min-h-[44px] rounded-full border px-4 py-2 font-mono text-caption transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green ${ selected ? "border-green/60 bg-green/15 text-green" : "border-white/10 bg-black/20 text-muted-foreground hover:border-rose/40 hover:text-white" }`}
 							>
 								{issue.label}
 							</button>
@@ -293,7 +285,7 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 				<div
 					id={contentId}
 					aria-live="polite"
-					className="rounded-sm border border-white/5 bg-black/20 p-5 md:p-6 min-h-[260px] md:min-h-[236px]"
+					className="rounded-md border border-white/5 bg-black/20 p-5 md:p-6 min-h-[260px] md:min-h-[236px]"
 				>
 					<AnimatePresence mode="wait">
 						<motion.div
@@ -306,23 +298,23 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 						>
 							<div className="flex items-start justify-between gap-4">
 								<div className="space-y-2">
-									<p className="font-mono text-caption uppercase tracking-[0.24em] text-rose/90">
+									<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 										Selected Issue
 									</p>
-									<h3 className="font-serif text-2xl italic text-white/90">
+									<h3 className="font-serif text-2xl text-white/90">
 										{selectedIssue.label}
 									</h3>
 								</div>
-								<span className="shrink-0 rounded-full border border-green/20 px-3 py-1 font-mono text-caption uppercase tracking-[0.18em] text-green/80">
+								<span className="shrink-0 rounded-full border border-green/20 px-3 py-1 font-mono text-caption text-green/80">
 									One action
 								</span>
 							</div>
 
-							<p className="font-light text-muted-foreground leading-relaxed text-sm md:text-base break-words">
+							<p className="text-muted-foreground leading-relaxed text-sm md:text-base break-words">
 								{selectedIssue.briefing}
 							</p>
-							<p className="border-l border-white/10 pl-4 font-mono text-caption normal-case tracking-normal leading-relaxed text-white/60 break-words">
-								<span className="uppercase tracking-[0.14em] text-white/55">
+							<p className="border-l border-white/10 pl-4 font-mono text-caption normal-case leading-relaxed text-white/60 break-words">
+								<span className="text-muted-foreground">
 									Source note ·{" "}
 								</span>
 								{selectedIssue.sourceNote}
@@ -332,7 +324,7 @@ function ImpactifyIssueLoopCard({ liveHref }: { liveHref?: string }) {
 									href={actionHref}
 									target="_blank"
 									rel="noreferrer"
-									className="inline-flex min-h-[44px] items-center justify-center gap-3 rounded-full border border-rose/30 bg-rose/5 px-5 py-3 font-mono text-caption uppercase tracking-widest text-rose transition-colors hover:border-rose/60 hover:bg-rose/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green"
+									className="inline-flex min-h-[44px] items-center justify-center gap-3 rounded-full border border-rose/30 bg-rose/5 px-5 py-3 font-mono text-caption text-rose transition-colors hover:border-rose/60 hover:bg-rose/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green"
 								>
 									{selectedIssue.actionLabel}
 									<ArrowUpRight size={12} aria-hidden="true" />
@@ -377,15 +369,15 @@ function WalkthroughSection({
 								<span className="font-mono text-caption text-rose/90">
 									/0{index + 1}
 								</span>
-								<h3 className="font-serif text-xl italic text-white/85 break-words">
+								<h3 className="font-serif text-xl text-white/85 break-words">
 									{step.title}
 								</h3>
-								<p className="font-light text-muted-foreground leading-relaxed text-sm break-words">
+								<p className="text-muted-foreground leading-relaxed text-sm break-words">
 									{step.description}
 								</p>
 							</div>
 							{visual && (
-								<div className="md:col-span-7 aspect-video bg-muted rounded-lg overflow-hidden border border-white/5 relative min-w-0">
+								<div className="md:col-span-7 aspect-video bg-muted rounded-md overflow-hidden border border-white/5 relative min-w-0">
 									<img
 										src={visual}
 										alt={`${title} — ${step.title}`}
@@ -421,17 +413,17 @@ function ArchitectureLayersSection({
 				{layers.map((layer, index) => (
 					<div
 						key={layer.title}
-						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3 min-w-0"
+						className="rounded-md border border-white/5 bg-white/[0.02] p-5 space-y-3 min-w-0"
 					>
 						<div className="flex items-center gap-3">
 							<span className="font-mono text-caption text-green/80">
 								{String(index + 1).padStart(2, "0")}
 							</span>
-							<h3 className="font-mono text-caption uppercase tracking-[0.2em] text-green/90">
+							<h3 className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 								{layer.title}
 							</h3>
 						</div>
-						<p className="font-light text-muted-foreground leading-relaxed text-sm break-words">
+						<p className="text-muted-foreground leading-relaxed text-sm break-words">
 							{layer.description}
 						</p>
 					</div>
@@ -441,8 +433,7 @@ function ArchitectureLayersSection({
 	);
 }
 
-const PILL_LINK_CLASS =
-	"inline-flex min-h-[44px] items-center justify-center gap-3 rounded-full border border-rose/30 bg-rose/5 px-5 py-3 font-mono text-caption uppercase tracking-widest text-rose transition-colors hover:border-rose/60 hover:bg-rose/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green";
+const PILL_LINK_CLASS = "btn-secondary";
 
 /** Framed, full-colour image with intrinsic size from the asset manifest. */
 function ManifestImage({ src }: { src: string }) {
@@ -474,7 +465,7 @@ function CaptionedFigure({ src, caption }: { src: string; caption: string }) {
 	return (
 		<figure className="space-y-3 min-w-0">
 			<ManifestImage src={src} />
-			<figcaption className="font-light text-muted-foreground leading-relaxed text-sm break-words">
+			<figcaption className="text-muted-foreground leading-relaxed text-sm break-words">
 				{caption}
 			</figcaption>
 		</figure>
@@ -492,7 +483,7 @@ function DesignSection({
 		<motion.div {...fadeUp} className="space-y-10 border-t border-white/5 pt-16 min-w-0">
 			<div className="space-y-6">
 				<SectionLabel>{section.heading}</SectionLabel>
-				<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+				<p className="text-muted-foreground leading-relaxed max-w-3xl text-base">
 					{section.intro}
 				</p>
 			</div>
@@ -518,7 +509,7 @@ function DesignSection({
 							<ManifestImage key={src} src={src} />
 						))}
 					</div>
-					<figcaption className="font-light text-muted-foreground leading-relaxed text-sm">
+					<figcaption className="text-muted-foreground leading-relaxed text-sm">
 						{section.comparison.caption}
 					</figcaption>
 				</figure>
@@ -535,7 +526,7 @@ function DesignSection({
 					<span className="sr-only"> (opens in a new tab)</span>
 					<ArrowUpRight size={12} aria-hidden="true" />
 				</a>
-				<p className="text-xs font-light text-muted-foreground leading-relaxed">
+				<p className="text-xs text-muted-foreground leading-relaxed">
 					{section.credit}
 				</p>
 			</div>
@@ -554,19 +545,19 @@ function ResearchPlanSection({
 		<motion.div {...fadeUp} className="space-y-8 border-t border-white/5 pt-16 min-w-0">
 			<div className="space-y-6">
 				<SectionLabel>{plan.heading}</SectionLabel>
-				<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+				<p className="text-muted-foreground leading-relaxed max-w-3xl text-base">
 					{plan.intro}
 				</p>
 			</div>
 
 			{/* Status stays a plan until real session notes exist; never describe planned sessions as findings. */}
-			<dl className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-5 text-sm">
+			<dl className="rounded-md border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-5 text-sm">
 				{plan.items.map((item) => (
 					<div key={item.label} className="space-y-1">
-						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90">
+						<dt className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 							{item.label}
 						</dt>
-						<dd className="font-light text-muted-foreground leading-relaxed break-words">
+						<dd className="text-muted-foreground leading-relaxed break-words">
 							{Array.isArray(item.value) ? (
 								<ul className="list-disc space-y-1 pl-5">
 									{item.value.map((line) => (
@@ -600,7 +591,7 @@ function ComprehensionDecisionsSection({
 		<motion.div {...fadeUp} className="space-y-8 border-t border-white/5 pt-16 min-w-0">
 			<div className="space-y-6">
 				<SectionLabel>{block.heading}</SectionLabel>
-				<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+				<p className="text-muted-foreground leading-relaxed max-w-3xl text-base">
 					{block.intro}
 				</p>
 			</div>
@@ -608,15 +599,15 @@ function ComprehensionDecisionsSection({
 				{block.items.map((item, index) => (
 					<li
 						key={item.title}
-						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-2 min-w-0"
+						className="rounded-md border border-white/5 bg-white/[0.02] p-5 space-y-2 min-w-0"
 					>
-						<h3 className="font-serif text-lg italic text-white/85 break-words">
+						<h3 className="font-serif text-lg text-white/85 break-words">
 							<span className="font-mono text-caption not-italic text-rose/90 mr-3" aria-hidden="true">
 								{String(index + 1).padStart(2, "0")}
 							</span>
 							{item.title}
 						</h3>
-						<p className="font-light text-muted-foreground leading-relaxed text-sm break-words">
+						<p className="text-muted-foreground leading-relaxed text-sm break-words">
 							{item.description}
 						</p>
 					</li>
@@ -641,7 +632,7 @@ function AccessibilityEvidenceSection({
 		<motion.div {...fadeUp} className="space-y-8 border-t border-white/5 pt-16 min-w-0">
 			<div className="space-y-6">
 				<SectionLabel accent="green">{evidence.heading}</SectionLabel>
-				<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+				<p className="text-muted-foreground leading-relaxed max-w-3xl text-base">
 					{evidence.intro}
 				</p>
 			</div>
@@ -657,13 +648,13 @@ function AccessibilityEvidenceSection({
 				</colgroup>
 				<thead>
 					<tr className="border-b border-white/10">
-						<th scope="col" className="py-3 pr-4 font-mono text-caption font-normal uppercase tracking-[0.2em] text-rose/90">
+						<th scope="col" className="py-3 pr-4 text-caption font-normal uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 							Criterion
 						</th>
-						<th scope="col" className="py-3 pr-4 font-mono text-caption font-normal uppercase tracking-[0.2em] text-rose/90">
+						<th scope="col" className="py-3 pr-4 text-caption font-normal uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 							What changed
 						</th>
-						<th scope="col" className="py-3 font-mono text-caption font-normal uppercase tracking-[0.2em] text-rose/90">
+						<th scope="col" className="py-3 text-caption font-normal uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 							How it was checked
 						</th>
 					</tr>
@@ -674,10 +665,10 @@ function AccessibilityEvidenceSection({
 							<th scope="row" className="py-4 pr-4 font-normal text-white/85 break-words">
 								{row.criterion}
 							</th>
-							<td className="py-4 pr-4 font-light text-muted-foreground leading-relaxed break-words">
+							<td className="py-4 pr-4 text-muted-foreground leading-relaxed break-words">
 								{row.change}
 							</td>
-							<td className="py-4 font-light text-muted-foreground leading-relaxed break-words">
+							<td className="py-4 text-muted-foreground leading-relaxed break-words">
 								{row.verification}
 							</td>
 						</tr>
@@ -689,17 +680,17 @@ function AccessibilityEvidenceSection({
 				{evidence.rows.map((row) => (
 					<li
 						key={row.criterion}
-						className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3 min-w-0"
+						className="rounded-md border border-white/5 bg-white/[0.02] p-5 space-y-3 min-w-0"
 					>
 						<h3 className="text-sm text-white/85 break-words">{row.criterion}</h3>
 						<dl className="space-y-3 text-sm">
 							<div className="space-y-1">
-								<dt className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90">What changed</dt>
-								<dd className="font-light text-muted-foreground leading-relaxed break-words">{row.change}</dd>
+								<dt className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">What changed</dt>
+								<dd className="text-muted-foreground leading-relaxed break-words">{row.change}</dd>
 							</div>
 							<div className="space-y-1">
-								<dt className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90">How it was checked</dt>
-								<dd className="font-light text-muted-foreground leading-relaxed break-words">{row.verification}</dd>
+								<dt className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">How it was checked</dt>
+								<dd className="text-muted-foreground leading-relaxed break-words">{row.verification}</dd>
 							</div>
 						</dl>
 					</li>
@@ -707,8 +698,8 @@ function AccessibilityEvidenceSection({
 			</ul>
 
 			<div className="space-y-4 max-w-xl">
-				<p className="font-light text-muted-foreground leading-relaxed text-sm">{evidence.methodNote}</p>
-				<p className="font-light text-muted-foreground leading-relaxed text-sm">{evidence.recheck}</p>
+				<p className="text-muted-foreground leading-relaxed text-sm">{evidence.methodNote}</p>
+				<p className="text-muted-foreground leading-relaxed text-sm">{evidence.recheck}</p>
 			</div>
 
 			<a
@@ -728,57 +719,57 @@ function AccessibilityEvidenceSection({
 function DecisionCardItem({ card }: { card: CaseStudyDecisionCard }) {
 	if (!hasDecisionCardFields(card)) {
 		return (
-			<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 space-y-3">
-				<h3 className="font-serif text-lg italic text-white/85">{card.title}</h3>
+			<div className="rounded-md border border-white/5 bg-white/[0.02] p-5 space-y-3">
+				<h3 className="font-serif text-lg text-white/85">{card.title}</h3>
 			</div>
 		);
 	}
 
 	return (
-		<div className="rounded-sm border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-4 min-w-0">
+		<div className="rounded-md border border-white/5 bg-white/[0.02] p-5 md:p-6 space-y-4 min-w-0">
 			<dl className="space-y-3 text-sm">
 				<div>
-					<dt className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90 mb-1">
+					<dt className="text-caption uppercase mb-1 font-sans font-semibold tracking-[0.12em] text-rose-light">
 						Decision
 					</dt>
-					<dd className="font-serif text-lg italic text-white/85 break-words">{card.title}</dd>
+					<dd className="font-serif text-lg text-white/85 break-words">{card.title}</dd>
 				</div>
 				{card.context && (
 					<div>
-						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-rose/90 mb-1">
+						<dt className="text-caption uppercase mb-1 font-sans font-semibold tracking-[0.12em] text-rose-light">
 							Context
 						</dt>
-						<dd className="font-light text-muted-foreground leading-relaxed break-words">
+						<dd className="text-muted-foreground leading-relaxed break-words">
 							{card.context}
 						</dd>
 					</div>
 				)}
 				{card.tradeOff && (
 					<div className="border-l-2 border-amber-500/40 pl-4">
-						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-amber-200/80 mb-1">
+						<dt className="text-caption uppercase mb-1 font-sans font-semibold tracking-[0.12em] text-rose-light">
 							Trade-off
 						</dt>
-						<dd className="font-light text-muted-foreground leading-relaxed break-words">
+						<dd className="text-muted-foreground leading-relaxed break-words">
 							{card.tradeOff}
 						</dd>
 					</div>
 				)}
 				{card.result && (
 					<div>
-						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-green/70 mb-1">
+						<dt className="text-caption uppercase mb-1 font-sans font-semibold tracking-[0.12em] text-rose-light">
 							Result
 						</dt>
-						<dd className="font-light text-muted-foreground leading-relaxed break-words">
+						<dd className="text-muted-foreground leading-relaxed break-words">
 							{card.result}
 						</dd>
 					</div>
 				)}
 				{card.body && (
 					<div>
-						<dt className="font-mono text-caption uppercase tracking-[0.2em] text-muted-foreground mb-1">
+						<dt className="text-caption uppercase mb-1 font-sans font-semibold tracking-[0.12em] text-rose-light">
 							Notes
 						</dt>
-						<dd className="font-light text-muted-foreground leading-relaxed">
+						<dd className="text-muted-foreground leading-relaxed">
 							{card.body}
 						</dd>
 					</div>
@@ -813,7 +804,7 @@ function CaseStudyMediaPlaceholder({ label }: { label: string }) {
 			<div className="absolute inset-0 bg-rose/5 mix-blend-multiply" />
 			<div className="absolute inset-0 opacity-[0.18] bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:28px_28px]" />
 			<div className="relative flex h-full w-full items-center justify-center">
-				<p className="text-caption uppercase tracking-[0.28em] font-mono text-muted-foreground">
+				<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 					{label}
 				</p>
 			</div>
@@ -835,7 +826,7 @@ function ArchitectureEvidencePanel({
 	return (
 		<div className="absolute inset-0 flex flex-col justify-between border border-green/20 bg-[#0f1713] p-4 md:p-5 shadow-[inset_0_0_0_1px_rgba(74,222,128,0.06)]">
 			<div className="space-y-1">
-				<p className="font-mono text-caption uppercase tracking-[0.22em] text-green">
+				<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 					Architecture Evidence
 				</p>
 				<p className="font-serif text-lg italic leading-tight text-white">
@@ -846,13 +837,13 @@ function ArchitectureEvidencePanel({
 				{layers.slice(0, 2).map((layer, index) => (
 					<li
 						key={layer.title}
-						className="grid grid-cols-[2rem_1fr] gap-3 rounded-sm border border-green/15 bg-black/25 p-2.5"
+						className="grid grid-cols-[2rem_1fr] gap-3 rounded-md border border-green/15 bg-black/25 p-2.5"
 					>
 						<span className="font-mono text-caption text-green">
 							{String(index + 1).padStart(2, "0")}
 						</span>
 						<div className="min-w-0">
-							<p className="font-mono text-caption uppercase tracking-[0.16em] text-white">
+							<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 								{layer.title}
 							</p>
 							<p className="line-clamp-2 text-xs leading-relaxed text-white/70">
@@ -879,7 +870,7 @@ function CaseStudyHeroMedia({
 	const alt = media.alt ?? `${title} hero`;
 	const motionClass = reduceMotion
 		? "absolute inset-0 h-full w-full object-cover object-top"
-		: "absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100";
+		: "absolute inset-0 h-full w-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100";
 	const canPlayVideo = Boolean(media.video && !videoError);
 
 	if (canPlayVideo) {
@@ -919,7 +910,7 @@ function CaseStudyHeroMedia({
 						<div className="rounded-full border border-white/10 bg-black/35 p-4 backdrop-blur-sm">
 							<Play size={22} className="text-rose/80" fill="currentColor" />
 						</div>
-						<p className="font-mono text-caption uppercase tracking-[0.28em] text-white/45">
+						<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 							Product demo · press play
 						</p>
 					</div>
@@ -1010,49 +1001,51 @@ export default function CaseStudy() {
 				initial: { opacity: 0 },
 				whileInView: { opacity: 1 },
 				viewport: { once: true },
-				transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] as const },
+				transition: { duration: 0.15, ease: [0.16, 1, 0.3, 1] as const },
 			}
 		: {
-				initial: { opacity: 0, y: 20 },
+				initial: { opacity: 0, y: 16 },
 				whileInView: { opacity: 1, y: 0 },
 				viewport: { once: true },
-				transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const },
+				transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
 			};
 
 	return (
+		<>
+		<Sky mode={{ kind: "record", tint: starTint(project.slug) }} />
 		<AnimatePresence mode="wait">
 			<motion.main
 				key={slug}
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0 }}
-				className="bg-background text-foreground min-h-screen overflow-x-hidden selection:bg-rose/30 pb-20"
+				className="text-foreground min-h-screen overflow-x-hidden selection:bg-rose/30 pb-20"
 			>
 
 				{/* ── HERO SECTION ── */}
 				<header className="relative pt-40 md:pt-60 px-6 md:px-20 mb-20 max-w-full">
 					<motion.div {...fadeUp}>
-						<span className="section-label mb-6 block max-w-full font-mono text-rose uppercase tracking-[0.3em] md:tracking-[0.5em] text-pretty">
+						<span className="section-label block max-w-full text-pretty">
 							{project.category} — {project.year}
 						</span>
 						<h1
 							data-route-heading
 							tabIndex={-1}
-							className="max-w-full text-title md:text-hero font-serif italic leading-[0.85] mb-12 tracking-tighter break-words focus:outline-none"
+							className="max-w-full text-title md:text-hero font-serif leading-[0.85] mb-12 tracking-tighter break-words focus:outline-none"
 						>
 							{project.title}
 						</h1>
-						<p className="max-w-2xl text-xl md:text-2xl font-light text-muted-foreground italic border-l border-rose/20 pl-8 mb-12">
+						<p className="max-w-2xl text-xl md:text-2xl text-muted-foreground italic border-l border-rose/20 pl-8 mb-12">
 							{project.tagline}
 						</p>
 					</motion.div>
 
 					{/* 1. CINEMATIC HERO IMAGE/VIDEO */}
 					<motion.div
-						initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
-						animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
-						transition={reduceMotion ? { duration: 0.2 } : { duration: 1.2, ease: "easeOut" }}
-						className="relative w-full aspect-[21/9] bg-muted rounded-sm overflow-hidden group border border-white/5"
+						initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
+						animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+						transition={reduceMotion ? { duration: 0.15 } : { duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+						className="relative w-full aspect-[21/9] bg-muted rounded-md overflow-hidden group border border-white/5"
 					>
 						<CaseStudyHeroMedia media={media} title={project.title} />
 					</motion.div>
@@ -1074,7 +1067,7 @@ export default function CaseStudy() {
 									<p className="font-mono text-3xl md:text-4xl font-bold text-white tracking-tighter">
 										{m.value}
 									</p>
-									<p className="font-mono text-caption uppercase tracking-[0.2em] text-white/50 mt-1">
+									<p className="text-caption uppercase mt-1 font-sans font-semibold tracking-[0.12em] text-rose-light">
 										{m.label}
 									</p>
 								</div>
@@ -1096,14 +1089,14 @@ export default function CaseStudy() {
 					{/* Metadata Sidebar */}
 					<aside className="md:col-span-4 space-y-16 min-w-0">
 						<div className="space-y-4">
-							<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-rose italic opacity-80">
+							<h2 className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 								Tech Stack
 							</h2>
 							<div className="flex flex-wrap gap-2">
 								{project.stack.map((tech) => (
 									<span
 										key={tech}
-										className="px-3 py-1 border border-white/10 rounded-full font-mono text-caption uppercase tracking-wider text-muted-foreground"
+										className="px-3 py-1 border border-white/10 rounded-full font-mono text-caption text-muted-foreground"
 									>
 										{tech}
 									</span>
@@ -1111,7 +1104,7 @@ export default function CaseStudy() {
 							</div>
 						</div>
 						<div className="space-y-4">
-							<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-rose italic opacity-80">
+							<h2 className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 								Role
 							</h2>
 							<p className="font-serif text-lg italic opacity-70 leading-relaxed">
@@ -1124,16 +1117,9 @@ export default function CaseStudy() {
 									href={links.live}
 									target="_blank"
 									rel="noreferrer"
-									className="group inline-flex items-center gap-3 px-5 py-3 rounded-full border border-rose/30 bg-rose/5 hover:bg-rose/10 hover:border-rose/60 w-full justify-center text-rose font-mono text-caption uppercase tracking-widest transition-all duration-300"
+									className="btn-primary w-full"
 								>
-									<span
-										className={`w-1.5 h-1.5 rounded-full bg-rose ${reduceMotion ? "" : "animate-pulse"}`}
-									/>
-									View Live Site
-									<ArrowUpRight
-										size={12}
-										className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-									/>
+									View live site <span aria-hidden="true">↗</span>
 								</a>
 							)}
 							{links.github && (
@@ -1141,10 +1127,9 @@ export default function CaseStudy() {
 									href={links.github}
 									target="_blank"
 									rel="noreferrer"
-									className="inline-flex min-h-[44px] items-center justify-center gap-2 w-full font-mono text-caption uppercase tracking-widest text-white/60 hover:text-white/85 transition-colors py-2"
+									className="btn-secondary w-full"
 								>
-									<GitBranch size={10} />
-									Source Code
+									Source code <span aria-hidden="true">↗</span>
 								</a>
 							)}
 						</div>
@@ -1167,7 +1152,7 @@ export default function CaseStudy() {
 								<SectionLabel>
 									{hasStructuredContent ? "The Problem" : "The Vision"}
 								</SectionLabel>
-								<p className="max-w-[65ch] text-lg md:text-xl font-light leading-relaxed text-white/85">
+								<p className="max-w-[65ch] text-lg md:text-xl leading-relaxed text-white/85">
 									{hasStructuredContent
 										? cs.problem
 										: `${cs.problem.split(".")[0]}.`}
@@ -1176,7 +1161,7 @@ export default function CaseStudy() {
 
 							<motion.div
 								{...fadeUp}
-								className="aspect-video bg-muted rounded-lg overflow-hidden border border-white/5 relative group"
+								className="aspect-video bg-muted rounded-md overflow-hidden border border-white/5 relative group"
 							>
 								{media.detail ? (
 									<img
@@ -1202,7 +1187,7 @@ export default function CaseStudy() {
 						{hasStructuredContent && (
 							<motion.div {...fadeUp} className="space-y-6 border-t border-white/5 pt-16">
 								<SectionLabel>The Solution</SectionLabel>
-								<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+								<p className="text-muted-foreground leading-relaxed max-w-3xl text-base">
 									{cs.solution}
 								</p>
 							</motion.div>
@@ -1245,7 +1230,7 @@ export default function CaseStudy() {
 
 						{/* 3. DOUBLE SPREAD: MOBILE/DESKTOP OR TWO SCREENS // UNCOMMENT WHEN IMAGES ARE READY */}
 						{/* <div className="space-y-12">
-							<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-rose italic opacity-80 text-center">
+							<h2 className="text-caption uppercase text-center font-sans font-semibold tracking-[0.12em] text-rose-light">
 								Interface Dynamics
 							</h2>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1254,7 +1239,7 @@ export default function CaseStudy() {
 									className="aspect-[4/5] bg-card rounded-md border border-white/5 overflow-hidden"
 								>
 									<div className="relative h-full w-full flex items-center justify-center bg-white/[0.02]">
-										<p className="text-caption uppercase tracking-[0.28em] font-mono text-muted-foreground">
+										<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 											Mobile screenshot soon
 										</p>
 									</div>
@@ -1264,7 +1249,7 @@ export default function CaseStudy() {
 									className="aspect-[4/5] bg-card rounded-md border border-white/5 overflow-hidden"
 								>
 									<div className="relative h-full w-full flex items-center justify-center bg-white/[0.02]">
-										<p className="text-caption uppercase tracking-[0.28em] font-mono text-muted-foreground">
+										<p className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 											Desktop screenshot soon
 										</p>
 									</div>
@@ -1300,7 +1285,7 @@ export default function CaseStudy() {
 									return (
 										<div className="space-y-6">
 											<SectionLabel>Engineering Decisions</SectionLabel>
-											<p className="font-light text-muted-foreground leading-relaxed max-w-3xl text-base">
+											<p className="text-muted-foreground leading-relaxed max-w-3xl text-base">
 												{cs.decisions}
 											</p>
 										</div>
@@ -1320,13 +1305,13 @@ export default function CaseStudy() {
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-white/5 pt-12">
 								<div className="space-y-4">
 									<SectionLabel>UX Philosophy</SectionLabel>
-									<p className="font-light text-muted-foreground leading-relaxed text-sm">
+									<p className="text-muted-foreground leading-relaxed text-sm">
 										{cs.ux}
 									</p>
 								</div>
 								<div className="space-y-4">
 									<SectionLabel accent="green">Performance</SectionLabel>
-									<p className="font-light text-muted-foreground leading-relaxed text-sm">
+									<p className="text-muted-foreground leading-relaxed text-sm">
 										{cs.performance}
 									</p>
 								</div>
@@ -1339,15 +1324,15 @@ export default function CaseStudy() {
 				<section className="px-6 md:px-20 py-14 border-t border-white/5 max-w-screen-xl mx-auto">
 					<div className="grid grid-cols-1 md:grid-cols-12 gap-20 md:gap-x-8 xl:gap-x-20">
 						<div className="md:col-span-4 space-y-4 min-w-0">
-							<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-green italic opacity-80">
+							<h2 className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 								Impact
 							</h2>
-							<p className="text-base md:text-lg font-light leading-relaxed text-white/80 break-words">
+							<p className="text-base md:text-lg leading-relaxed text-white/80 break-words">
 								{cs.impact}
 							</p>
 						</div>
 						<div className="md:col-span-8 space-y-8 min-w-0">
-							<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-rose italic opacity-80">
+							<h2 className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 								Retrospective
 							</h2>
 							<ul className="space-y-6">
@@ -1359,7 +1344,7 @@ export default function CaseStudy() {
 										<span className="font-mono text-caption text-rose/90 mt-1 shrink-0">
 											/0{i + 1}
 										</span>
-										<p className="text-sm font-light text-muted-foreground leading-relaxed break-words">
+										<p className="text-sm text-muted-foreground leading-relaxed break-words">
 											{lesson}
 										</p>
 									</li>
@@ -1374,7 +1359,7 @@ export default function CaseStudy() {
 					<section className="px-6 md:px-20 py-16 border-t border-white/5">
 						<div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
 							<div className="md:col-span-4">
-								<h2 className="font-mono text-caption uppercase tracking-[0.3em] text-rose/90 italic mb-4">
+								<h2 className="text-caption uppercase mb-4 font-sans font-semibold tracking-[0.12em] text-rose-light">
 									If I Had More Time
 								</h2>
 								<p className="font-serif text-2xl italic text-white/70 leading-relaxed">
@@ -1382,7 +1367,7 @@ export default function CaseStudy() {
 								</p>
 							</div>
 							<div className="md:col-span-8">
-								<p className="max-w-[70ch] font-light text-white/75 leading-relaxed text-base border-l border-white/10 pl-8 break-words">
+								<p className="max-w-[70ch] text-white/75 leading-relaxed text-base border-l border-white/10 pl-8 break-words">
 									{cs.nextSteps}
 								</p>
 							</div>
@@ -1392,7 +1377,7 @@ export default function CaseStudy() {
 
 				{/* ── NEXT PROJECT FOOTER ── */}
 				<footer className="relative py-60 px-6 overflow-hidden border-t border-white/5 group mt-40">
-					<div aria-hidden="true" data-a11y-decorative className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] font-serif italic text-white/[0.015] whitespace-nowrap select-none pointer-events-none transition-transform duration-1000 group-hover:scale-110">
+					<div aria-hidden="true" data-a11y-decorative className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] font-serif italic text-white/[0.015] whitespace-nowrap select-none pointer-events-none transition-transform duration-700 group-hover:scale-110">
 						{nextProject.title}
 					</div>
 
@@ -1404,12 +1389,12 @@ export default function CaseStudy() {
 							to={`/projects/${nextProjectKey}`}
 							className="group relative inline-block"
 						>
-							<h2 className="text-title md:text-hero font-serif italic leading-none transition-all duration-700 group-hover:text-rose">
+							<h2 className="text-title md:text-hero font-serif leading-none transition-all duration-700 group-hover:text-rose">
 								{nextProject.title}
 							</h2>
 							<div className="mt-10 flex flex-col items-center">
 								<div className="h-[1px] w-12 bg-rose transition-all duration-700 group-hover:w-48" />
-								<div className="mt-6 font-mono text-caption uppercase tracking-[0.6em] opacity-70 group-hover:opacity-100 group-hover:translate-y-2 transition-all">
+								<div className="mt-6 text-caption uppercase group-hover:opacity-100 group-hover:translate-y-2 transition-all font-sans font-semibold tracking-[0.12em] text-rose-light">
 									Discover More
 								</div>
 							</div>
@@ -1418,5 +1403,6 @@ export default function CaseStudy() {
 				</footer>
 			</motion.main>
 		</AnimatePresence>
+		</>
 	);
 }

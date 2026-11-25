@@ -248,7 +248,7 @@ async function main() {
 		});
 		await reduced.goto(baseUrl, { waitUntil: "networkidle" });
 		const reducedMotionState = await reduced.evaluate(() => {
-			const nebula = document.querySelector(".landing__nebula");
+			const nebula = document.querySelector(".landing__scroll-cue");
 			const marquee = document.querySelector(".closing-marquee > div");
 			return {
 				matches: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -259,7 +259,7 @@ async function main() {
 		assert(reducedMotionState.matches, "Reduced-motion media query should be emulated.");
 		assert(
 			reducedMotionState.nebulaAnimation === "none",
-			"Landing nebula animation should be disabled for reduced motion.",
+			"The intro scroll cue should stop bobbing for reduced motion.",
 		);
 		assert(
 			reducedMotionState.marqueeAnimation === "none",

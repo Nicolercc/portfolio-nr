@@ -1,6 +1,6 @@
 import { getContentRoutes } from "./route-data.mjs";
 import { createServer } from "node:http";
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { chromium } from "playwright";
 import sharp from "sharp";
@@ -109,6 +109,13 @@ function auditText({ minFontPx, pageBackground }) {
 		const text = el.textContent.trim().replace(/\s+/g, " ").slice(0, 50);
 		const size = parseFloat(style.fontSize);
 		if (size < minFontPx) failures.push(`font ${size}px < ${minFontPx}px: "${text}"`);
+		// Small text uses no letter-spacing, or the label's 0.12em.
+		if (size <= 14 && style.letterSpacing !== "normal") {
+			const spacing = parseFloat(style.letterSpacing);
+			if (Math.abs(spacing) > 0.05 && Math.abs(spacing - size * 0.12) > 0.1) {
+				failures.push(`letter-spacing ${style.letterSpacing} on ${size}px text: "${text}"`);
+			}
+		}
 
 		const fg = parse(style.color);
 		if (!fg) continue;
@@ -196,10 +203,73 @@ async function auditCanvasPixels(page, selector) {
 	return [...failures].map(([text, contrast]) => `canvas contrast ${contrast.toFixed(2)}:1 < 4.5:1: "${text}"`);
 }
 
+// Cohesion system (T9): one easing, three durations, three radii. Scans source so a
+// stray duration or radius fails before it reaches the page.
+function* sourceFiles(dir) {
+	for (const entry of readdirSync(dir, { withFileTypes: true })) {
+		const path = join(dir, entry.name);
+		if (entry.isDirectory()) yield* sourceFiles(path);
+		else if (/\.(css|tsx?)$/.test(entry.name)) yield path;
+	}
+}
+
+export function auditMotionAndShape(files = [...sourceFiles(join(root, "src"))]) {
+	const problems = [];
+	const DURATIONS_CSS = /^(var\(--dur-(fast|base|slow)\)|0\.001ms|0s|60s)$/;
+	const FRAMER_DURATIONS = new Set(["0", "0.001", "0.15", "0.3", "0.7"]);
+	for (const file of files) {
+		const text = readFileSync(file, "utf8");
+		const rel = file.slice(root.length + 1);
+		const at = (index) => `${rel}:${text.slice(0, index).split("\n").length}`;
+		if (file.endsWith(".css")) {
+			for (const match of text.matchAll(/(?:transition|animation)(?:-duration|-timing-function)?\s*:([^;]+);/g)) {
+				const value = match[1];
+				for (const time of value.match(/(?<![\w.-])\d*\.?\d+m?s\b|var\(--dur-[a-z]+\)/g) ?? []) {
+					if (!DURATIONS_CSS.test(time)) problems.push(`${at(match.index)} duration ${time} is not a motion token`);
+				}
+				for (const ease of value.match(/cubic-bezier\([^)]*\)|(?<![\w-])ease(?:-in-out|-in|-out)?\b|steps\([^)]*\)/g) ?? []) {
+					problems.push(`${at(match.index)} easing ${ease} is not var(--ease-out)`);
+				}
+			}
+			for (const match of text.matchAll(/border-radius:\s*([^;]+);/g)) {
+				const parts = match[1].trim().split(/\s+/);
+				if (!parts.every((part) => part === "0" || /^var\(--radius-(control|card|pill)\)$/.test(part))) {
+					problems.push(`${at(match.index)} border-radius ${match[1].trim()} is not a radius token`);
+				}
+			}
+		} else {
+			for (const match of text.matchAll(/(?<![\w-])duration-(\[[^\]]+\]|\d+)/g)) {
+				if (!["150", "300", "700"].includes(match[1])) problems.push(`${at(match.index)} duration-${match[1]} is not 150, 300 or 700`);
+			}
+			for (const match of text.matchAll(/(?<![\w-])ease-(in-out|in|\[[^\]]+\])/g)) {
+				problems.push(`${at(match.index)} ease-${match[1]} is not ease-out`);
+			}
+			for (const match of text.matchAll(/\bduration:\s*([\d.]+)/g)) {
+				if (!FRAMER_DURATIONS.has(match[1])) problems.push(`${at(match.index)} duration: ${match[1]} is not 0.15, 0.3 or 0.7`);
+			}
+			for (const match of text.matchAll(/\bease:\s*(\[[^\]]*\]|"[a-zA-Z]+")/g)) {
+				const value = match[1].replace(/\s/g, "");
+				if (value !== "[0.16,1,0.3,1]" && value !== '"linear"') problems.push(`${at(match.index)} ease ${match[1]} is not the shared easing`);
+			}
+			for (const match of text.matchAll(/(?<![\w-])rounded(?:-(?:t|b|l|r|tl|tr|bl|br))?-(sm|lg|xl|3xl|\[[^\]]+\])(?![\w-])/g)) {
+				problems.push(`${at(match.index)} rounded-${match[1]} is not 6px, 16px or a pill`);
+			}
+			for (const match of text.matchAll(/(?<![\w-])rounded(?:-(?:t|b|l|r|tl|tr|bl|br))?(?=["\s`])/g)) {
+				problems.push(`${at(match.index)} plain rounded is not a radius token`);
+			}
+		}
+	}
+	return problems;
+}
+
 async function main() {
+	const problems = [...auditMotionAndShape()];
+	if (process.env.DESIGN_SOURCE_ONLY) {
+		for (const problem of problems) console.error(`  - ${problem}`);
+		process.exit(problems.length ? 1 : 0);
+	}
 	const server = await serveDist();
 	const browser = await chromium.launch({ headless: true });
-	const problems = [];
 	try {
 		for (const width of WIDTHS) {
 			// Reduced motion renders every reveal in its final state, so we audit what readers see.

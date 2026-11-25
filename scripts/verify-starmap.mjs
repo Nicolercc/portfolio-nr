@@ -194,6 +194,40 @@ async function assertPhoneSheet(page) {
 	assert(released, "phone: closing the sheet should release inert and the scroll lock.");
 }
 
+// Focus in place (desktop): the heading stays and becomes the trail, the star lands in
+// open sky right of the heading, and the caption sits beside it without covering either.
+async function assertFocusInPlace(page) {
+	const label = await labelFor(page, "Sano");
+	await activate(label);
+	const panel = page.locator(".system-panel");
+	await panel.waitFor({ state: "visible" });
+	await page.waitForTimeout(1200);
+	const layout = await page.evaluate(() => {
+		const box = (el) => el.getBoundingClientRect();
+		const intro = box(document.querySelector(".space-hero__intro"));
+		const caption = box(document.querySelector(".system-panel"));
+		const line = document.querySelector(".starmap__leader line");
+		const mapTop = box(document.querySelector(".starmap")).top;
+		return {
+			introOpacity: Number(getComputedStyle(document.querySelector(".space-hero__intro")).opacity),
+			trail: document.querySelector("#universe-heading").textContent,
+			introRight: intro.right,
+			captionLeft: caption.left,
+			captionRight: caption.right,
+			starX: line ? Number(line.getAttribute("x1")) : NaN,
+			starY: line ? Number(line.getAttribute("y1")) + mapTop : NaN,
+			width: innerWidth,
+		};
+	});
+	assert(layout.introOpacity > 0.9, "desktop: the heading should stay visible while a project is open.");
+	assert(/Projects\s*›\s*Sano/.test(layout.trail), `desktop: the heading should read "Projects › Sano", got "${layout.trail}".`);
+	assert(layout.starX > layout.introRight, `desktop: the open star (x=${layout.starX}) should sit right of the heading (ends ${layout.introRight}).`);
+	assert(layout.captionLeft >= layout.introRight - 1 && layout.captionRight <= layout.width, "desktop: the caption must not cover the heading or leave the screen.");
+	assert(layout.starX < layout.captionLeft || layout.starX > layout.captionRight, "desktop: the caption must not cover the star.");
+	await page.keyboard.press("Escape");
+	await panel.waitFor({ state: "detached" });
+}
+
 async function main() {
 	const server = await serveDist();
 	const browser = await chromium.launch({ headless: true });
@@ -206,6 +240,7 @@ async function main() {
 			await openMap(page, name);
 			await assertKeyboardOrder(page);
 			await assertPanelOpensAndCloses(page, name);
+			if (name === "desktop") await assertFocusInPlace(page);
 			await assertReceiptToggles(page, name);
 			await assertContextLoss(page);
 			await page.close();

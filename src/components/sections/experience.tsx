@@ -82,7 +82,7 @@ export function Experience() {
 		<section
 			id="experience"
 			ref={containerRef}
-			className="py-32 px-6 md:px-12 bg-transparent relative"
+			className="py-[88px] lg:py-32 px-6 md:px-12 bg-transparent relative"
 		>
 			<div className="max-w-7xl mx-auto border-t border-white/[0.05] pt-20">
 				<div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -145,11 +145,11 @@ export function Experience() {
 											</span>
 										</div>
 
-										<div className="flex items-center gap-3">
+										<div className="flex flex-wrap items-center gap-3">
 											<span className="text-caption font-mono text-rose/90 border border-rose/30 px-2 py-0.5 rounded tracking-tighter uppercase">
 												{exp.type}
 											</span>
-											<span className="text-sm text-white/65 font-mono tracking-tight">
+											<span className="min-w-0 text-sm text-white/65 font-mono tracking-tight [overflow-wrap:anywhere]">
 												{exp.role}
 											</span>
 										</div>

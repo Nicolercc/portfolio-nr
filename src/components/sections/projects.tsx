@@ -51,11 +51,11 @@ function CaseStudyCard({ project, position }: { project: CaseStudyProject; posit
 		<motion.article
 			ref={cardRef}
 			style={reduceMotion ? undefined : { opacity }}
-			className="relative py-12 border-white/10 group"
+			className="relative py-8 lg:py-12 border-white/10 group"
 		>
-			<div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+			<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start">
 				{/* Left Side: Info */}
-				<div className="lg:col-span-5 sticky top-32">
+				<div className="lg:col-span-5 lg:sticky lg:top-32">
 					<div className="flex items-center gap-4 mb-6">
 						<span className={`text-xs font-mono ${accentClass}`}>
 							{String(position).padStart(2, "0")}
@@ -73,13 +73,13 @@ function CaseStudyCard({ project, position }: { project: CaseStudyProject; posit
 						{project.outcome ?? project.tagline}
 					</p>
 
-					<p className="mb-10 font-mono text-caption text-muted-foreground">
+					<p className="mb-6 lg:mb-10 font-mono text-caption text-muted-foreground">
 						{(project.keyStack ?? project.stack).slice(0, 4).join(" · ")}
 					</p>
 
 					<Link
 						to={`/projects/${project.slug}`}
-						className={`inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold ${accentClass} group/link`}
+						className={`inline-flex min-h-[44px] items-center gap-2 text-xs uppercase tracking-widest font-bold ${accentClass} group/link`}
 					>
 						Explore Case Study
 						<ArrowUpRight className="w-4 h-4 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform" />
@@ -89,7 +89,7 @@ function CaseStudyCard({ project, position }: { project: CaseStudyProject; posit
 				{/* Right Side: Visuals */}
 				<motion.div
 					style={reduceMotion ? undefined : { y: yTranslate }}
-					className="lg:col-span-7"
+					className="order-first lg:order-none lg:col-span-7"
 				>
 					<ProjectVisuals project={project} />
 				</motion.div>

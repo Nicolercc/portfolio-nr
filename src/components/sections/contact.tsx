@@ -9,7 +9,7 @@ export function Contact() {
 	return (
 		<section
 			id="contact"
-			className="py-40 px-6 text-center relative overflow-hidden"
+			className="py-[88px] lg:py-40 px-6 text-center relative overflow-hidden"
 		>
 			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-rose/5 rounded-full blur-[140px] pointer-events-none" />
 
@@ -35,17 +35,17 @@ export function Contact() {
 				</p>
 				<a
 					href={mailtoHref}
-					className="inline-flex items-center gap-4 text-xl md:text-2xl font-light hover:text-rose transition-colors duration-300 group"
+					className="inline-flex min-h-[44px] items-center gap-4 text-xl md:text-2xl font-light hover:text-rose transition-colors duration-300 group"
 				>
 					{PROFILE.email}
 					<ArrowRight className="group-hover:translate-x-2 transition-transform" />
 				</a>
-				<div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+				<div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
 					<CopyEmailButton />
 					<a
 						href={PROFILE.resumePath}
 						download
-						className="inline-flex min-h-[44px] items-center rounded-full bg-action px-5 text-sm font-medium text-[#0d0d0d] transition-colors duration-150 hover:bg-action/85"
+						className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-action px-5 text-sm font-medium text-[#0d0d0d] transition-colors duration-150 hover:bg-action/85"
 					>
 						Download resume
 					</a>
@@ -53,7 +53,7 @@ export function Contact() {
 						href={PROFILE.linkedin}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="inline-flex min-h-[44px] items-center px-3 text-sm text-muted-foreground hover:text-rose"
+						className="inline-flex min-h-[44px] items-center justify-center px-3 text-sm text-muted-foreground hover:text-rose"
 					>
 						LinkedIn
 					</a>
@@ -61,7 +61,7 @@ export function Contact() {
 						href={PROFILE.github}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="inline-flex min-h-[44px] items-center px-3 text-sm text-muted-foreground hover:text-rose"
+						className="inline-flex min-h-[44px] items-center justify-center px-3 text-sm text-muted-foreground hover:text-rose"
 					>
 						GitHub
 					</a>

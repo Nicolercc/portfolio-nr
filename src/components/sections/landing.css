@@ -135,6 +135,17 @@
 	animation: landing-fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* A soft dark scrim behind the name and buttons: the stars are placed at random,
+ * and none should ever drop the text below 4.5:1 (D19). */
+.landing__content::before {
+	content: "";
+	position: absolute;
+	inset: -12% -18%;
+	z-index: -1;
+	background: radial-gradient(ellipse at center, rgba(13, 13, 13, 0.92) 62%, rgba(13, 13, 13, 0.55) 80%, transparent 100%);
+	pointer-events: none;
+}
+
 @keyframes landing-fade-up {
 	from {
 		opacity: 0;

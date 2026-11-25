@@ -51,7 +51,7 @@ function SocialPill({ label, href }: { label: string; href: string }) {
 			href={href}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-white/[0.08] bg-transparent px-[15px] py-1.5 text-caption font-medium tracking-wide no-underline transition-all duration-[220ms] hover:border-[#D4849A] hover:bg-[rgba(212,132,154,0.08)] hover:text-[#D4849A]"
+			className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-white/[0.08] bg-transparent px-[15px] py-1.5 text-caption font-medium no-underline transition-all duration-150 hover:border-[#D4849A] hover:bg-[rgba(212,132,154,0.08)] hover:text-[#D4849A]"
 			style={{
 				fontFamily: "'Inter', sans-serif",
 				color: "rgba(245,240,232,0.62)",
@@ -161,7 +161,7 @@ function DraggableCard({
 			}
 		>
 			<div
-				className={`relative select-none overflow-hidden rounded-[20px] border px-6 pb-[22px] pt-[26px] ${
+				className={`relative select-none overflow-hidden rounded-2xl border px-6 pb-[22px] pt-[26px] ${
 					isTop
 						? "shadow-[0_28px_70px_rgba(0,0,0,0.6),inset_0_2px_0_rgba(255,255,255,0.04)]"
 						: "shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
@@ -176,11 +176,11 @@ function DraggableCard({
 				{isTop && (
 					<>
 						<motion.div
-							className="pointer-events-none absolute inset-0 rounded-[20px]"
+							className="pointer-events-none absolute inset-0 rounded-2xl"
 							style={{ background: T.rose, opacity: roseOverlay }}
 						/>
 						<motion.div
-							className="pointer-events-none absolute inset-0 rounded-[20px]"
+							className="pointer-events-none absolute inset-0 rounded-2xl"
 							style={{ background: T.green, opacity: greenOverlay }}
 						/>
 					</>
@@ -209,7 +209,7 @@ function DraggableCard({
 						}}
 					/>
 					<span
-						className="font-mono text-caption uppercase tracking-[0.1em]"
+						className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light"
 						style={{ color: hobby.accent }}
 					>
 						{hobby.tag}
@@ -245,7 +245,7 @@ function DraggableCard({
 
 				{/* Counter */}
 				<div
-					className="absolute bottom-4 right-[18px] font-mono text-caption tracking-[0.07em]"
+					className="absolute bottom-4 right-[18px] font-mono text-caption"
 					style={{ color: T.mutedLo }}
 					aria-label={`Card ${currentIndex + 1} of ${total}`}
 				>
@@ -316,7 +316,7 @@ function CardDeck() {
 					type="button"
 					aria-label="Previous hobby card"
 					onClick={retreat}
-					whileHover={{ scale: 1.08, borderColor: T.rose }}
+					whileHover={{ borderColor: T.rose }}
 					whileTap={{ scale: 0.94 }}
 					className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#D4849A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4849A]"
 				>
@@ -334,13 +334,13 @@ function CardDeck() {
 								aria-current={active ? "true" : undefined}
 								aria-label={`Show ${h.title}`}
 								onClick={() => setTopIndex(i)}
-								className="flex h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4ADE80]"
+								className="flex h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-rose"
 							>
 								<motion.span
 									aria-hidden="true"
 									animate={{
 										width: active ? 18 : 5,
-										background: active ? T.green : T.mutedLo,
+										background: active ? T.rose : T.mutedLo,
 									}}
 									transition={
 										reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 28 }
@@ -356,9 +356,9 @@ function CardDeck() {
 					type="button"
 					aria-label="Next hobby card"
 					onClick={advance}
-					whileHover={{ scale: 1.08, borderColor: T.green }}
+					whileHover={{ borderColor: T.rose }}
 					whileTap={{ scale: 0.94 }}
-					className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-[#4ADE80] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4ADE80]"
+					className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-base text-rose focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose"
 				>
 					→
 				</motion.button>
@@ -381,6 +381,7 @@ export default function BentoSection() {
 		<section
 			ref={sectionRef}
 			id="about"
+			data-chapter="4"
 			className="bento scroll-mt-24"
 			style={
 				{
@@ -393,16 +394,13 @@ export default function BentoSection() {
 				} as React.CSSProperties
 			}
 		>
-			<div className="bento__gridBg" aria-hidden="true" />
-			<div className="bento__glowRose" aria-hidden="true" />
-			<div className="bento__glowGreen" aria-hidden="true" />
 
 			<div className="bento__container">
 				{/* ── LEFT: Bio ── */}
 				<motion.div
-					initial={reduceMotion ? { opacity: 1 } : { opacity: 0, x: -28 }}
-					animate={inView ? { opacity: 1, x: 0 } : {}}
-					transition={reduceMotion ? { duration: 0 } : { duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+					initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
+					animate={inView ? { opacity: 1, y: 0 } : {}}
+					transition={reduceMotion ? { duration: 0 } : { duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
 					className="bento__col"
 				>
 					<h2 className="section-label">About</h2>
@@ -439,12 +437,12 @@ export default function BentoSection() {
 
 				{/* ── RIGHT: Deck + Strategy Card ── */}
 				<motion.div
-					initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 32 }}
+					initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
 					animate={inView ? { opacity: 1, y: 0 } : {}}
-					transition={reduceMotion ? { duration: 0 } : { delay: 0.25, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+					transition={reduceMotion ? { duration: 0 } : { delay: 0.25, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
 					className="bento__col"
 				>
-					<p className="bento__rightLabel">// what I love</p>
+					<h3 className="section-label">What I love</h3>
 					<div className="bento__rightStack">
 						<CardDeck />
 					</div>

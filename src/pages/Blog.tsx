@@ -1,3 +1,4 @@
+import { Sky } from "../components/layouts/Sky";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -40,10 +41,10 @@ function StaggerHeadline({
 			{line1.split("").map((char, i) => (
 				<motion.span
 					key={`l1-${i}`}
-					initial={{ opacity: 0, y: 60 }}
+					initial={{ opacity: 0, y: 16 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
-					transition={{ duration: 0.5, delay: i * 0.03, ease }}
+					transition={{ duration: 0.3, delay: i * 0.03, ease }}
 					className="inline-block"
 					style={{ whiteSpace: char === " " ? "pre" : "normal" }}
 				>
@@ -55,10 +56,10 @@ function StaggerHeadline({
 				{line2.split("").map((char, i) => (
 					<motion.span
 						key={`l2-${i}`}
-						initial={{ opacity: 0, y: 60 }}
+						initial={{ opacity: 0, y: 16 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
-						transition={{ duration: 0.5, delay: 0.2 + i * 0.04, ease }}
+						transition={{ duration: 0.3, delay: 0.2 + i * 0.04, ease }}
 						className="inline-block text-rose"
 					>
 						{char}
@@ -96,15 +97,17 @@ export default function Blog() {
 	}, []);
 
 	return (
-		<main id="main-content" tabIndex={-1} className="min-h-screen bg-background text-foreground px-6 md:px-12 pt-28 pb-16 md:pt-32 md:pb-24 selection:bg-rose/30 focus:outline-none">
+		<>
+		<Sky mode={{ kind: "record" }} />
+		<main id="main-content" tabIndex={-1} className="min-h-screen text-foreground px-6 md:px-12 pt-28 pb-16 md:pt-32 md:pb-24 selection:bg-rose/30 focus:outline-none">
 			<div className="max-w-7xl mx-auto">
 				<header className="mb-16 overflow-hidden border-t border-white/[0.05] pt-16">
 					<motion.div
-						initial={{ opacity: 0, y: 20 }}
+						initial={{ opacity: 0, y: 16 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
-						transition={{ duration: 0.6, ease }}
-						className="text-caption uppercase tracking-[0.3em] mb-8 font-mono font-bold text-rose"
+						transition={{ duration: 0.7, ease }}
+						className="text-caption uppercase mb-8 font-sans font-semibold tracking-[0.12em] text-rose-light"
 					>
 						Writing
 					</motion.div>
@@ -115,30 +118,30 @@ export default function Blog() {
 					{blogPostList.map((post, idx) => (
 						<motion.article
 							key={post.slug}
-							initial={{ opacity: 0, y: 24 }}
+							initial={{ opacity: 0, y: 16 }}
 							whileInView={{ opacity: 1, y: 0 }}
 							viewport={{ once: true }}
-							transition={{ duration: 0.6, delay: idx * 0.08, ease }}
+							transition={{ duration: 0.7, delay: idx * 0.08, ease }}
 						>
 							<Link
 								to={`/blog/${post.slug}`}
-								className="block glass-panel rounded-3xl border border-white/8 p-7 md:p-8 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 group"
+								className="block glass-panel rounded-2xl border border-white/8 p-7 md:p-8 transition-all duration-300 hover:border-white/20 group"
 							>
-								<h2 className="text-3xl md:text-4xl font-serif italic mb-4 tracking-tight group-hover:text-rose transition-colors duration-300">
+								<h2 className="text-3xl md:text-4xl font-serif mb-4 tracking-tight group-hover:text-rose transition-colors duration-300">
 									{post.title}
 								</h2>
-								<p className="text-caption uppercase tracking-[0.2em] font-mono text-muted-foreground mb-3">
+								<p className="text-caption uppercase mb-3 font-sans font-semibold tracking-[0.12em] text-rose-light">
 									{formatBlogDate(post.date)} · {post.readTime}
 								</p>
 								{post.tags.length > 0 && (
-									<p className="text-caption uppercase tracking-[0.15em] font-mono text-rose/90 mb-5">
+									<p className="text-caption uppercase mb-5 font-sans font-semibold tracking-[0.12em] text-rose-light">
 										{post.tags.join(" · ")}
 									</p>
 								)}
-								<p className="text-muted-foreground font-light leading-relaxed">
+								<p className="text-muted-foreground leading-relaxed">
 									{post.excerpt}
 								</p>
-								<span className="inline-flex items-center gap-2 mt-7 text-sm font-medium text-foreground group-hover:text-rose transition-colors">
+								<span className="text-link mt-7">
 									Read essay <span aria-hidden>→</span>
 								</span>
 							</Link>
@@ -147,5 +150,6 @@ export default function Blog() {
 				</div>
 			</div>
 		</main>
+		</>
 	);
 }

@@ -82,10 +82,11 @@ export function Experience() {
 	return (
 		<section
 			id="experience"
+			data-chapter="3"
 			ref={containerRef}
-			className="py-[88px] lg:py-32 px-6 md:px-12 bg-transparent relative"
+			className="section-rhythm px-6 md:px-12 relative"
 		>
-			<div className="max-w-7xl mx-auto border-t border-white/[0.05] pt-20">
+			<div className="max-w-7xl mx-auto">
 				<div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 					{/* LEFT: Sticky Header */}
 					<div className="lg:col-span-4 lg:sticky lg:top-32 h-fit space-y-4">
@@ -96,7 +97,7 @@ export function Experience() {
 								designed with care.
 							</span>
 						</p>
-						<p className="text-sm text-white/60 font-light max-w-xs leading-relaxed">
+						<p className="text-sm text-white/60 max-w-xs leading-relaxed">
 							Full-stack training, a designer's eye, and the habit of checking my
 							own work before anyone else has to.
 						</p>
@@ -122,13 +123,13 @@ export function Experience() {
 										itemRefs.current[i] = el;
 									}}
 									// Reveal once; never hide content again after it has been read.
-									initial={reduceMotion ? false : { opacity: 0, x: 20 }}
-									animate={reduceMotion || i <= revealed ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
-									transition={reduceMotion ? { duration: 0 } : { duration: 0.8, delay: i * 0.1 }}
+									initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+									animate={reduceMotion || i <= revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+									transition={reduceMotion ? { duration: 0 } : { duration: 0.7, delay: i * 0.1 }}
 									className="relative group"
 								>
 									{/* The "Node" on the line */}
-									<div className="absolute -left-[33px] md:-left-[69px] top-2 w-3 h-3 rounded-full bg-[#0D0D0D] border border-white/20 z-10 group-hover:border-rose transition-colors duration-500">
+									<div className="absolute -left-[33px] md:-left-[69px] top-2 w-3 h-3 rounded-full bg-[#0D0D0D] border border-white/20 z-10 group-hover:border-rose transition-colors duration-300">
 										<motion.div
 											initial={reduceMotion ? false : { scale: 0 }}
 											whileInView={{ scale: 1 }}
@@ -139,24 +140,24 @@ export function Experience() {
 
 									<div className="flex flex-col space-y-4">
 										<div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2">
-											<h3 className="text-3xl font-serif text-white group-hover:text-rose transition-colors duration-500">
+											<h3 className="text-3xl font-serif text-white group-hover:text-rose transition-colors duration-300">
 												{exp.company}
 											</h3>
-											<span className="font-mono text-caption text-white/60 tracking-widest uppercase italic">
+											<span className="text-caption uppercase font-sans font-semibold tracking-[0.12em] text-rose-light">
 												{exp.period}
 											</span>
 										</div>
 
 										<div className="flex flex-wrap items-center gap-3">
-											<span className="text-caption font-mono text-rose/90 border border-rose/30 px-2 py-0.5 rounded tracking-tighter uppercase">
+											<span className="text-caption font-mono text-rose/90 border border-rose/30 px-2 py-0.5 rounded-md">
 												{exp.type}
 											</span>
-											<span className="min-w-0 text-sm text-white/65 font-mono tracking-tight [overflow-wrap:anywhere]">
+											<span className="min-w-0 text-sm text-white/65 font-mono [overflow-wrap:anywhere]">
 												{exp.role}
 											</span>
 										</div>
 
-										<p className="text-muted-foreground font-light leading-relaxed max-w-2xl">
+										<p className="text-muted-foreground leading-relaxed max-w-2xl">
 											{exp.oneLine}
 											{"projectHref" in exp && exp.projectHref ? (
 												<>

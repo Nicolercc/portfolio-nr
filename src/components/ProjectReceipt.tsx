@@ -2,11 +2,11 @@ import type { Receipt } from "../data/proofs";
 
 export function ProjectReceipt({ receipt }: { receipt: Receipt }) {
 	return (
-		<details className="rounded-xl border border-dashed border-foreground/40">
+		<details className="rounded-2xl border border-dashed border-foreground/40">
 			<summary className="min-h-11 cursor-pointer px-4 py-3 text-caption font-mono">
 				View evidence receipt
 			</summary>
-			<div className="rounded-b-xl bg-paper p-4 text-ink">
+			<div className="rounded-b-2xl bg-paper p-4 text-ink">
 				<p className="font-semibold">{receipt.claim}</p>
 				<dl className="my-3 space-y-2 text-caption font-mono">
 					{receipt.rows.map(({ label, value }) => (

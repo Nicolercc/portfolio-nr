@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useReducedMotion } from "../../lib/motionPreference";
 import { Cpu, Globe, ShieldCheck, Zap } from "lucide-react";
 import { LocationGlobe } from "./LocationGlobe";
 
@@ -75,11 +76,22 @@ function MarqueeRow({
 }) {
 	const reduceMotion = useReducedMotion();
 
+	// Paused, the marquee becomes a complete list that wraps instead of scrolling.
+	if (reduceMotion) {
+		return (
+			<div className="flex flex-wrap gap-2 py-1">
+				{items.map((t) => (
+					<TechBadge key={t} name={t} />
+				))}
+			</div>
+		);
+	}
+
 	return (
 		<div className="flex overflow-hidden gap-2 py-1 mask-fade-edges">
 			<motion.div
-				animate={reduceMotion ? { x: 0 } : { x: reverse ? [-1000, 0] : [0, -1000] }}
-				transition={reduceMotion ? { duration: 0 } : { duration, repeat: Infinity, ease: "linear" }}
+				animate={{ x: reverse ? [-1000, 0] : [0, -1000] }}
+				transition={{ duration, repeat: Infinity, ease: "linear" }}
 				className="flex gap-2 shrink-0 will-change-transform"
 			>
 				{items.map((t) => (
@@ -107,40 +119,12 @@ function EngineRoomCard() {
 			whileHover={reduceMotion ? undefined : { y: -5 }}
 			className="group relative md:col-span-4 lg:col-span-4 row-span-1 glass-panel rounded-3xl p-6 overflow-hidden flex flex-col justify-between min-h-[240px] border-white/[0.07]"
 		>
-			{/* Ambient: soft grid + rotating wash + shimmer */}
+			{/* Ambient: soft grid */}
 			<div
 				className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl"
 				aria-hidden
 			>
 				<div className="absolute inset-0 opacity-[0.45] bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:28px_28px] [mask-image:radial-gradient(ellipse_80%_70%_at_50%_40%,black,transparent)]" />
-				<motion.div
-					className="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.22] blur-3xl"
-					style={{
-						background:
-							"conic-gradient(from 0deg, rgba(212,132,154,0.35), transparent 35%, rgba(74,222,128,0.2), transparent 70%)",
-					}}
-					animate={reduceMotion ? { rotate: 0 } : { rotate: [0, 360] }}
-					transition={
-						reduceMotion
-							? { duration: 0 }
-							: { duration: 36, repeat: Infinity, ease: "linear" }
-					}
-				/>
-				<motion.div
-					className="absolute inset-y-0 w-[40%] skew-x-[-16deg] bg-gradient-to-r from-transparent via-white/[0.06] to-transparent"
-					initial={false}
-					animate={reduceMotion ? { x: "-100%" } : { x: ["-120%", "220%"] }}
-					transition={
-						reduceMotion
-							? { duration: 0 }
-							: {
-									duration: 5.5,
-									repeat: Infinity,
-									ease: "linear",
-									repeatDelay: 1.2,
-								}
-					}
-				/>
 			</div>
 
 			<div className="relative z-10 flex flex-col gap-5 min-h-0">
@@ -170,21 +154,13 @@ function EngineRoomCard() {
 							))}
 						</div>
 					</div>
-					<motion.div
-						className="shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] p-3 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
-						animate={reduceMotion ? {} : { y: [0, -4, 0] }}
-						transition={
-							reduceMotion
-								? {}
-								: { duration: 5, repeat: Infinity, ease: "easeInOut" }
-						}
-					>
+					<div className="shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] p-3 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
 						<Cpu
 							className="h-9 w-9 text-rose/85"
 							strokeWidth={1.25}
 							aria-hidden
 						/>
-					</motion.div>
+					</div>
 				</div>
 
 				<div className="space-y-2.5 pt-1 border-t border-white/[0.06]">

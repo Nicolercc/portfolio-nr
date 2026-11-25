@@ -1,7 +1,8 @@
 import { MoreWorkList } from "../MoreWorkList";
 import { Fragment, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useReducedMotion } from "../../lib/motionPreference";
 import { ArrowUpRight } from "lucide-react";
 import { getShowcaseProjects, type CaseStudyProject } from "../../data/projects";
 
@@ -41,7 +42,6 @@ function CaseStudyCard({ project, position }: { project: CaseStudyProject; posit
 		offset: ["start end", "end start"],
 	});
 
-	const yTranslate = useTransform(scrollYProgress, [0, 1], [50, -50]);
 	// Fade in once; never hide a project again after it has been read.
 	const opacity = useTransform(scrollYProgress, [0, 0.2, 1], [0, 1, 1]);
 
@@ -87,12 +87,11 @@ function CaseStudyCard({ project, position }: { project: CaseStudyProject; posit
 				</div>
 
 				{/* Right Side: Visuals */}
-				<motion.div
-					style={reduceMotion ? undefined : { y: yTranslate }}
+				<div
 					className="order-first lg:order-none lg:col-span-7"
 				>
 					<ProjectVisuals project={project} />
-				</motion.div>
+				</div>
 			</div>
 		</motion.article>
 	);

@@ -65,6 +65,8 @@ type Options = {
 	onSelect?: (slug: string) => void;
 	onContextLost?: () => void;
 	onCrowding?: (crowded: boolean) => void;
+	/** Desktop caption for the focused system, and the hairline that joins it to the star. */
+	caption?: { get: () => HTMLElement | null; leader: () => SVGLineElement | null };
 };
 
 const STAR_VERT = /* glsl */ `
@@ -164,7 +166,8 @@ function glowTexture() {
 	return new CanvasTexture(canvas);
 }
 
-const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+// Matches the site easing, cubic-bezier(0.16, 1, 0.3, 1), closely enough for a camera.
+const easeOutExpo = (t: number) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t));
 
 export function webglAvailable() {
 	try {
@@ -472,7 +475,7 @@ export class StarMap {
 		this.lookTo.copy(toLook);
 		this.viewTo.copy(toView);
 		this.flightStart = performance.now();
-		this.flightDuration = this.opts.reducedMotion ? 0 : 1400;
+		this.flightDuration = this.opts.reducedMotion ? 0 : 700;
 		this.loop();
 	}
 
@@ -485,11 +488,13 @@ export class StarMap {
 			return;
 		}
 		const world = node.home.clone().add(this.systemsRoot.position);
-		// Look straight at the system, then slide the view so it lands in the open
-		// space: the left third on desktop (the panel is on the right), the top
-		// third on phones (the panel is a bottom sheet).
-		const view = this.wide ? new Vector2(0.2, 0) : new Vector2(0, 0.24);
-		this.fly(world.clone().add(new Vector3(0, 4, 30)), world, view);
+		// Focus in place: a short dolly, not a fly-in. The camera moves halfway toward
+		// the system and looks at it, and the view slides so the star lands in open sky,
+		// right of the heading on desktop and above the bottom sheet on phones.
+		const near = world.clone().add(new Vector3(0, 4, 30));
+		const cam = this.restingCamera(new Vector3()).lerp(near, 0.5);
+		const view = this.wide ? new Vector2(-0.1, 0) : new Vector2(0, 0.24);
+		this.fly(cam, world, view);
 	}
 
 	private onContextLost = () => this.opts.onContextLost?.();
@@ -626,7 +631,7 @@ export class StarMap {
 
 		// Camera flight
 		const k = this.flightDuration === 0 ? 1 : Math.min((now - this.flightStart) / this.flightDuration, 1);
-		const e = easeInOutCubic(k);
+		const e = easeOutExpo(k);
 		this.camera.position.lerpVectors(this.camFrom, this.camTo, e);
 		this.look.lerpVectors(this.lookFrom, this.lookTo, e);
 		this.view.lerpVectors(this.viewFrom, this.viewTo, e);
@@ -681,6 +686,7 @@ export class StarMap {
 		const galaxy = container.closest('[data-mode="webgl"]') !== null;
 
 		if (checkFit) container.dataset.measuring = "true";
+		let focusedAt: { x: number; y: number } | null = null;
 		for (const node of this.nodes) {
 			const el = labels.get(node.slug);
 			if (!el) continue;
@@ -688,6 +694,7 @@ export class StarMap {
 			this.tmp.project(this.camera);
 			const x = (this.tmp.x * 0.5 + 0.5) * w;
 			const y = (-this.tmp.y * 0.5 + 0.5) * h + 18;
+			if (node.slug === this.focused) focusedAt = { x, y: y - 18 };
 			if (checkFit) {
 				this.fontSizes.set(el, getComputedStyle(el).fontSize);
 				el.dataset.compact = "false";
@@ -720,11 +727,35 @@ export class StarMap {
 			const compact = String(Boolean(metrics?.compact));
 			if (el.dataset.compact !== compact) el.dataset.compact = compact;
 		}
+		this.placeCaption(focusedAt, w, h, textColumn);
 		if (checkFit) {
 			delete container.dataset.measuring;
 			this.measureLabels = false;
 			onCrowding?.(crowded);
 		}
+	}
+
+	/** The caption sits beside the star, on whichever side has room, never over the heading. */
+	private placeCaption(star: { x: number; y: number } | null, w: number, h: number, textColumn: number) {
+		const caption = this.opts.caption?.get();
+		const leader = this.opts.caption?.leader();
+		// Same breakpoint as the CSS that switches the panel into a caption.
+		if (!caption || !leader || !star || !window.matchMedia("(min-width: 1024px)").matches) return;
+		const cw = caption.offsetWidth;
+		const ch = caption.offsetHeight;
+		const gap = 104;
+		let left = star.x + gap + cw < w - 24 ? star.x + gap : star.x - gap - cw;
+		left = Math.max(textColumn + 16, Math.min(left, w - cw - 24));
+		const top = Math.max(24, Math.min(star.y - ch / 2, h - ch - 24));
+		const style = `translate3d(${left.toFixed(1)}px, ${top.toFixed(1)}px, 0)`;
+		if (caption.style.transform !== style) caption.style.transform = style;
+		const right = left > star.x;
+		const edgeX = right ? left : left + cw;
+		const edgeY = Math.max(top + 28, Math.min(star.y, top + ch - 28));
+		leader.setAttribute("x1", (star.x + (right ? 22 : -22)).toFixed(1));
+		leader.setAttribute("y1", star.y.toFixed(1));
+		leader.setAttribute("x2", edgeX.toFixed(1));
+		leader.setAttribute("y2", edgeY.toFixed(1));
 	}
 
 	dispose() {

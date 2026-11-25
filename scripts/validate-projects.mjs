@@ -22,9 +22,9 @@ function getName(node) {
 	return undefined;
 }
 
-function findVariable(name) {
+function findVariable(name, file = sourceFile) {
 	let found;
-	sourceFile.forEachChild(function visit(node) {
+	file.forEachChild(function visit(node) {
 		if (ts.isVariableDeclaration(node) && getName(node.name) === name) {
 			found = node.initializer;
 			return;
@@ -147,11 +147,76 @@ if (showcaseSlugs.join(",") !== expectedShowcaseSlugs.join(",")) {
 
 const knownBrokenLiveUrls = new Set(["https://carbonshift.onrender.com"]);
 
-for (const slug of [...showcaseSlugs, ...secondarySlugs]) {
-	const projectProp = getProp(projectsObject, slug);
-	const project = expectObject(projectProp?.initializer, `project ${slug}`);
+const listedSlugs = [...showcaseSlugs, ...secondarySlugs];
+const routedSlugs = new Set(listedSlugs);
+if (routedSlugs.size !== listedSlugs.length) fail("Project route lists contain duplicate slugs.");
+const projectSlugs = projectsObject.properties.map((project) => getName(project.name));
+for (const slug of routedSlugs) {
+	if (!projectSlugs.includes(slug)) fail(`Missing project entry for ${slug}.`);
+}
+
+const mapPath = join(root, "src/data/starSystems.ts");
+const mapFile = ts.createSourceFile(mapPath, readFileSync(mapPath, "utf8"), ts.ScriptTarget.Latest);
+const mapPresentation = expectObject(findVariable("STAR_PRESENTATION", mapFile), "STAR_PRESENTATION");
+const css = readFileSync(join(root, "src/index.css"), "utf8");
+
+function requireText(object, fields, context) {
+	for (const field of fields) {
+		if (!getStringProp(object, field, `${context}.${field}`)) fail(`${context} needs ${field}.`);
+	}
+}
+
+for (const slug of projectSlugs) {
+	const project = expectObject(getProp(projectsObject, slug)?.initializer, `project ${slug}`);
 	const title = getStringProp(project, "title", `${slug}.title`);
 	const status = getStringProp(project, "status", `${slug}.status`);
+	const kind = getStringProp(project, "kind", `${slug}.kind`);
+	requireText(project, ["title", "oneLine", "role", "tagline"], slug);
+	if (getStringProp(project, "slug") !== slug) fail(`${slug} has a mismatched slug.`);
+	if (!["live", "prototype", "open-source", "client-data", "archived"].includes(status)) {
+		fail(`${slug} has an invalid status.`);
+	}
+	const onMap = getProp(project, "onMap")?.initializer.kind;
+	if (onMap !== ts.SyntaxKind.TrueKeyword && onMap !== ts.SyntaxKind.FalseKeyword) {
+		fail(`${slug}.onMap must be a boolean literal.`);
+	}
+	if (onMap === ts.SyntaxKind.TrueKeyword) {
+		const presentation = getObjectProp(mapPresentation, slug, `${slug} star presentation`);
+		requireText(presentation, ["line", "color"], slug);
+		const color = getStringProp(presentation, "color");
+		if (!color.startsWith("star-") || !css.includes(`--color-${color}:`)) {
+			fail(`${slug} needs a defined star color token.`);
+		}
+	}
+	if (kind === "brief") {
+		if (!secondarySlugs.includes(slug)) fail(`${slug} must be listed as a secondary project route.`);
+		const brief = getStringProp(project, "brief");
+		if (brief.split(/\s+/).length < 100) fail(`${slug} needs a complete project brief.`);
+		const facts = objectArrayValues(getArrayProp(project, "facts"), `${slug}.facts`);
+		if (facts.length !== 3) fail(`${slug} needs exactly three facts.`);
+		for (const fact of facts) requireText(fact, ["label", "value"], `${slug} fact`);
+		const artifact = getObjectProp(project, "artifact");
+		requireText(artifact, ["title"], `${slug} artifact`);
+		const format = getStringProp(artifact, "format");
+		if (format === "terminal") {
+			requireText(artifact, ["snippet"], `${slug} artifact`);
+		} else if (format === "schema") {
+			const relationships = getArrayProp(artifact, "relationships").elements;
+			if (!relationships.length || relationships.some((row) => {
+				const values = stringArrayValues(expectArray(row, "schema relationship"));
+				return values.length !== 3 || values.some((value) => !value);
+			})) fail(`${slug} needs complete schema relationships.`);
+		} else {
+			fail(`${slug} has an invalid artifact format.`);
+		}
+		const outbound = getObjectProp(project, "outbound");
+		requireText(outbound, ["label", "href"], `${slug} outbound`);
+		if (!/^(\/(?!\/)|https:\/\/)/.test(getStringProp(outbound, "href"))) {
+			fail(`${slug} needs a valid outbound destination.`);
+		}
+		continue;
+	}
+	if (kind !== "case-study") fail(`${slug} has an invalid project kind.`);
 
 	for (const propName of ["category", "year", "role", "tagline", "description"]) {
 		const value = getStringProp(project, propName, `${slug}.${propName}`);
@@ -259,8 +324,8 @@ for (const slug of [...showcaseSlugs, ...secondarySlugs]) {
 	}
 
 	if (slug === "ruvia") {
-		if (liveLink && liveLink !== "https://ruvia.vercel.app/") {
-			fail("Ruvia's live link must point at its real seeded-demo deployment.");
+		if (status !== "prototype" || liveLink !== "https://ruvia.vercel.app/") {
+			fail("Ruvia must remain a prototype with its seeded-demo deployment link.");
 		}
 		const boundaryCopy = [
 			getStringProp(project, "description"),
@@ -276,8 +341,8 @@ for (const slug of [...showcaseSlugs, ...secondarySlugs]) {
 	}
 
 	if (slug === "tripcanvas") {
-		if (status !== "case-study") {
-			fail("TripCanvas should remain a case study until it has a production deployment.");
+		if (status !== "prototype") {
+			fail("TripCanvas should remain a prototype until it has a production deployment.");
 		}
 		if (liveLink) {
 			fail("TripCanvas should not expose a live link while it is a local prototype.");

@@ -20,6 +20,8 @@
 	/* Color roles: rose = action and brand, green = verified status only. */
 	--color-action: #d4849a;
 	--color-verified: #4ade80;
+	--color-paper: #f5f0e8;
+	--color-ink: #1a1714;
 
 	/* Type scale: six steps, nothing readable below 14px. */
 	--text-caption: 0.875rem;

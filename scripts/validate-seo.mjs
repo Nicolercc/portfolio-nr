@@ -1,3 +1,4 @@
+import { loadProjects } from "./route-data.mjs";
 import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
@@ -207,16 +208,20 @@ async function main() {
 		readFileSync(notFoundShell, "utf8").includes('<meta name="robots" content="noindex" />'),
 		"dist/404.html must be noindex.",
 	);
-	// Every case study the app can render needs a built page, or Vercel returns 404 for it.
-	const projectSlugs = [...readFileSync(join(root, "src", "data", "projects.ts"), "utf8").matchAll(/^\t\tslug: "([^"]+)",$/gm)].map(
-		(match) => match[1],
-	);
-	assert(projectSlugs.length > 0, "No project slugs found in src/data/projects.ts.");
-	for (const slug of projectSlugs) {
-		assert(
-			existsSync(join(root, "dist", "projects", slug, "index.html")),
-			`Case study /projects/${slug} has no built page and would return 404.`,
-		);
+	// Every registered project needs a built page, including unlisted legacy routes.
+	const { registry, slugs, getProjectMetadata } = loadProjects(root);
+	const briefs = slugs.map((slug) => registry[slug]).filter((project) => project.kind === "brief");
+	for (const slug of slugs) {
+		assert(existsSync(routeShellPath(`/projects/${slug}`)), `Project /projects/${slug} has no built page.`);
+	}
+	for (const project of briefs) {
+		const { title, description } = getProjectMetadata(project);
+		validateBuiltRouteShell(`/projects/${project.slug}`, {
+			title: `${title} — Nicole Rodriguez`,
+			descriptionIncludes: description,
+			twitterCard: "summary_large_image",
+			image: "/og-image.jpg",
+		});
 	}
 
 	const vercelConfig = JSON.parse(readFileSync(join(root, "vercel.json"), "utf8"));
@@ -252,6 +257,13 @@ async function main() {
 			titleIncludes: "Sano",
 			structuredType: "CreativeWork",
 		});
+		for (const project of briefs) {
+			await validateRuntimeRoute(page, `/projects/${project.slug}`, {
+				titleIncludes: getProjectMetadata(project).title,
+				structuredType: "CreativeWork",
+			});
+		}
+
 		await validateRuntimeRoute(page, "/blog/i-was-taught-to-build", {
 			titleIncludes: "I Was Taught",
 			structuredType: "BlogPosting",

@@ -1,3 +1,4 @@
+import { getContentRoutes } from "./route-data.mjs";
 import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
@@ -10,18 +11,7 @@ import sharp from "sharp";
 //   (4.5:1, or 3:1 for large text), with opacity and translucent fills composited
 // - no horizontal scroll at phone, tablet and desktop widths, including 640px
 //   (200% zoom of 1280) and 320px (400% zoom of 1280, WCAG 1.4.10 reflow)
-const ROUTES = [
-	"/",
-	"/projects",
-	"/projects/sano",
-	"/projects/code4kidz",
-	"/projects/elite-global",
-	"/projects/ruvia",
-	"/projects/tripcanvas",
-	"/blog",
-	"/blog/i-was-taught-to-build",
-	"/does-not-exist",
-];
+const ROUTES = ["/", ...getContentRoutes(), "/does-not-exist"];
 const WIDTHS = [320, 390, 640, 768, 1440];
 const MIN_FONT_PX = 14;
 const PAGE_BACKGROUND = [13, 13, 13];

@@ -1,3 +1,4 @@
+import { getContentRoutes } from "./route-data.mjs";
 import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -13,18 +14,7 @@ const axeSource = readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
 const AXE_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 // Purely decorative text (WCAG 1.4.3 exempts it) is marked explicitly in the markup.
 const AXE_EXCLUDE = [["[data-a11y-decorative]"]];
-const AXE_ROUTES = [
-	"/",
-	"/projects",
-	"/projects/sano",
-	"/projects/ruvia",
-	"/projects/code4kidz",
-	"/projects/elite-global",
-	"/projects/tripcanvas",
-	"/blog",
-	"/blog/i-was-taught-to-build",
-	"/does-not-exist",
-];
+const AXE_ROUTES = ["/", ...getContentRoutes(), "/does-not-exist"];
 
 const root = process.cwd();
 const distDir = join(root, "dist");
@@ -200,8 +190,7 @@ async function main() {
 		await assertNoHorizontalOverflow(mobile, "/projects/sano");
 		await assertNoHorizontalOverflow(mobile, "/projects/tripcanvas");
 
-		const routes = ["/projects", "/projects/sano", "/projects/tripcanvas", "/blog"];
-		for (const route of routes) {
+		for (const route of getContentRoutes()) {
 			await desktop.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
 			const headingCount = await desktop.locator("[data-route-heading]").count();
 			assert(headingCount > 0, `${route} should expose a route heading for focus management.`);

@@ -362,10 +362,15 @@
 	flex-direction: column;
 	align-items: center;
 	gap: 4px;
-	background: none;
+	min-width: 44px;
+	min-height: 44px;
+	justify-content: center;
+	/* A backplate keeps the label readable over whichever stars drift behind it. */
+	background: rgba(13, 13, 13, 0.85);
 	border: none;
+	border-radius: 9999px;
 	cursor: pointer;
-	padding: 0;
+	padding: 8px 16px;
 	animation: cue-float 2.4s ease-in-out infinite;
 }
 

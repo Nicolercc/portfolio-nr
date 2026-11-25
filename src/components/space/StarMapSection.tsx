@@ -298,8 +298,10 @@ export default function StarMapSection() {
 						>
 							<span className="star-label__dot" aria-hidden />
 							<span className="star-label__name">{p.title}</span>
-							<ProjectStatusPill status={p.status} />
-							<span className="star-label__metric">{p.line}</span>
+							<span className="star-label__meta">
+								<ProjectStatusPill status={p.status} className="star-label__status" />
+								<span className="star-label__metric">{p.line}</span>
+							</span>
 						</button>
 					))}
 				</div>

@@ -111,8 +111,8 @@
 	color: var(--color-rose-light);
 }
 
-.space-hero[data-mode="webgl"] .star-label[data-compact="true"] .star-label__metric,
-.starmap[data-measuring] .star-label[data-compact="true"] .star-label__metric {
+.space-hero[data-mode="webgl"] .star-label[data-compact="true"] .star-label__meta,
+.starmap[data-measuring] .star-label[data-compact="true"] .star-label__meta {
 	display: none;
 }
 
@@ -340,6 +340,16 @@
 	font-size: var(--text-lead);
 	line-height: 1.1;
 }
+/* The galaxy keeps labels to name + one line; status shows in the list and the panel. */
+.space-hero[data-mode="webgl"] .star-label__status,
+.starmap[data-measuring] .star-label__status {
+	display: none;
+}
+.star-label__meta {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
 .star-label__metric {
 	font-family: var(--font-mono);
 	font-size: var(--text-caption);
@@ -398,8 +408,9 @@
 	box-shadow: 0 0 12px var(--star);
 }
 
-.space-hero[data-mode="static"] .star-label__metric {
+.space-hero[data-mode="static"] .star-label__meta {
 	grid-column: 2;
+	flex-wrap: wrap;
 }
 
 @media (min-width: 640px) {

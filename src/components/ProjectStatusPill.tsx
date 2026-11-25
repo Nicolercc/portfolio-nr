@@ -8,9 +8,9 @@ const STATUS_LABELS: Record<ProjectStatus, string> = {
 	archived: "Archived",
 };
 
-export function ProjectStatusPill({ status }: { status: ProjectStatus }) {
+export function ProjectStatusPill({ status, className = "" }: { status: ProjectStatus; className?: string }) {
 	return (
-		<span className={`inline-flex w-fit items-center rounded-full border border-current px-2 font-mono text-caption leading-normal ${status === "live" ? "text-verified" : "text-muted-foreground"}`}>
+		<span className={`inline-flex w-fit items-center rounded-full border border-current px-2 font-mono text-caption leading-normal ${className} ${status === "live" ? "text-verified" : "text-muted-foreground"}`}>
 			{STATUS_LABELS[status]}
 		</span>
 	);

@@ -203,7 +203,7 @@ export class StarMap {
 	private viewTo = new Vector2();
 	private size = new Vector2(1, 1);
 	private flightStart = 0;
-	private flightDuration = 1400;
+	private flightDuration = 0;
 	private scroll = 0;
 	private wide = true;
 	private frame = 0;
@@ -384,7 +384,8 @@ export class StarMap {
 			const a = -0.95 + (i / Math.max(n - 1, 1)) * 1.9;
 			// Leave room for backplates on the right edge after shifting past the intro.
 			const spread = 27;
-			const home = new Vector3(Math.sin(a) * spread, (i % 2 === 0 ? 1 : -1) * (5 + rand() * 7), 18 - Math.cos(a) * 22);
+			const lane = [13, -1, -15][i % 3];
+			const home = new Vector3(Math.sin(a) * spread, lane, 18 - Math.cos(a) * 22);
 			const group = new Group();
 			group.position.copy(home);
 			const color = new Color(themeColor(spec.color));
@@ -563,7 +564,7 @@ export class StarMap {
 		this.camera.aspect = w / h;
 		this.camera.fov = this.wide ? 55 : 64;
 		// On wide screens the scene sits right of the intro column.
-		const shift = this.wide ? 28 : 0;
+		const shift = this.wide ? 24 : 0;
 		this.systemsRoot.position.x = shift;
 		this.galaxy.position.x = shift + 8;
 		this.applyLayout();
@@ -639,7 +640,7 @@ export class StarMap {
 		}
 
 		this.renderer.render(this.scene, this.camera);
-		this.placeLabels();
+		this.placeLabels(k >= 1);
 
 		const flying = k < 1;
 		const keepGoing = motion && this.visible && !document.hidden;
@@ -650,11 +651,11 @@ export class StarMap {
 		}
 	}
 
-	private placeLabels() {
+	private placeLabels(cameraSettled: boolean) {
 		const { container, labels, onCrowding } = this.opts;
 		const w = container.clientWidth;
 		const h = container.clientHeight;
-		const checkFit = this.measureLabels && !this.focused && this.scroll < 0.01;
+		const checkFit = this.measureLabels && cameraSettled && !this.focused && this.scroll < 0.01;
 		const occupied: { left: number; right: number; top: number; bottom: number }[] = [];
 		const textColumn = this.wide ? Math.min(w * 0.45, 548) : 0;
 		let crowded = false;

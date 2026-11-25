@@ -1,5 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PROFILE } from "../../data/profile";
+import { getReducedMotion } from "../../lib/motionPreference";
+import { MotionToggle } from "../ui/MotionToggle";
 
 const linkClass =
 	"min-h-[44px] items-center px-2 sm:px-3 md:px-4 text-xs sm:text-sm font-medium text-muted-foreground hover:text-rose hover:bg-rose/5 rounded-full transition-all duration-200 whitespace-nowrap";
@@ -12,7 +14,7 @@ export function Navbar() {
 	const isHome = location.pathname === "/";
 
 	const scrollTo = (id: string) => {
-		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		const reduceMotion = getReducedMotion();
 		document
 			.getElementById(id)
 			?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
@@ -42,7 +44,7 @@ export function Navbar() {
 							<button onClick={() => scrollTo("about")} className={`${linkClass} hidden sm:inline-flex`}>
 								About
 							</button>
-							<a href={PROFILE.resumePath} download className={`${linkClass} inline-flex`}>
+							<a href={PROFILE.resumePath} download className={`${linkClass} inline-flex max-[389px]:hidden`}>
 								Resume
 							</a>
 							<a
@@ -69,7 +71,7 @@ export function Navbar() {
 							<Link to="/#about" className={`${linkClass} hidden sm:inline-flex`}>
 								About
 							</Link>
-							<a href={PROFILE.resumePath} download className={`${linkClass} inline-flex`}>
+							<a href={PROFILE.resumePath} download className={`${linkClass} inline-flex max-[389px]:hidden`}>
 								Resume
 							</a>
 							<a
@@ -87,6 +89,8 @@ export function Navbar() {
 					)}
 				</div>
 
+				<div className="ml-auto flex items-center gap-3 md:ml-0">
+				<MotionToggle compact />
 				{isHome ? (
 					<button
 						onClick={() => scrollTo("contact")}
@@ -102,6 +106,7 @@ export function Navbar() {
 						Contact
 					</Link>
 				)}
+				</div>
 			</div>
 		</nav>
 	);

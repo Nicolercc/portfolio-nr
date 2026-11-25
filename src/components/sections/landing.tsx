@@ -1,3 +1,4 @@
+import { getReducedMotion, subscribe } from "../../lib/motionPreference";
 import { useEffect, useRef } from "react";
 import { PROFILE } from "../../data/profile";
 import { rgbAlpha, themeAlpha, themeRgb, type ThemeColor } from "../../lib/themeColors";
@@ -20,6 +21,8 @@ interface Star {
 	vx: number;
 	vy: number;
 	parallaxFactor: number;
+	/** About one star in five stays bright inside the calm oval behind the text. */
+	calm?: boolean;
 }
 
 // ─── Color map ────────────────────────────────────────────────────────────────
@@ -321,16 +324,19 @@ function drawStar(
 	s: Star,
 	offsetX: number,
 	offsetY: number,
+	fade = 1,
 ) {
+	if (fade <= 0.01) return;
 	const rgb = colorMap()[s.color];
+	const alpha = s.alpha * fade;
 	const x = s.x + offsetX;
 	const y = s.y + offsetY;
 
 	if (s.r >= 1.8) {
 		const glowR = s.r * 5;
 		const grd = ctx.createRadialGradient(x, y, 0, x, y, glowR);
-		grd.addColorStop(0, rgbAlpha(rgb, s.alpha * 0.45));
-		grd.addColorStop(0.4, rgbAlpha(rgb, s.alpha * 0.1));
+		grd.addColorStop(0, rgbAlpha(rgb, alpha * 0.45));
+		grd.addColorStop(0.4, rgbAlpha(rgb, alpha * 0.1));
 		grd.addColorStop(1, rgbAlpha(rgb, 0));
 		ctx.beginPath();
 		ctx.arc(x, y, glowR, 0, Math.PI * 2);
@@ -340,8 +346,20 @@ function drawStar(
 
 	ctx.beginPath();
 	ctx.arc(x, y, s.r, 0, Math.PI * 2);
-	ctx.fillStyle = rgbAlpha(rgb, s.alpha);
+	ctx.fillStyle = rgbAlpha(rgb, alpha);
 	ctx.fill();
+}
+
+/** A soft, feathered oval behind the name and buttons where the sky stays calm (D15). */
+function calmOval(width: number, height: number) {
+	return { cx: width / 2, cy: height * 0.47, rx: Math.min(width * 0.44, 470), ry: Math.min(height * 0.3, 270) };
+}
+
+function calmFade(x: number, y: number, oval: ReturnType<typeof calmOval>) {
+	const d = ((x - oval.cx) / oval.rx) ** 2 + ((y - oval.cy) / oval.ry) ** 2;
+	if (d >= 1) return 1;
+	const t = Math.max(0, (d - 0.45) / 0.55);
+	return t * t * (3 - 2 * t);
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -357,9 +375,7 @@ export default function Landing() {
 		const c = canvas;
 		const context = ctx;
 
-		const reducedMotion = window.matchMedia(
-			"(prefers-reduced-motion: reduce)",
-		).matches;
+		let reducedMotion = getReducedMotion();
 
 		const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
@@ -406,6 +422,8 @@ export default function Landing() {
 				() => makeBrightStar(W, H),
 			);
 
+			for (const star of [...deepStars, ...midStars, ...brightStars]) star.calm = Math.random() < 0.2;
+
 			nebula = buildNebulaCanvas(W, H);
 			shootingStar = null;
 			framesUntilShootingStar = Math.floor(rand(55, 110));
@@ -422,6 +440,7 @@ export default function Landing() {
 				mouseY += (targetMouseY - mouseY) * 0.04;
 			}
 
+			const oval = calmOval(W, H);
 			for (const layer of [deepStars, midStars, brightStars]) {
 				for (const s of layer) {
 					if (!reducedMotion) {
@@ -454,7 +473,7 @@ export default function Landing() {
 						? 0
 						: (mouseY - H / 2) * s.parallaxFactor * 0.045;
 
-					drawStar(context, s, ox, oy);
+					drawStar(context, s, ox, oy, s.calm ? 1 : calmFade(s.x + ox, s.y + oy, oval));
 				}
 			}
 
@@ -464,7 +483,14 @@ export default function Landing() {
 					shootingStar.x += shootingStar.vx;
 					shootingStar.y += shootingStar.vy;
 					shootingStar.life += 1;
+					// Shooting stars only cross the sky outside the calm oval.
+					context.save();
+					context.beginPath();
+					context.rect(0, 0, W, H);
+					context.ellipse(oval.cx, oval.cy, oval.rx, oval.ry, 0, 0, Math.PI * 2);
+					context.clip("evenodd");
 					drawShootingStar(context, shootingStar);
+					context.restore();
 
 					const margin = shootingStar.tail * 2;
 					const done =
@@ -519,13 +545,27 @@ export default function Landing() {
 		init();
 		tick();
 
-		if (!reducedMotion) {
-			window.addEventListener("mousemove", onMouseMove, { passive: true });
-		}
+		window.addEventListener("mousemove", onMouseMove, { passive: true });
 		window.addEventListener("resize", onResize);
+
+		// Pause motion (or the OS setting) freezes the field on one still frame, live.
+		const unsubscribe = subscribe((reduced) => {
+			reducedMotion = reduced;
+			if (reduced) {
+				cancelAnimationFrame(animId);
+				animId = 0;
+				shootingStar = null;
+				mouseX = targetMouseX = W / 2;
+				mouseY = targetMouseY = H / 2;
+				tick();
+			} else {
+				resume();
+			}
+		});
 
 		return () => {
 			cancelAnimationFrame(animId);
+			unsubscribe();
 			observer.disconnect();
 			document.removeEventListener("visibilitychange", resume);
 			window.removeEventListener("mousemove", onMouseMove);
@@ -535,7 +575,7 @@ export default function Landing() {
 
 	const handleScroll = () => {
 		const work = document.getElementById("universe");
-		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		const reduceMotion = getReducedMotion();
 		if (work) {
 			work.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
 		}

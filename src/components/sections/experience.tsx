@@ -1,4 +1,5 @@
-import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { useReducedMotion } from "../../lib/motionPreference";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { PROFILE } from "../../data/profile";
@@ -106,7 +107,8 @@ export function Experience() {
 						{/* THE SCROLL LINE */}
 						<div className="absolute left-0 md:left-8 top-0 bottom-0 w-[1px] bg-white/10">
 							<motion.div
-								style={{ scaleY, transformOrigin: "top" }}
+								style={reduceMotion ? { scaleY: 1, transformOrigin: "top" } : { scaleY, transformOrigin: "top" }}
+								data-scroll-linked
 								className="absolute inset-0 w-full bg-rose"
 							/>
 						</div>

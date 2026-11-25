@@ -148,7 +148,10 @@ async function main() {
 			for (const route of ["/", "/projects/sano"]) {
 				await small.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
 				const clipped = await small.evaluate(() =>
-					[...document.querySelectorAll('nav[aria-label="Primary"] *')].some((el) => el.scrollWidth > el.clientWidth + 1),
+					[...document.querySelectorAll('nav[aria-label="Primary"] *')]
+						// Screen-reader-only text is clipped to 1px on purpose; it is not overflow.
+						.filter((el) => el.clientWidth > 1 || el.clientHeight > 1)
+						.some((el) => el.scrollWidth > el.clientWidth + 1),
 				);
 				assert(!clipped, `${route} nav overflows at ${width}px.`);
 			}

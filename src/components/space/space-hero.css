@@ -637,3 +637,12 @@
 		animation: none;
 	}
 }
+html[data-motion="reduce"] :is(
+	.space-hero__intro,
+	.space-hero[data-mode="webgl"] .starmap__canvas,
+	.space-hero[data-mode="webgl"] .starmap__labels,
+	.receipt-slip,
+	.system-panel
+) {
+	animation: none;
+}

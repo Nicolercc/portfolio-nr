@@ -1,17 +1,19 @@
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useReducedMotion } from "../../lib/motionPreference";
 
 export function GlobalCanvas() {
 	const { scrollY } = useScroll();
 
 	// Grid fades from 100% → 30% as user scrolls 500px (unchanged)
 	const gridOpacity = useTransform(scrollY, [0, 500], [1, 0.3]);
+	const reduced = useReducedMotion();
 
 	return (
 		<div className="fixed inset-0 pointer-events-none -z-50 bg-[#0D0D0D] overflow-hidden">
 			{/* 1. THE GRID — unchanged visually, opacity still responds to scroll */}
 			<motion.div
 				style={{
-					opacity: gridOpacity,
+					opacity: reduced ? 1 : gridOpacity,
 					backgroundImage: `
             linear-gradient(rgba(245, 240, 232, 0.022) 1px, transparent 1px),
             linear-gradient(90deg, rgba(245, 240, 232, 0.022) 1px, transparent 1px)

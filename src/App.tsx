@@ -1,5 +1,7 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import { MotionConfig } from "framer-motion";
+import { useReducedMotion } from "./lib/motionPreference";
 import { Footer } from "./components/layouts/Footer";
 import { Navbar } from "./components/layouts/Navbar";
 import Home from "./pages/home";
@@ -37,7 +39,9 @@ function RouteFocusManager() {
 }
 
 export default function App() {
+	const reduced = useReducedMotion();
 	return (
+		<MotionConfig reducedMotion={reduced ? "always" : "never"}>
 		<Suspense fallback={<div className="bg-[#0d0d0d] min-h-screen" />}>
 			<a href="#main-content" className="skip-link">
 				Skip to content
@@ -58,5 +62,6 @@ export default function App() {
 			</Routes>
 			<Footer />
 		</Suspense>
+		</MotionConfig>
 	);
 }

@@ -1,3 +1,4 @@
+import { getReducedMotion, subscribe } from "../../lib/motionPreference";
 import createGlobe from "cobe";
 import { useEffect, useRef } from "react";
 import { themeUnit } from "../../lib/themeColors";
@@ -38,13 +39,7 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 		let lastY = 0;
 		let rafId = 0;
 
-		let autoRotate = true;
-		try {
-			autoRotate = !window.matchMedia("(prefers-reduced-motion: reduce)")
-				.matches;
-		} catch {
-			/* ignore */
-		}
+		let autoRotate = !getReducedMotion();
 
 		const THEME = globeTheme();
 		const globe = createGlobe(canvas, {
@@ -77,28 +72,38 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 		canvas.style.height = `${size}px`;
 		canvas.style.maxWidth = "100%";
 
+		// Spins on its own only while motion is on; dragging still works when paused.
 		const loop = () => {
 			if (autoRotate && !dragging) {
 				phi += 0.0016;
 			}
 			globe.update({ phi, theta });
-			rafId = requestAnimationFrame(loop);
+			rafId = autoRotate || dragging ? requestAnimationFrame(loop) : 0;
+		};
+		const kick = () => {
+			if (rafId === 0 && !document.hidden) rafId = requestAnimationFrame(loop);
 		};
 		rafId = requestAnimationFrame(loop);
+		const unsubscribe = subscribe((reduced) => {
+			autoRotate = !reduced;
+			kick();
+		});
 
 		// Pause the RAF loop when the tab is hidden — prevents Safari from
 		// accumulating WebGL work in the background and crashing the tab.
 		const onVisibilityChange = () => {
 			if (document.hidden) {
 				cancelAnimationFrame(rafId);
+				rafId = 0;
 			} else {
-				rafId = requestAnimationFrame(loop);
+				kick();
 			}
 		};
 		document.addEventListener("visibilitychange", onVisibilityChange);
 
 		const onPointerDown = (e: PointerEvent) => {
 			dragging = true;
+			kick();
 			canvas.setPointerCapture(e.pointerId);
 			lastX = e.clientX;
 			lastY = e.clientY;
@@ -133,6 +138,7 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 		const onDblClick = () => {
 			phi = INITIAL_PHI;
 			theta = INITIAL_THETA;
+			kick();
 		};
 
 		canvas.addEventListener("pointerdown", onPointerDown);
@@ -144,6 +150,7 @@ export function LocationGlobe({ className, size = 148 }: LocationGlobeProps) {
 
 		return () => {
 			cancelAnimationFrame(rafId);
+			unsubscribe();
 			document.removeEventListener("visibilitychange", onVisibilityChange);
 			canvas.removeEventListener("pointerdown", onPointerDown);
 			canvas.removeEventListener("pointermove", onPointerMove);

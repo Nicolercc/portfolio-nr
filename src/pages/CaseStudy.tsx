@@ -1,7 +1,8 @@
 import { BriefPage } from "../components/BriefPage";
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useId, useState, type ReactNode } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useReducedMotion } from "../lib/motionPreference";
 import {
 	getProject,
 	getProjectMetadata,

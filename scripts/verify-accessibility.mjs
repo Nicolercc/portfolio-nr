@@ -148,6 +148,74 @@ async function runAxe(page, route) {
 	);
 }
 
+// R1/R9/D13/D16: one Pause motion switch stops CSS and framer animations, rAF loops
+// and scroll-linked styles at once, survives a reload, and works without storage.
+async function assertPauseMotion(browser) {
+	const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+	const page = await context.newPage();
+	await page.addInitScript(() => {
+		window.__rafCalls = 0;
+		const raf = window.requestAnimationFrame.bind(window);
+		window.requestAnimationFrame = (callback) => {
+			window.__rafCalls += 1;
+			return raf(callback);
+		};
+	});
+	await page.goto(baseUrl, { waitUntil: "networkidle" });
+	await page.waitForTimeout(800);
+	const toggle = page.locator("nav [data-motion-toggle]");
+	assert((await toggle.getAttribute("aria-pressed")) === "false", "Pause motion should start off.");
+	const before = await page.evaluate(() => window.__rafCalls);
+	await page.waitForTimeout(500);
+	assert((await page.evaluate(() => window.__rafCalls)) > before, "Motion should be running before Pause.");
+
+	await toggle.click();
+	await page.waitForTimeout(400);
+	const paused = await page.evaluate(async () => {
+		const start = window.__rafCalls;
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		const running = document.getAnimations().filter((animation) => {
+			const timing = animation.effect?.getComputedTiming();
+			return animation.playState === "running" && timing && (timing.iterations === Infinity || timing.duration > 10);
+		});
+		return {
+			attr: document.documentElement.dataset.motion,
+			rafCalls: window.__rafCalls - start,
+			running: running.map((animation) => animation.animationName ?? animation.id ?? "animation").slice(0, 5),
+		};
+	});
+	assert(paused.attr === "reduce", "Pause motion should mark the document as reduced.");
+	assert(paused.running.length === 0, `Pause left animations running: ${paused.running.join(", ")}`);
+	assert(paused.rafCalls <= 2, `Pause left animation-frame loops running (${paused.rafCalls} frames in 1s).`);
+
+	const line = page.locator("[data-scroll-linked]");
+	await line.scrollIntoViewIfNeeded();
+	const lineBefore = await line.evaluate((el) => getComputedStyle(el).transform);
+	await page.mouse.wheel(0, 700);
+	await page.waitForTimeout(400);
+	assert(lineBefore === (await line.evaluate((el) => getComputedStyle(el).transform)), "Scroll-linked styles should stop while paused.");
+
+	await page.reload({ waitUntil: "networkidle" });
+	assert((await page.evaluate(() => document.documentElement.dataset.motion)) === "reduce", "Pause should survive a reload.");
+	assert((await page.locator("nav [data-motion-toggle]").getAttribute("aria-pressed")) === "true", "Toggle should show paused after reload.");
+	await page.locator("footer [data-motion-toggle]").click();
+	assert((await page.evaluate(() => document.documentElement.dataset.motion)) === undefined, "The footer toggle should resume motion.");
+	await context.close();
+
+	const blocked = await browser.newContext({ viewport: { width: 390, height: 844 } });
+	const blockedPage = await blocked.newPage();
+	const errors = [];
+	blockedPage.on("pageerror", (error) => errors.push(error.message));
+	await blockedPage.addInitScript(() => {
+		Object.defineProperty(window, "localStorage", { get() { throw new DOMException("blocked", "SecurityError"); } });
+	});
+	await blockedPage.goto(baseUrl, { waitUntil: "networkidle" });
+	await blockedPage.locator("nav [data-motion-toggle]").click();
+	assert((await blockedPage.evaluate(() => document.documentElement.dataset.motion)) === "reduce", "Pause should work with storage blocked.");
+	assert(errors.length === 0, `Blocked storage crashed the page: ${errors.join("; ")}`);
+	await blocked.close();
+}
+
 async function main() {
 	const server = await serveDist();
 	const browser = await chromium.launch({ headless: true });
@@ -197,6 +265,8 @@ async function main() {
 			reducedMotionState.marqueeAnimation === "none",
 			"Marquee animation should be disabled for reduced motion.",
 		);
+
+		await assertPauseMotion(browser);
 
 		const forcedColors = await browser.newPage({
 			viewport: { width: 1280, height: 900 },

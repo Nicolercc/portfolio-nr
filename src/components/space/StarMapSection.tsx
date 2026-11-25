@@ -6,6 +6,7 @@ import { RECEIPTS } from "../../data/proofs";
 import { getStarSystems, starCss, type MapLink } from "../../data/starSystems";
 import type { StarMap } from "./StarMap";
 import { getSmoothScroll } from "../../lib/smoothScroll";
+import { getReducedMotion, subscribe } from "../../lib/motionPreference";
 import "./space-hero.css";
 
 function PanelLink({ link, variant, onNavigate }: { link: MapLink; variant: "primary" | "ghost"; onNavigate?: () => void }) {
@@ -122,9 +123,6 @@ function inertOutside(keep: HTMLElement) {
 	return () => changed.forEach((el) => el.removeAttribute("inert"));
 }
 
-function prefersReducedMotion() {
-	return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
 
 export default function StarMapSection() {
 	const systems = useMemo(() => getStarSystems(), []);
@@ -179,7 +177,7 @@ export default function StarMapSection() {
 				engine = new mod.StarMap({
 					container,
 					labels: labelRefs.current,
-					reducedMotion: prefersReducedMotion(),
+					reducedMotion: getReducedMotion(),
 					systems: systems.map((p) => ({
 						slug: p.slug,
 						color: p.color,
@@ -227,6 +225,9 @@ export default function StarMapSection() {
 		window.addEventListener("scroll", onScroll, { passive: true });
 		return () => window.removeEventListener("scroll", onScroll);
 	}, []);
+
+	// Pause motion reaches the running scene without a reload.
+	useEffect(() => subscribe((reduced) => engineRef.current?.setReducedMotion(reduced)), []);
 
 	useEffect(() => {
 		engineRef.current?.setHighlight(hovered);

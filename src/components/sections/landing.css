@@ -119,6 +119,10 @@
 		animation: none;
 	}
 }
+html[data-motion="reduce"] .landing__nebula,
+html[data-motion="reduce"] .landing__scroll-cue {
+	animation: none;
+}
 
 /* ── Central content ─────────────────────────────────────────
  * z-index: 2 puts it above canvas (0), nebula (0), vignette (1)

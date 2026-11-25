@@ -1,14 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import {
-	motion,
-	useInView,
-	useMotionValue,
-	useTransform,
-	useReducedMotion,
-	animate,
-	AnimatePresence,
-	type PanInfo,
-} from "framer-motion";
+import { motion, useInView, useMotionValue, useTransform, animate, AnimatePresence, type PanInfo } from "framer-motion";
+import { useReducedMotion } from "../../lib/motionPreference";
 import {
 	BENTO_BIO as BIO,
 	BENTO_HOBBIES as HOBBIES,
@@ -49,36 +41,6 @@ const CARD = {
 	greenOverlayRange: [0, 100] as const,
 } as const;
 
-/* ─────────────────────────────────────────────
-   TYPING EFFECT HOOK
-───────────────────────────────────────────── */
-function useTypingEffect(text: string, speed = 40, start = true): string {
-	const [displayed, setDisplayed] = useState("");
-
-	useEffect(() => {
-		if (!start) return;
-
-		let i = 0;
-		let intervalId: ReturnType<typeof setInterval> | undefined;
-		const frameId = requestAnimationFrame(() => {
-			setDisplayed("");
-			intervalId = setInterval(() => {
-				i++;
-				setDisplayed(text.slice(0, i));
-				if (i >= text.length && intervalId) clearInterval(intervalId);
-			}, speed);
-		});
-
-		return () => {
-			cancelAnimationFrame(frameId);
-			if (intervalId) clearInterval(intervalId);
-		};
-	}, [text, speed, start]);
-
-	if (!start) return "";
-
-	return displayed;
-}
 
 /* ─────────────────────────────────────────────
    SOCIAL PILL
@@ -508,7 +470,6 @@ export default function BentoSection() {
 	const sectionRef = useRef<HTMLElement>(null);
 	const reduceMotion = useReducedMotion();
 	const inView = useInView(sectionRef, { once: true, margin: "-80px" });
-	const tagline = useTypingEffect(BIO.tagline, 40, inView && !reduceMotion);
 
 	return (
 		<section
@@ -555,8 +516,7 @@ export default function BentoSection() {
 
 					<div className="bento__taglineBox">
 						<p className="bento__taglineText">
-							<span className="sr-only">{BIO.tagline}</span>
-							<span aria-hidden="true">{reduceMotion ? BIO.tagline : tagline}</span>
+							{BIO.tagline}
 							{!reduceMotion && (
 								<motion.span
 									animate={{ opacity: [1, 0, 1] }}

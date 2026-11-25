@@ -1,3 +1,5 @@
+import { Sky } from "./layouts/Sky";
+import { starTint } from "../data/starSystems";
 import { Link } from "react-router-dom";
 import type { BriefProject } from "../data/projects";
 import { RECEIPTS } from "../data/proofs";
@@ -10,6 +12,8 @@ export function BriefPage({ project }: { project: BriefProject }) {
 	const linkClass = "inline-flex min-h-11 items-center font-semibold text-rose hover:underline";
 
 	return (
+		<>
+		<Sky mode={{ kind: "record", tint: starTint(project.slug) }} />
 		<main id="main-content" tabIndex={-1} className="mx-auto min-h-screen max-w-6xl px-6 pb-16 pt-28 md:px-12">
 			<Link to="/projects" className={linkClass}>← Projects</Link>
 			<header className="mb-8 mt-5">
@@ -38,5 +42,6 @@ export function BriefPage({ project }: { project: BriefProject }) {
 				</div>
 			</div>
 		</main>
+		</>
 	);
 }

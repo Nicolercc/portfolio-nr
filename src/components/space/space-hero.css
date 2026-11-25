@@ -8,9 +8,7 @@
 	grid-template-columns: minmax(0, 1fr);
 	align-items: center;
 	padding: 96px 24px 56px;
-	background:
-		radial-gradient(ellipse 120% 70% at 70% 115%, rgba(45, 18, 30, 0.9) 0%, transparent 55%),
-		var(--color-bg);
+	/* Transparent: the galaxy renders into the shared Sky (Constellation chapter). */
 	overflow: hidden;
 }
 
@@ -19,21 +17,6 @@
 	z-index: 30;
 }
 
-/* CSS nebula: shows instantly, stays as the fallback when WebGL is unavailable. */
-.space-hero__nebula {
-	position: absolute;
-	inset: 0;
-	z-index: -1;
-	pointer-events: none;
-	background:
-		radial-gradient(ellipse 50% 45% at 72% 48%, rgba(212, 132, 154, 0.16) 0%, transparent 70%),
-		radial-gradient(ellipse 40% 34% at 88% 20%, rgba(74, 222, 128, 0.07) 0%, transparent 62%),
-		radial-gradient(ellipse 44% 50% at 60% 90%, rgba(123, 108, 255, 0.1) 0%, transparent 62%);
-	transition: opacity 1.2s ease;
-}
-.space-hero[data-mode="webgl"] .space-hero__nebula {
-	opacity: 0.45;
-}
 
 /* ── Intro column ─────────────────────────────────────────── */
 
@@ -41,7 +24,22 @@
 	position: relative;
 	z-index: 3;
 	max-width: 540px;
-	animation: space-rise 1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+	animation: space-rise var(--dur-slow) var(--ease-out) backwards;
+}
+
+/* Phones: the galaxy can sit behind the label block, so it gets a feathered scrim (D15, D19). */
+@media (max-width: 1023px) {
+	.space-hero__intro {
+		isolation: isolate;
+	}
+	.space-hero__intro::before {
+		content: "";
+		position: absolute;
+		inset: -28% -16%;
+		z-index: -1;
+		background: radial-gradient(closest-side, rgba(13, 13, 13, 0.94) 62%, rgba(13, 13, 13, 0.6) 82%, transparent 100%);
+		pointer-events: none;
+	}
 }
 
 @keyframes space-rise {
@@ -81,16 +79,16 @@
 	align-items: center;
 	min-height: 44px;
 	padding: 0 20px;
-	border-radius: 999px;
+	border-radius: var(--radius-pill);
 	font-family: var(--font-mono);
 	font-size: var(--text-caption);
-	letter-spacing: 0.08em;
+	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	text-decoration: none;
 	transition:
-		background 0.2s ease,
-		color 0.2s ease,
-		border-color 0.2s ease;
+		background var(--dur-fast) var(--ease-out),
+		color var(--dur-fast) var(--ease-out),
+		border-color var(--dur-fast) var(--ease-out);
 }
 .space-btn--primary {
 	background: var(--color-action);
@@ -132,8 +130,8 @@
 @media (min-width: 1024px) {
 	.space-hero__intro {
 		transition:
-			opacity 0.5s ease,
-			transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+			opacity var(--dur-slow) var(--ease-out),
+			transform var(--dur-slow) var(--ease-out);
 	}
 	.space-hero[data-open="true"] .space-hero__intro {
 		opacity: 0;
@@ -164,7 +162,7 @@
 	min-height: 44px;
 	min-width: 92px;
 	padding: 0 14px;
-	border-radius: 6px;
+	border-radius: var(--radius-control);
 	border: 1px dashed rgba(212, 132, 154, 0.55);
 	background: transparent;
 	color: var(--color-rose-light);
@@ -172,8 +170,8 @@
 	font-size: var(--text-caption);
 	cursor: pointer;
 	transition:
-		border-color 0.15s ease,
-		background 0.15s ease;
+		border-color var(--dur-fast) var(--ease-out),
+		background var(--dur-fast) var(--ease-out);
 }
 .receipt-btn:hover,
 .receipt-btn[aria-expanded="true"] {
@@ -185,14 +183,14 @@
 .receipt-slip {
 	margin: 0 0 14px;
 	padding: 14px 16px;
-	border-radius: 6px;
+	border-radius: var(--radius-control);
 	background: var(--color-paper);
 	color: var(--color-ink);
 	font-family: var(--font-mono);
 	font-size: var(--text-caption);
 	box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.8);
 	transform-origin: top;
-	animation: slip-print 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+	animation: slip-print var(--dur-base) var(--ease-out);
 	/* torn-paper bottom edge */
 	-webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - 6px) no-repeat,
 		conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 12px 6px repeat-x;
@@ -249,7 +247,7 @@
 	display: inline-block;
 	padding: 2px 8px;
 	border: 1px solid #1d7346;
-	border-radius: 4px;
+	border-radius: var(--radius-control);
 	color: #1d7346;
 	background: #e2f0e7;
 	transform: rotate(-2deg);
@@ -316,16 +314,16 @@
 	min-height: 44px;
 	min-width: 44px;
 	padding: 6px 12px;
-	border-radius: 10px;
+	border-radius: var(--radius-control);
 	border: 1px solid transparent;
 	background: rgba(13, 13, 13, 0.85);
 	color: var(--color-text-primary);
 	cursor: pointer;
 	white-space: nowrap;
 	transition:
-		border-color 0.2s ease,
-		background 0.2s ease,
-		opacity 0.3s ease;
+		border-color var(--dur-fast) var(--ease-out),
+		background var(--dur-fast) var(--ease-out),
+		opacity var(--dur-base) var(--ease-out);
 	will-change: transform;
 }
 .space-hero[data-mode="webgl"] .star-label[data-offscreen="true"]:not([aria-pressed="true"]):not(:focus) {
@@ -373,7 +371,7 @@
 }
 
 .space-hero[data-mode="webgl"] :is(.starmap__canvas, .starmap__labels) {
-	animation: starmap-in 600ms ease-out both;
+	animation: starmap-in var(--dur-slow) var(--ease-out) both;
 }
 
 .space-hero[data-mode="static"] .starmap__labels {
@@ -403,7 +401,7 @@
 	display: block;
 	width: 12px;
 	height: 12px;
-	border-radius: 50%;
+	border-radius: var(--radius-pill);
 	background: var(--star);
 	box-shadow: 0 0 12px var(--star);
 }
@@ -444,7 +442,7 @@
 	overflow-y: auto;
 	overscroll-behavior: contain;
 	padding: 18px 20px 20px;
-	border-radius: 16px;
+	border-radius: var(--radius-card);
 	border: 1px solid color-mix(in srgb, var(--star) 45%, transparent);
 	background: rgba(12, 11, 14, 0.94);
 	backdrop-filter: blur(16px);
@@ -452,13 +450,13 @@
 	box-shadow:
 		0 30px 80px -30px rgba(0, 0, 0, 0.9),
 		0 0 0 1px rgba(255, 255, 255, 0.03) inset;
-	animation: panel-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+	animation: panel-in var(--dur-slow) var(--ease-out) var(--dur-base) both;
 }
 .system-panel__handle {
 	width: 44px;
 	height: 5px;
 	margin: -6px auto 12px;
-	border-radius: 9999px;
+	border-radius: var(--radius-pill);
 	background: rgba(245, 240, 232, 0.28);
 	touch-action: none;
 }
@@ -492,7 +490,7 @@
 	white-space: nowrap;
 	min-height: 44px;
 	padding: 0 12px;
-	border-radius: 8px;
+	border-radius: var(--radius-control);
 	border: 1px solid rgba(245, 240, 232, 0.2);
 	background: transparent;
 	color: var(--color-text-primary);
@@ -525,7 +523,7 @@
 	object-fit: cover;
 	object-position: top;
 	margin-top: 14px;
-	border-radius: 10px;
+	border-radius: var(--radius-control);
 	border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .system-panel__metrics {

@@ -7,7 +7,7 @@ import { Projects } from "../components/sections/projects";
 import { Bento } from "../components/sections/bento";
 import { Experience } from "../components/sections/experience";
 import { Contact } from "../components/sections/contact";
-import { GlobalCanvas } from "../components/layouts/GlobalCanvas";
+import { Sky } from "../components/layouts/Sky";
 import { useLocation } from "react-router-dom";
 import { PROFILE } from "../data/profile";
 import { setDocumentMeta } from "../lib/documentMeta";
@@ -59,8 +59,8 @@ export default function Home() {
            our custom #F5F0E8 (Off-white) to take the lead 
         */
 		<div className="relative min-h-screen selection:bg-rose/30">
-			{/* 1. THE FOUNDATION: Handles Gradients, Grid, and Noise */}
-			<GlobalCanvas />
+			{/* One continuous sky behind the whole journey. */}
+			<Sky />
 
 			{/* 3. THE CONTENT: Ensure 'relative z-10' so it sits on top of the canvas */}
 			<main id="main-content" tabIndex={-1} className="relative z-10 focus:outline-none">

@@ -60,6 +60,16 @@
  *   - Green blob (top-right):  accent, kept low opacity
  *   - Purple blob (bottom-right): bridges rose ↔ green
  */
+/* A soft reading zone protects the intro even over a bright particle. */
+.landing__content::before {
+	content: "";
+	position: absolute;
+	inset: -40% -24%;
+	z-index: -1;
+	background: radial-gradient(ellipse closest-side, var(--color-bg) 65%, transparent);
+	pointer-events: none;
+}
+
 .landing__nebula {
 	position: absolute;
 	inset: 0;
@@ -115,6 +125,7 @@
  * z-index: 2 puts it above canvas (0), nebula (0), vignette (1)
  */
 .landing__content {
+	isolation: isolate;
 	position: relative;
 	z-index: 2;
 	display: flex;

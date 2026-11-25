@@ -63,6 +63,8 @@ type Options = {
 	reducedMotion: boolean;
 	onHover?: (slug: string | null) => void;
 	onSelect?: (slug: string) => void;
+	onContextLost?: () => void;
+	onCrowding?: (crowded: boolean) => void;
 };
 
 const STAR_VERT = /* glsl */ `
@@ -201,7 +203,7 @@ export class StarMap {
 	private viewTo = new Vector2();
 	private size = new Vector2(1, 1);
 	private flightStart = 0;
-	private flightDuration = 1400;
+	private flightDuration = 0;
 	private scroll = 0;
 	private wide = true;
 	private frame = 0;
@@ -213,6 +215,10 @@ export class StarMap {
 	private tmp = new Vector3();
 	private glow = glowTexture();
 	private opts: Options;
+	private measureLabels = true;
+	private fontSizes = new Map<HTMLElement, string>();
+	private labelObserver: ResizeObserver;
+	private labelMetrics = new Map<HTMLElement, { offset: number; compact: boolean }>();
 
 	constructor(opts: Options) {
 		this.opts = opts;
@@ -241,11 +247,21 @@ export class StarMap {
 		canvas.addEventListener("pointermove", this.onPointerMove);
 		canvas.addEventListener("pointerleave", this.onPointerLeave);
 		canvas.addEventListener("click", this.onClick);
+		canvas.addEventListener("webglcontextlost", this.onContextLost);
 		window.addEventListener("pointermove", this.onWindowPointer, { passive: true });
 		document.addEventListener("visibilitychange", this.onVisibility);
 
 		this.resizeObserver = new ResizeObserver(() => this.resize());
 		this.resizeObserver.observe(container);
+		this.labelObserver = new ResizeObserver(() => {
+			const fontChanged = [...this.opts.labels.values()].some((label) =>
+				this.fontSizes.get(label) !== getComputedStyle(label).fontSize);
+			if (!fontChanged) return;
+			this.measureLabels = true;
+			this.loop(true);
+		});
+		for (const label of opts.labels.values()) this.labelObserver.observe(label);
+		document.fonts.addEventListener("loadingdone", this.onFontsChanged);
 		this.observer = new IntersectionObserver(([entry]) => {
 			this.visible = entry.isIntersecting;
 			this.loop();
@@ -366,8 +382,10 @@ export class StarMap {
 		specs.forEach((spec, i) => {
 			// Spread the systems along an arc that sits in front of the galaxy disc.
 			const a = -0.95 + (i / Math.max(n - 1, 1)) * 1.9;
-			const spread = n > 5 ? 44 : 36;
-			const home = new Vector3(Math.sin(a) * spread, (i % 2 === 0 ? 1 : -1) * (5 + rand() * 7), 18 - Math.cos(a) * 22);
+			// Leave room for backplates on the right edge after shifting past the intro.
+			const spread = 27;
+			const lane = [13, -1, -15][i % 3];
+			const home = new Vector3(Math.sin(a) * spread, lane, 18 - Math.cos(a) * 22);
 			const group = new Group();
 			group.position.copy(home);
 			const color = new Color(themeColor(spec.color));
@@ -455,7 +473,10 @@ export class StarMap {
 		this.fly(world.clone().add(new Vector3(0, 4, 30)), world, view);
 	}
 
+	private onContextLost = () => this.opts.onContextLost?.();
+
 	setScroll(progress: number) {
+		if (this.opts.reducedMotion) return;
 		const p = Math.min(Math.max(progress, 0), 1);
 		if (Math.abs(p - this.scroll) < 0.001) return;
 		this.scroll = p;
@@ -526,7 +547,13 @@ export class StarMap {
 
 	// ── Frame ───────────────────────────────────────────────────────────────
 
+	private onFontsChanged = () => {
+		this.measureLabels = true;
+		this.loop(true);
+	};
+
 	private resize() {
+		this.measureLabels = true;
 		const { container } = this.opts;
 		const w = container.clientWidth;
 		const h = container.clientHeight;
@@ -537,7 +564,7 @@ export class StarMap {
 		this.camera.aspect = w / h;
 		this.camera.fov = this.wide ? 55 : 64;
 		// On wide screens the scene sits right of the intro column.
-		const shift = this.wide ? 14 : 0;
+		const shift = this.wide ? 24 : 0;
 		this.systemsRoot.position.x = shift;
 		this.galaxy.position.x = shift + 8;
 		this.applyLayout();
@@ -613,7 +640,7 @@ export class StarMap {
 		}
 
 		this.renderer.render(this.scene, this.camera);
-		this.placeLabels();
+		this.placeLabels(k >= 1);
 
 		const flying = k < 1;
 		const keepGoing = motion && this.visible && !document.hidden;
@@ -624,20 +651,60 @@ export class StarMap {
 		}
 	}
 
-	private placeLabels() {
-		const canvas = this.renderer.domElement;
-		const w = canvas.clientWidth;
-		const h = canvas.clientHeight;
+	private placeLabels(cameraSettled: boolean) {
+		const { container, labels, onCrowding } = this.opts;
+		const w = container.clientWidth;
+		const h = container.clientHeight;
+		const checkFit = this.measureLabels && cameraSettled && !this.focused && this.scroll < 0.01;
+		const occupied: { left: number; right: number; top: number; bottom: number }[] = [];
+		const textColumn = this.wide ? Math.min(w * 0.45, 548) : 0;
+		let crowded = false;
+		const galaxy = container.closest('[data-mode="webgl"]') !== null;
+
+		if (checkFit) container.dataset.measuring = "true";
 		for (const node of this.nodes) {
-			const el = this.opts.labels.get(node.slug);
+			const el = labels.get(node.slug);
 			if (!el) continue;
 			node.group.getWorldPosition(this.tmp);
 			this.tmp.project(this.camera);
-			const behind = this.tmp.z > 1;
 			const x = (this.tmp.x * 0.5 + 0.5) * w;
-			const y = (-this.tmp.y * 0.5 + 0.5) * h;
-			el.style.transform = `translate3d(${x.toFixed(1)}px, ${(y + 18).toFixed(1)}px, 0) translateX(-50%)`;
-			el.dataset.offscreen = behind || x < -40 || x > w + 40 || y < -40 || y > h + 40 ? "true" : "false";
+			const y = (-this.tmp.y * 0.5 + 0.5) * h + 18;
+			if (checkFit) {
+				this.fontSizes.set(el, getComputedStyle(el).fontSize);
+				el.dataset.compact = "false";
+				const fit = (offset: number) => {
+					const halfWidth = el.offsetWidth / 2;
+					const box = { left: x - halfWidth, right: x + halfWidth, top: y + offset, bottom: y + offset + el.offsetHeight };
+					if (box.left < textColumn || box.right > w || box.top < 0 || box.bottom > h) return false;
+					if (occupied.some((other) => box.left < other.right && box.right > other.left && box.top < other.bottom && box.bottom > other.top)) return false;
+					occupied.push(box);
+					return true;
+				};
+				const offsets = [0, -8, 8, -16, 16];
+				let offset = offsets.find(fit);
+				if (offset === undefined) {
+					el.dataset.compact = "true";
+					offset = offsets.find(fit);
+				}
+				this.labelMetrics.set(el, { offset: offset ?? 0, compact: el.dataset.compact === "true" });
+				crowded ||= offset === undefined;
+			}
+			const metrics = this.labelMetrics.get(el);
+			const transform = `translate3d(${x.toFixed(1)}px, ${(y + (metrics?.offset ?? 0)).toFixed(1)}px, 0) translateX(-50%)`;
+			if (el.style.transform !== transform) el.style.transform = transform;
+			const offscreen = this.tmp.z > 1 || x < textColumn || x > w || y < 0 || y > h ? "true" : "false";
+			if (el.dataset.offscreen !== offscreen) el.dataset.offscreen = offscreen;
+			if (galaxy) {
+				const tabIndex = offscreen === "false" && el.dataset.tabStop === "true" && !this.focused ? 0 : -1;
+				if (el.tabIndex !== tabIndex) el.tabIndex = tabIndex;
+			}
+			const compact = String(Boolean(metrics?.compact));
+			if (el.dataset.compact !== compact) el.dataset.compact = compact;
+		}
+		if (checkFit) {
+			delete container.dataset.measuring;
+			this.measureLabels = false;
+			onCrowding?.(crowded);
 		}
 	}
 
@@ -646,10 +713,13 @@ export class StarMap {
 		this.running = false;
 		this.observer.disconnect();
 		this.resizeObserver.disconnect();
+		this.labelObserver.disconnect();
+		document.fonts.removeEventListener("loadingdone", this.onFontsChanged);
 		const canvas = this.renderer.domElement;
 		canvas.removeEventListener("pointermove", this.onPointerMove);
 		canvas.removeEventListener("pointerleave", this.onPointerLeave);
 		canvas.removeEventListener("click", this.onClick);
+		canvas.removeEventListener("webglcontextlost", this.onContextLost);
 		window.removeEventListener("pointermove", this.onWindowPointer);
 		document.removeEventListener("visibilitychange", this.onVisibility);
 		this.scene.traverse((obj) => {

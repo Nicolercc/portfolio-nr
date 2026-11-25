@@ -111,6 +111,23 @@
 	color: var(--color-rose-light);
 }
 
+.space-hero[data-mode="webgl"] .star-label[data-compact="true"] .star-label__metric,
+.starmap[data-measuring] .star-label[data-compact="true"] .star-label__metric {
+	display: none;
+}
+
+.space-hero .starmap[data-measuring] .star-label {
+	position: absolute;
+	display: inline-flex;
+	flex-direction: column;
+	gap: 2px;
+	white-space: nowrap;
+}
+
+.space-hero .starmap[data-measuring] .star-label__dot {
+	display: none;
+}
+
 /* While a system is open on desktop, the intro steps aside so the star has room. */
 @media (min-width: 1024px) {
 	.space-hero__intro {
@@ -127,67 +144,19 @@
 
 /* ── Proof log ────────────────────────────────────────────── */
 
-.proof-log {
-	margin-top: 36px;
-	border: 1px solid rgba(245, 240, 232, 0.12);
-	border-radius: 14px;
-	background: rgba(13, 13, 13, 0.72);
-	backdrop-filter: blur(12px);
-	-webkit-backdrop-filter: blur(12px);
-	padding: 6px 18px 8px;
-}
-
-.proof-log__title {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	gap: 4px 12px;
-	align-items: baseline;
-	margin: 0;
-	padding: 12px 0 10px;
+.receipt-count {
+	margin-top: 12px;
 	font-family: var(--font-mono);
 	font-size: var(--text-caption);
-	font-weight: 400;
-	letter-spacing: 0.1em;
-	text-transform: uppercase;
 	color: var(--color-text-secondary);
 }
-.proof-log__count {
-	color: var(--color-green);
-	letter-spacing: 0.04em;
-	text-transform: none;
-}
 
-.proof-log__list {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-.proof-log__item {
-	border-top: 1px solid rgba(245, 240, 232, 0.1);
-}
-.proof-log__row {
+.panel-receipt__row {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 16px;
 	padding: 10px 0;
-}
-.proof-log__claim {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-}
-.proof-log__claim-text {
-	font-family: var(--font-sans);
-	font-size: var(--text-body);
-	font-weight: 600;
-	color: var(--color-text-primary);
-}
-.proof-log__source {
-	font-family: var(--font-mono);
-	font-size: var(--text-caption);
-	color: var(--color-text-muted);
 }
 
 .receipt-btn {
@@ -310,7 +279,7 @@
 	width: 100%;
 	height: 100%;
 	display: block;
-	animation: starmap-in 1.6s ease both;
+
 }
 @keyframes starmap-in {
 	from {
@@ -349,7 +318,7 @@
 	padding: 6px 12px;
 	border-radius: 10px;
 	border: 1px solid transparent;
-	background: rgba(13, 13, 13, 0.62);
+	background: rgba(13, 13, 13, 0.85);
 	color: var(--color-text-primary);
 	cursor: pointer;
 	white-space: nowrap;
@@ -359,12 +328,9 @@
 		opacity 0.3s ease;
 	will-change: transform;
 }
-.star-label[data-offscreen="true"] {
-	opacity: 0;
+.space-hero[data-mode="webgl"] .star-label[data-offscreen="true"]:not([aria-pressed="true"]):not(:focus) {
+	visibility: hidden;
 	pointer-events: none;
-}
-.star-label[data-offscreen="true"]:focus-visible {
-	opacity: 1;
 }
 .star-label__dot {
 	display: none;
@@ -390,42 +356,61 @@
 	outline-offset: 3px;
 }
 
-/* Static / loading: the labels become a plain list of projects. */
-.space-hero:not([data-mode="webgl"]) .starmap {
-	height: auto;
-	min-height: 0;
-	margin: 32px 0 0;
+/* Keep the map footprint while the 3D scene loads or the list is shown. */
+.space-hero:not([data-mode="webgl"]) .starmap__canvas,
+.space-hero[data-mode="loading"] .starmap__labels {
+	visibility: hidden;
 }
-.space-hero:not([data-mode="webgl"]) .starmap__labels {
-	position: static;
-	display: flex;
-	flex-wrap: wrap;
+
+.space-hero[data-mode="webgl"] :is(.starmap__canvas, .starmap__labels) {
+	animation: starmap-in 600ms ease-out both;
+}
+
+.space-hero[data-mode="static"] .starmap__labels {
+	inset: 16px 24px;
+	align-content: start;
+	overflow-y: auto;
+	padding: 4px;
+	display: grid;
 	gap: 10px;
 	pointer-events: auto;
 }
-.space-hero:not([data-mode="webgl"]) .starmap__hint {
-	position: static;
-	flex-basis: 100%;
-}
-.space-hero:not([data-mode="webgl"]) .star-label {
+
+.space-hero[data-mode="static"] .star-label {
 	position: static;
 	transform: none !important;
-	flex-direction: row;
-	gap: 10px;
+	display: grid;
+	grid-template-columns: 12px minmax(0, 1fr);
+	gap: 4px 12px;
+	text-align: left;
+	white-space: normal;
+	opacity: 1;
+	pointer-events: auto;
 	border-color: rgba(245, 240, 232, 0.14);
 }
-.space-hero:not([data-mode="webgl"]) .star-label__dot {
+
+.space-hero[data-mode="static"] .star-label__dot {
 	display: block;
-	width: 10px;
-	height: 10px;
+	width: 12px;
+	height: 12px;
 	border-radius: 50%;
 	background: var(--star);
 	box-shadow: 0 0 12px var(--star);
 }
 
+.space-hero[data-mode="static"] .star-label__metric {
+	grid-column: 2;
+}
+
+@media (min-width: 640px) {
+	.space-hero[data-mode="static"] .starmap__labels {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
 /* While a system is open, the other labels step back. */
 .starmap[data-has-selection="true"] .star-label:not([aria-pressed="true"]) {
-	opacity: 0.35;
+	visibility: hidden;
 }
 /* The open system's name is in the panel; its label would cover the star. */
 .space-hero[data-mode="webgl"] .starmap[data-has-selection="true"] .star-label[aria-pressed="true"] {
@@ -566,6 +551,16 @@
 	.space-hero__intro {
 		max-width: 500px;
 	}
+	.starmap::after {
+		content: "";
+		position: absolute;
+		inset: 0 55% 0 0;
+		background: linear-gradient(90deg, var(--color-bg) 0%, var(--color-bg) 65%, transparent);
+		pointer-events: none;
+	}
+	.starmap__labels {
+		z-index: 1;
+	}
 	.starmap {
 		position: absolute;
 		inset: 0;
@@ -599,10 +594,9 @@
 			transform: translate(0, -50%);
 		}
 	}
-	.space-hero:not([data-mode="webgl"]) .starmap {
-		position: absolute;
-		inset: auto 48px 72px auto;
-		width: min(520px, 40vw);
+	.space-hero[data-mode="static"] .starmap__labels {
+		inset: 112px 48px 48px auto;
+		width: min(620px, 48vw);
 	}
 }
 
@@ -613,14 +607,11 @@
 	.starmap {
 		margin-inline: -16px;
 	}
-	.proof-log {
-		padding-inline: 14px;
-	}
 }
 
 @media (prefers-reduced-motion: reduce) {
 	.space-hero__intro,
-	.starmap__canvas,
+	.space-hero[data-mode="webgl"] :is(.starmap__canvas, .starmap__labels),
 	.receipt-slip,
 	.system-panel {
 		animation: none;

@@ -46,10 +46,18 @@ function serveDist() {
 	return new Promise((resolve) => server.listen(port, "127.0.0.1", () => resolve(server)));
 }
 
-async function openMap(page) {
+async function openMap(page, viewport) {
 	await page.goto(`${baseUrl}${HOME}`, { waitUntil: "networkidle" });
 	await page.locator("#universe").scrollIntoViewIfNeeded();
-	await page.waitForSelector('#universe[data-mode="webgl"]', { timeout: 30000 });
+	const map = page.locator("#universe");
+	await page.waitForFunction(() => {
+		const scene = document.querySelector("#universe")?.dataset.scene;
+		return scene === "ready" || scene === "unavailable";
+	}, null, { timeout: 30000 });
+	await page.waitForSelector('#universe[data-mode="webgl"]', { timeout: 3000 }).catch(async (error) => {
+		const state = await map.evaluate(({ dataset }) => ({ ...dataset }));
+		throw new Error(`${viewport}: expected WebGL mode, got ${JSON.stringify(state)}`, { cause: error });
+	});
 	// Let the first frames place the labels.
 	await page.waitForTimeout(600);
 }
@@ -91,7 +99,8 @@ async function assertPanelOpensAndCloses(page, viewport) {
 }
 
 async function assertReceiptToggles(page, viewport) {
-	const button = page.locator("#universe .receipt-btn").first();
+	await activate(await labelFor(page, "Sano"));
+	const button = page.locator(".system-panel .receipt-btn");
 	await button.scrollIntoViewIfNeeded();
 	assert((await button.getAttribute("aria-expanded")) === "false", `${viewport}: receipt should start closed.`);
 	const slipId = await button.getAttribute("aria-controls");
@@ -104,6 +113,55 @@ async function assertReceiptToggles(page, viewport) {
 	assert(!(await page.locator(`#${slipId}`).isVisible()), `${viewport}: receipt slip should hide when closed.`);
 }
 
+async function assertKeyboardOrder(page) {
+	const group = page.locator(".starmap__labels");
+	const current = group.locator('.star-label[tabindex="0"]');
+	assert(await current.count() === 1, "The galaxy should have one tab stop.");
+	await current.focus();
+	const original = await page.evaluate(() => document.activeElement.textContent);
+	await page.keyboard.press("ArrowRight");
+	assert(await page.evaluate(() => document.activeElement.textContent) !== original, "ArrowRight should focus another star.");
+	assert(await group.locator('[data-offscreen="true"][tabindex="0"]').count() === 0, "Off-screen stars must not be tabbable.");
+}
+
+async function assertContextLoss(page) {
+	const panel = page.locator(".system-panel");
+	const focus = panel.getByRole("button", { name: "Receipt" });
+	await focus.focus();
+	await page.locator(".starmap__canvas").evaluate((canvas) => {
+		const context = canvas.getContext("webgl2");
+		const lose = context?.getExtension("WEBGL_lose_context");
+		if (!lose) throw new Error("WEBGL_lose_context is required for this check.");
+		lose.loseContext();
+	});
+	await page.waitForSelector('#universe[data-mode="static"]');
+	assert(await panel.getByRole("heading", { name: "Sano" }).isVisible(), "Context loss should preserve the open project.");
+	assert(await focus.evaluate((button) => button === document.activeElement), "Context loss should preserve panel focus.");
+	await page.keyboard.press("Escape");
+	assert(await page.evaluate(() => document.activeElement.textContent.includes("Sano")), "Closing after context loss should focus the list entry.");
+}
+
+async function assertSlowFallback(browser, engage) {
+	const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+	let release;
+	const ready = new Promise((resolve) => { release = resolve; });
+	await page.route("**/StarMap-*.js", async (route) => {
+		await ready;
+		await route.continue();
+	});
+	try {
+		await page.goto(`${baseUrl}/?starmapTimeout=10#universe`, { waitUntil: "domcontentloaded" });
+		await page.waitForSelector('#universe[data-mode="static"]');
+		if (engage) await (await labelFor(page, "Sano")).focus();
+		release();
+		if (engage) await page.getByRole("button", { name: "Show the galaxy" }).click();
+		await page.waitForSelector('#universe[data-mode="webgl"]');
+	} finally {
+		release();
+		await page.close();
+	}
+}
+
 async function main() {
 	const server = await serveDist();
 	const browser = await chromium.launch({ headless: true });
@@ -113,11 +171,22 @@ async function main() {
 			["phone", { width: 390, height: 844 }],
 		]) {
 			const page = await browser.newPage({ viewport });
-			await openMap(page);
+			await openMap(page, name);
+			await assertKeyboardOrder(page);
 			await assertPanelOpensAndCloses(page, name);
 			await assertReceiptToggles(page, name);
+			await assertContextLoss(page);
 			await page.close();
 		}
+		await assertSlowFallback(browser, false);
+		await assertSlowFallback(browser, true);
+		const zoomed = await browser.newPage({ viewport: { width: 844, height: 390 }, reducedMotion: "reduce" });
+		await zoomed.addInitScript(() => { document.addEventListener("DOMContentLoaded", () => {
+			document.documentElement.style.fontSize = "200%";
+		}); });
+		await zoomed.goto(`${baseUrl}${HOME}#universe`);
+		await zoomed.waitForSelector('#universe[data-mode="static"]');
+		await zoomed.close();
 	} finally {
 		await browser.close();
 		server.close();

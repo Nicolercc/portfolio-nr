@@ -114,7 +114,7 @@ export function Experience() {
 						</div>
 
 						{/* EXPERIENCE ITEMS */}
-						<div className="space-y-24 pl-8 md:pl-24">
+						<div className="space-y-12 lg:space-y-24 pl-8 md:pl-24">
 							{experiences.map((exp, i) => (
 								<motion.div
 									key={i}

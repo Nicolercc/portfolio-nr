@@ -56,7 +56,7 @@ function CaseStudyCard({ project, position }: { project: CaseStudyProject; posit
 			<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start">
 				{/* Left Side: Info */}
 				<div className="lg:col-span-5 lg:sticky lg:top-32">
-					<div className="flex items-center gap-4 mb-6">
+					<div className="flex items-center gap-4 mb-4 lg:mb-6">
 						<span className={`text-xs font-mono ${accentClass}`}>
 							{String(position).padStart(2, "0")}
 						</span>
@@ -65,11 +65,11 @@ function CaseStudyCard({ project, position }: { project: CaseStudyProject; posit
 						</span>
 					</div>
 
-					<h3 className="text-5xl md:text-7xl font-serif leading-none mb-6">
+					<h3 className="text-4xl md:text-7xl font-serif leading-none mb-4 lg:mb-6">
 						{project.title}
 					</h3>
 
-					<p className="text-lg text-foreground leading-relaxed mb-4 max-w-md">
+					<p className="text-base md:text-lg text-foreground leading-relaxed mb-3 lg:mb-4 max-w-md">
 						{project.outcome ?? project.tagline}
 					</p>
 
